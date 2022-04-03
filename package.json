@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/inquirer": "^8.2.1",
     "axios": "^0.26.1",
+    "inquirer": "^8.2.2",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.17.0",
