@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "configure": "ts-node src/config/index.ts",
     "test": "jest --runInBand"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@taquito/utils": "^12.0.0",
     "@types/inquirer": "^8.2.1",
     "axios": "^0.26.1",
     "inquirer": "^8.2.2",
