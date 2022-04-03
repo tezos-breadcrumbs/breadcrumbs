@@ -1,0 +1,29 @@
+{
+  "name": "breadcrumbs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --runInBand"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.17.0",
+    "typescript": "^4.6.3"
+  },
+  "devDependencies": {
+    "@pollyjs/adapter-node-http": "^6.0.4",
+    "@pollyjs/core": "^6.0.4",
+    "@pollyjs/persister-fs": "^6.0.4",
+    "@types/jest": "^27.4.1",
+    "@types/setup-polly-jest": "^0.5.1",
+    "jest": "^27.4.1",
+    "sequelize-cli": "^6.4.1",
+    "setup-polly-jest": "^0.10.0",
+    "ts-jest": "^27.1.4"
+  }
+}
