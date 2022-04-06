@@ -2,7 +2,7 @@ const inquirer = require("inquirer");
 const fs = require("fs");
 const { validAddress, validPercentage } = require("./validators.ts");
 
-console.log("Hi, welcome to Node Pizza");
+console.log("Welcome to breadcrumbs.");
 
 const questions = [
   {
@@ -20,13 +20,10 @@ const questions = [
 ];
 
 inquirer.prompt(questions).then((answers) => {
-  console.log("\nOrder receipt:");
-  console.log(JSON.stringify(answers, null, "  "));
-
   const json = JSON.stringify(answers, null, "  ");
   fs.writeFile("./config.json", json, (err) => {
     if (!err) {
-      console.log("done");
+      console.log("Successfully created configuration file.");
     }
   });
 });
