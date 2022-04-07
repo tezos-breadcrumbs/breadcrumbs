@@ -23,6 +23,9 @@ module.exports = {
       bakerBalance: {
         type: Sequelize.STRING
       },
+      bakerIncome: {
+        type: Sequelize.STRING
+      },
       feeRate: {
         type: Sequelize.STRING
       },

@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     paymentAddress: DataTypes.STRING,
     delegatorBalance: DataTypes.STRING,
     bakerBalance: DataTypes.STRING,
+    bakerIncome: DataTypes.STRING,
     feeRate: DataTypes.STRING,
     paymentAmount: DataTypes.STRING,
     paymentHash: DataTypes.STRING
