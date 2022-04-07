@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { getStartingCycle } from "../src/cycleResolver";
-import * as Polly from "./polly";
+import * as Polly from "./helpers/polly";
 
 describe("test", () => {
   let db: any = require("../database/models");

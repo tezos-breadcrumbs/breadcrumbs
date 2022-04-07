@@ -1,5 +1,7 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 
+import { getStartingCycle } from "../src/cycleResolver";
+
 const database = require("../database/models");
 describe("test", () => {
   // Set the db object to a variable which can be accessed throughout the whole test file
@@ -23,6 +25,8 @@ describe("test", () => {
     });
 
     const payments = await db.Payment.findAll();
+    // const actual = await getStartingCycle(db);
+
     console.log(payments);
   });
   afterAll(async () => {
