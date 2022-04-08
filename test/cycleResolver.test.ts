@@ -3,7 +3,7 @@
 import axios from "axios";
 import _ from "lodash";
 import { getStartingCycle } from "../src/cycleResolver";
-import { payments_1 } from "./helpers/data
+import { payments_1 } from "./helpers/data";
 
 import * as Polly from "./helpers/polly";
 

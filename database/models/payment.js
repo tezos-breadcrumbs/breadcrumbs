@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Payment.init({
-    cycle: DataTypes.STRING,
+    cycle: DataTypes.INTEGER,
     delegatorAddress: DataTypes.STRING,
     paymentAddress: DataTypes.STRING,
     delegatorBalance: DataTypes.STRING,

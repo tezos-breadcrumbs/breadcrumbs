@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       cycle: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER,
       },
       delegatorAddress: {
         type: Sequelize.STRING
