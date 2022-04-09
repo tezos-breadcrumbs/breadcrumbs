@@ -1,11 +1,11 @@
-import axios from "axios";
+import client from "./client";
 import _ from "lodash";
 
 import { Payment } from "../database/models";
 
 const getLastCycle = async (): Promise<Number | void> => {
-  return axios
-    .get("https://api.tzkt.io/v1/head")
+  return client
+    .get("/head")
     .then(({ data: { cycle: headCycle } }) => headCycle - 1)
     .catch(console.error);
 };
