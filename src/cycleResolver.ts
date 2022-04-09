@@ -3,13 +3,6 @@ import _ from "lodash";
 
 import { Payment } from "../database/models";
 
-const getLastCycle = async (): Promise<Number | void> => {
-  return client
-    .get("/head")
-    .then(({ data: { cycle: headCycle } }) => headCycle - 1)
-    .catch(console.error);
-};
-
 const getLastProcessedCycle = async () => {
   const result = await Payment.findAll({
     order: [["cycle", "DESC"]],
@@ -20,7 +13,7 @@ const getLastProcessedCycle = async () => {
 };
 
 export const getStartingCycle = async (): Promise<Number> => {
-  const lastCycle = await getLastCycle();
+  const lastCycle = await client.getLastCycle();
   const lastProcessedCycle = await getLastProcessedCycle();
 
   return lastProcessedCycle ? lastProcessedCycle : lastCycle;
