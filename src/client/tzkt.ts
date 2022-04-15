@@ -1,5 +1,7 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import axios, { AxiosInstance } from "axios";
 import _ from "lodash";
+import { sum } from "../utils/math";
 import { Client } from "./abstract_client";
 
 export class TzKT extends Client {
@@ -40,10 +42,13 @@ export class TzKT extends Client {
         }) => {
           console.log("Received cycle data from TzKT.");
           return {
-            cycleDelegatedBalance: delegatedBalance,
-            cycleStakingBalance: stakingBalance,
-            cycleShares: delegators,
-            cycleRewards: _.sum([blockRewards, endorsementRewards]),
+            cycleDelegatedBalance: BigNumber.from(delegatedBalance),
+            cycleStakingBalance: BigNumber.from(stakingBalance),
+            cycleShares: _.map(delegators, ({ address, balance }) => ({
+              address,
+              balance: BigNumber.from(balance),
+            })),
+            cycleRewards: sum(blockRewards, endorsementRewards),
           };
         }
       );

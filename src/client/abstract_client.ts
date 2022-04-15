@@ -1,3 +1,4 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import { AxiosInstance } from "axios";
 
 export abstract class Client {
@@ -7,8 +8,8 @@ export abstract class Client {
 }
 
 export interface CycleData {
-  cycleDelegatedBalance: number;
-  cycleStakingBalance: number;
-  cycleRewards: number;
-  cycleShares: { address: string; balance: number }[];
+  // cycleDelegatedBalance: BigNumber;
+  cycleStakingBalance: BigNumber;
+  cycleRewards: BigNumber;
+  cycleShares: { address: string; balance: BigNumber }[];
 }
