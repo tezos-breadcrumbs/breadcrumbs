@@ -13,6 +13,7 @@ export class TzKT extends Client {
   }
 
   public getCycleData = (baker: string, cycle: number) => {
+    console.log("Fetching cycle data from TzKT ...");
     return this.instance
       .get(`rewards/split/${baker}/${cycle}`)
       .then(({ data }) => {
@@ -37,13 +38,11 @@ export class TzKT extends Client {
           blockRewards,
           endorsementRewards,
         }) => {
+          console.log("Received cycle data from TzKT.");
           return {
+            cycleDelegatedBalance: delegatedBalance,
             cycleStakingBalance: stakingBalance,
-            cycleShares: _.set(
-              delegators,
-              baker,
-              stakingBalance - delegatedBalance
-            ),
+            cycleShares: delegators,
             cycleRewards: _.sum([blockRewards, endorsementRewards]),
           };
         }

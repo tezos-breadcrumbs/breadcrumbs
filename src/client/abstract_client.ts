@@ -6,7 +6,8 @@ export abstract class Client {
   abstract getLastCycle(): Promise<number | void>;
 }
 
-interface CycleData {
+export interface CycleData {
+  cycleDelegatedBalance: number;
   cycleStakingBalance: number;
   cycleRewards: number;
   cycleShares: { address: string; balance: number }[];
