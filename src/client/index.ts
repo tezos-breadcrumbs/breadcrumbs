@@ -1,4 +1,4 @@
-import { TzKT } from "./tzkt";
+import { TzKT } from "./tzkt_client";
 
 const instance = new TzKT();
 
