@@ -1,4 +1,4 @@
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber } from "bignumber.js";
 import { AxiosInstance } from "axios";
 
 export abstract class Client {

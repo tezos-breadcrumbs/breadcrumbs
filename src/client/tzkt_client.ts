@@ -1,4 +1,4 @@
-import { BigNumber } from "@ethersproject/bignumber";
+const JSONBigInt = require("json-bigint")({ alwaysParseAsBig: true });
 import axios, { AxiosInstance } from "axios";
 import _ from "lodash";
 import { sum } from "../utils/math";
@@ -11,6 +11,7 @@ export class TzKT extends Client {
     super();
     this.instance = axios.create({
       baseURL: "https://api.tzkt.io/v1/",
+      transformResponse: [JSONBigInt.parse],
     });
   }
 
@@ -19,6 +20,7 @@ export class TzKT extends Client {
     return this.instance
       .get(`rewards/split/${baker}/${cycle}`)
       .then(({ data }) => {
+        console.log(data.cycle);
         return _.pick(
           _.update(data, "delegators", (list) =>
             _.map(list, (item) => _.pick(item, ["address", "balance"]))
@@ -42,11 +44,11 @@ export class TzKT extends Client {
         }) => {
           console.log("Received cycle data from TzKT.");
           return {
-            cycleDelegatedBalance: BigNumber.from(delegatedBalance),
-            cycleStakingBalance: BigNumber.from(stakingBalance),
+            cycleDelegatedBalance: delegatedBalance,
+            cycleStakingBalance: stakingBalance,
             cycleShares: _.map(delegators, ({ address, balance }) => ({
               address,
-              balance: BigNumber.from(balance),
+              balance,
             })),
             cycleRewards: sum(blockRewards, endorsementRewards),
           };

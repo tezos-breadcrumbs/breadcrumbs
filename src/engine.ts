@@ -2,24 +2,26 @@ import _ from "lodash";
 import client from "./client";
 import config from "../config.json";
 import { CycleData } from "./client/abstract_client";
+import { BigNumber } from "bignumber.js";
+import { add, divide, multiply, subtract } from "./utils/math";
 
 interface Payment {
   cycle: number;
   delegator: string;
   paymentAddress: string;
-  delegatorBalance: number;
-  bakerStakingBalance: number;
-  bakerCycleRewards: number;
-  feeRate: number;
-  paymentAmount: number;
+  delegatorBalance: BigNumber;
+  bakerStakingBalance: BigNumber;
+  bakerCycleRewards: BigNumber;
+  feeRate: BigNumber;
+  paymentAmount: BigNumber;
   paymentHash: string;
 }
 
 interface CycleReport {
   cycle: number;
   payments: Payment[];
-  feeIncome: number;
-  lockedBondRewards: number;
+  feeIncome: BigNumber;
+  lockedBondRewards: BigNumber;
 }
 
 const run = async (baker, cycle: number) => {
@@ -39,36 +41,34 @@ const run = async (baker, cycle: number) => {
 
   processSelf(data, report, data.cycleRewards)
     .then(processDelegators)
-    .catch(console.error);
-  // .then(console.log);
+    // .catch(console.error);
+    .then(console.log);
 };
 
 const processSelf = (
   data: CycleData,
   report: CycleReport,
-  rewardBucket: number
-): Promise<[CycleData, CycleReport, number]> => {
+  rewardBucket: BigNumber
+): Promise<[CycleData, CycleReport, BigNumber]> => {
   const { cycleDelegatedBalance, cycleStakingBalance, cycleRewards } = data;
 
-  const lockedBondRewards = _.multiply(
-    _.divide(
-      _.subtract(cycleStakingBalance, cycleDelegatedBalance),
-      cycleStakingBalance
-    ),
+  const bakerBalance = subtract(cycleStakingBalance, cycleDelegatedBalance);
+  const bakerBalanceRewards = multiply(
+    divide(bakerBalance, cycleStakingBalance),
     cycleRewards
   );
 
   return Promise.resolve([
     data,
-    _.set(report, "lockedBondRewards", lockedBondRewards),
-    (rewardBucket -= lockedBondRewards),
+    _.set(report, "lockedBondRewards", bakerBalanceRewards),
+    subtract(rewardBucket, bakerBalanceRewards),
   ]);
 };
 
 const processDelegators = ([data, report, rewardBucket]: [
   CycleData,
   CycleReport,
-  number
+  BigNumber
 ]) => {
   const { cycle } = report;
   const {
@@ -81,7 +81,7 @@ const processDelegators = ([data, report, rewardBucket]: [
   const _rewardBucket = rewardBucket;
 
   let payments: Payment[] = [];
-  let feeIncome: number = 0;
+  let feeIncome = new BigNumber(0);
 
   for (const { address, balance } of cycleShares) {
     const fee = getApplicableFee(address);
@@ -106,10 +106,11 @@ const processDelegators = ([data, report, rewardBucket]: [
       paymentHash: "",
     });
 
-    rewardBucket -= _.add(bakerShare, delegatorShare);
-    feeIncome += bakerShare;
+    rewardBucket = add(bakerShare, delegatorShare);
+    feeIncome = add(feeIncome, bakerShare);
   }
 
+  console.log("remainingRewards", rewardBucket.div(1000000).toString());
   return Promise.resolve([
     data,
     { ...report, payments, feeIncome },
@@ -117,8 +118,8 @@ const processDelegators = ([data, report, rewardBucket]: [
   ]);
 };
 
-const getApplicableFee = (delegator: string): number => {
-  return _.divide(Number(config.default_fee), 100);
+const getApplicableFee = (delegator: string): BigNumber => {
+  return new BigNumber(config.default_fee).div(100);
 };
 
 const getPaymentAddress = (delegator: string): string => {
@@ -126,18 +127,21 @@ const getPaymentAddress = (delegator: string): string => {
 };
 
 const getRewardSplit = (
-  cycleDelegatorBalance: number,
-  cycleDelegatedBalance: number,
-  cycleRewards: number,
-  applicableFee: number
+  cycleDelegatorBalance: BigNumber,
+  cycleDelegatedBalance: BigNumber,
+  cycleRewards: BigNumber,
+  applicableFee: BigNumber
 ) => {
-  const delegatorShare = _.multiply(
-    _.divide(cycleDelegatorBalance, cycleDelegatedBalance),
+  const delegatorShare = multiply(
+    divide(cycleDelegatorBalance, cycleDelegatedBalance),
     cycleRewards
   );
 
-  const netDelegatorShare = _.multiply(delegatorShare, 1 - applicableFee);
-  const bakerShare = _.multiply(delegatorShare, applicableFee);
+  const netDelegatorShare = multiply(
+    delegatorShare,
+    subtract(1, applicableFee)
+  );
+  const bakerShare = multiply(delegatorShare, applicableFee);
 
   return { bakerShare, delegatorShare: netDelegatorShare };
 };
@@ -146,8 +150,8 @@ const initializeCycleReport = (cycle): CycleReport => {
   return {
     cycle,
     payments: [],
-    lockedBondRewards: 0,
-    feeIncome: 0,
+    lockedBondRewards: new BigNumber(0),
+    feeIncome: new BigNumber(0),
   };
 };
 
