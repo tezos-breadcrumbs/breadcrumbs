@@ -8,7 +8,7 @@ export abstract class Client {
 }
 
 export interface CycleData {
-  // cycleDelegatedBalance: BigNumber;
+  cycleDelegatedBalance: BigNumber;
   cycleStakingBalance: BigNumber;
   cycleRewards: BigNumber;
   cycleShares: { address: string; balance: BigNumber }[];
