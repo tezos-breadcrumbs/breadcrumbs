@@ -1,6 +1,6 @@
 import { BigNumber } from "bignumber.js";
-import { Config } from "../../src/config/interface";
-import { getApplicableFee, getRedirectAddress } from "../../src/engine/helpers";
+import { Config } from "src/config/interface";
+import { getApplicableFee, getRedirectAddress } from "src/engine/helpers";
 
 const TEST_DELEGATOR = "tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU";
 
