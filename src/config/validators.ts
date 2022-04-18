@@ -1,6 +1,6 @@
 import {
   validateKeyHash,
-  validateAddress,
+  validateAddress /* Accepts KT addresses */,
   ValidationResult,
 } from "@taquito/utils";
 
@@ -19,15 +19,26 @@ export const validPercentage: inquirerValidator = (input) => {
 };
 
 export const validRedirect: inquirerValidator = (input) => {
-  const list = Object.keys(input).map((key) => ({ key, value: input[key] }));
-
-  for (const redirect in list) {
-    const [delegator, target] = redirect;
+  if (input === null) return true;
+  for (const delegator in input) {
     if (
       validateAddress(delegator) !== ValidationResult.VALID ||
-      validateAddress(target) !== ValidationResult.VALID
+      validateAddress(input[delegator]) !== ValidationResult.VALID
     )
-      return "Please enter rules in the form '<delegator_address>:<payment_address>',<delegator_address>:<payment_address>'";
+      return "Please specify redirects in the form '<delegator_address>:<payment_address>',<delegator_address>:<payment_address>, ...'";
+  }
+  return true;
+};
+
+export const validFeeExceptions: inquirerValidator = (input) => {
+  if (input === null) return true;
+  for (const delegator in input) {
+    const fee = input[delegator];
+    if (
+      validateAddress(delegator) !== ValidationResult.VALID ||
+      validPercentage(fee) !== true
+    )
+      return "Please specify exceptions in the form '<delegator_address>:<percentage_fee>',<delegator_address>:<percentage_fee>, ...'";
   }
   return true;
 };
