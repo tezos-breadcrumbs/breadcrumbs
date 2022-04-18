@@ -4,6 +4,7 @@ import config from "../config.json";
 import { CycleData } from "./client/abstract_client";
 import { BigNumber } from "bignumber.js";
 import { add, divide, multiply, subtract } from "./utils/math";
+import { getApplicableFee, getRedirectAddress } from "./engine/helpers";
 
 interface Payment {
   cycle: number;
@@ -84,8 +85,8 @@ const processDelegators = ([data, report, rewardBucket]: [
   let feeIncome = new BigNumber(0);
 
   for (const { address, balance } of cycleShares) {
-    const fee = getApplicableFee(address);
-    const paymentAddress = getPaymentAddress(address);
+    const fee = getApplicableFee(config, address);
+    const paymentAddress = getRedirectAddress(config, address);
 
     const { bakerShare, delegatorShare } = getRewardSplit(
       balance,
@@ -118,14 +119,6 @@ const processDelegators = ([data, report, rewardBucket]: [
   ]);
 };
 
-const getApplicableFee = (delegator: string): BigNumber => {
-  return new BigNumber(config.default_fee).div(100);
-};
-
-const getPaymentAddress = (delegator: string): string => {
-  return delegator;
-};
-
 const getRewardSplit = (
   cycleDelegatorBalance: BigNumber,
   cycleDelegatedBalance: BigNumber,
@@ -156,3 +149,6 @@ const initializeCycleReport = (cycle): CycleReport => {
 };
 
 run("tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur", 468);
+function getPaymentAddress(address: string) {
+  throw new Error("Function not implemented.");
+}
