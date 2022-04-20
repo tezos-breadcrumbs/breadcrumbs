@@ -14,5 +14,5 @@ export const isOverDelegated = (
   totalStake: BigNumber
 ): boolean => {
   const TEN_PERCENT = new BigNumber(0.1);
-  return bakerBalance.div(totalStake).lte(TEN_PERCENT);
+  return bakerBalance.div(totalStake).gte(TEN_PERCENT);
 };
