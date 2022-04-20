@@ -1,4 +1,6 @@
 import BigNumber from "bignumber.js";
+import { CycleData } from "src/client/abstract_client";
+import { Config } from "src/config/interface";
 
 interface Payment {
   cycle: number;
@@ -17,4 +19,11 @@ export interface CycleReport {
   payments: Payment[];
   feeIncome: BigNumber;
   lockedBondRewards: BigNumber;
+}
+
+export interface StepArguments {
+  config: Config;
+  cycleData: CycleData;
+  cycleReport: CycleReport;
+  distributableRewards: BigNumber;
 }

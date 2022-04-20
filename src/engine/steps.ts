@@ -1,18 +1,27 @@
-import BigNumber from "bignumber.js";
-import { CycleData } from "src/client/abstract_client";
-import { Config } from "src/config/interface";
-import { CycleReport } from "src/engine/interfaces";
+import { isOverDelegated } from "src/engine/helpers";
+import { StepArguments } from "src/engine/interfaces";
+import { subtract } from "src/utils/math";
 
-const resolveProtectedBakerRewards = (
-  config: Config,
-  cycleData: CycleData,
-  cycleReport: CycleReport,
-  distributableRewards: BigNumber
-) => {
-  if (config.overdelegation_guard === false) {
-    /* Place baker stake among delegator stakes */
+const resolveProtectedBakerRewards = (args: StepArguments): StepArguments => {
+  const { config, cycleData } = args;
+  const { cycleDelegatedBalance, cycleStakingBalance, cycleShares } = cycleData;
+  const bakerBalance = subtract(cycleStakingBalance, cycleDelegatedBalance);
+
+  if (
+    config.overdelegation_guard &&
+    isOverDelegated(bakerBalance, cycleStakingBalance)
+  ) {
+    // allocate baker 10% of rewards
+    return args;
   } else {
-      /* If over-delegated, allocate baker 10% of rewards
-      /* If not over delegated, Place baker stake among delegator stakes
+    const updatedCycleShares = [
+      ...cycleShares,
+      { address: config.baking_address, balance: bakerBalance },
+    ];
+
+    return {
+      ...args,
+      cycleData: { ...cycleData, cycleShares: updatedCycleShares },
+    };
   }
 };
