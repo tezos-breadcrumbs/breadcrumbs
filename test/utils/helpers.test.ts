@@ -1,6 +1,10 @@
 import { BigNumber } from "bignumber.js";
 import { Config } from "src/config/interface";
-import { getApplicableFee, getRedirectAddress } from "src/engine/helpers";
+import {
+  getApplicableFee,
+  getRedirectAddress,
+  isOverDelegated,
+} from "src/engine/helpers";
 
 const TEST_DELEGATOR = "tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU";
 
@@ -46,5 +50,19 @@ describe("getRedirectAddress", () => {
     const actual = getRedirectAddress(updatedConfig, TEST_DELEGATOR);
     const expected = redirectAddress;
     expect(actual).toStrictEqual(expected);
+  });
+});
+
+describe("isOverDelegated", () => {
+  test("returns `true` if the baker's stake is less than 10% of the staking balance", () => {
+    const bakerBalance = new BigNumber(6000000000);
+    const stakingBalance = bakerBalance.times(10).plus(10);
+    expect(isOverDelegated(bakerBalance, stakingBalance)).toEqual(true);
+  });
+
+  test("returns `false` if the baker's stake is greater than 10% of the staking balance", () => {
+    const bakerBalance = new BigNumber(6000000000);
+    const stakingBalance = bakerBalance.times(10).minus(1);
+    expect(isOverDelegated(bakerBalance, stakingBalance)).toEqual(false);
   });
 });
