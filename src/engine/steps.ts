@@ -1,18 +1,30 @@
 import { isOverDelegated } from "src/engine/helpers";
 import { StepArguments } from "src/engine/interfaces";
-import { subtract } from "src/utils/math";
+import { multiply, subtract } from "src/utils/math";
 
-const resolveProtectedBakerRewards = (args: StepArguments): StepArguments => {
-  const { config, cycleData } = args;
-  const { cycleDelegatedBalance, cycleStakingBalance, cycleShares } = cycleData;
+export const resolveProtectedBakerRewards = (
+  args: StepArguments
+): StepArguments => {
+  const { config, cycleData, cycleReport, distributableRewards } = args;
+  const {
+    cycleDelegatedBalance,
+    cycleStakingBalance,
+    cycleShares,
+    cycleRewards,
+  } = cycleData;
   const bakerBalance = subtract(cycleStakingBalance, cycleDelegatedBalance);
 
   if (
     config.overdelegation_guard &&
     isOverDelegated(bakerBalance, cycleStakingBalance)
   ) {
-    // allocate baker 10% of rewards
-    return args;
+    const bakerRewards = multiply(cycleRewards, 0.1);
+
+    return {
+      ...args,
+      cycleReport: { ...cycleReport, lockedBondRewards: bakerRewards },
+      distributableRewards: subtract(distributableRewards, bakerRewards),
+    };
   } else {
     const updatedCycleShares = [
       ...cycleShares,
