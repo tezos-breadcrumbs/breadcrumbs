@@ -20,7 +20,6 @@ export class TzKT extends Client {
     return this.instance
       .get(`rewards/split/${baker}/${cycle}`)
       .then(({ data }) => {
-        console.log(data.cycle);
         return _.pick(
           _.update(data, "delegators", (list) =>
             _.map(list, (item) => _.pick(item, ["address", "balance"]))
