@@ -1,13 +1,14 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 
-import { resolveProtectedBakerRewards } from "src/engine/steps/resolveProtectedBakerRewards";
+import _ from "lodash";
+
 import client from "src/client";
 import { generateConfig } from "test/helpers";
+import { initializeCycleReport } from "src/engine/helpers";
+import { resolveProtectedBakerRewards } from "src/engine/steps/resolveProtectedBakerRewards";
+import { subtract } from "src/utils/math";
 
 import * as Polly from "test/helpers/polly";
-import { initializeCycleReport } from "src/engine/helpers";
-import _ from "lodash";
-import { subtract } from "src/utils/math";
 
 describe("resolveProtectedBakerRewards", () => {
   Polly.start();
