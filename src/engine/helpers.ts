@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { Config } from "src/config/interface";
+import { Config } from "src/config";
 import { CycleReport } from "./interfaces";
 
 export const getApplicableFee = (config: Config, delegator: string) => {
