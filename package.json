@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "configure": "ts-node src/config/index.ts",
+    "configure": "ts-node src/config/configure.ts",
     "test": "jest --runInBand"
   },
   "author": "",
