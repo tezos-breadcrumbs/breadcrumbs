@@ -11,12 +11,13 @@ export const resolveProtectedBakerRewards = (
     cycleStakingBalance,
     cycleShares,
     cycleRewards,
+    frozenDepositLimit,
   } = cycleData;
   const bakerBalance = subtract(cycleStakingBalance, cycleDelegatedBalance);
 
   if (
     config.overdelegation_guard &&
-    isOverDelegated(bakerBalance, cycleStakingBalance)
+    isOverDelegated(bakerBalance, cycleStakingBalance, frozenDepositLimit)
   ) {
     const bakerRewards = multiply(cycleRewards, 0.1);
 

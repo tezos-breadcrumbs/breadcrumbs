@@ -12,10 +12,17 @@ export const getRedirectAddress = (config: Config, delegator: string) => {
 
 export const isOverDelegated = (
   bakerBalance: BigNumber,
-  totalStake: BigNumber
+  totalStake: BigNumber,
+  frozenDepositLimit: BigNumber
 ): boolean => {
+  const base = frozenDepositLimit
+    ? frozenDepositLimit.lt(bakerBalance)
+      ? frozenDepositLimit
+      : bakerBalance
+    : bakerBalance;
+
   const TEN_PERCENT = new BigNumber(0.1);
-  return bakerBalance.div(totalStake).lt(TEN_PERCENT);
+  return base.div(totalStake).lt(TEN_PERCENT);
 };
 
 export const initializeCycleReport = (cycle): CycleReport => {

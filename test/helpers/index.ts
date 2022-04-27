@@ -1,10 +1,12 @@
-import { Config } from "src/config/interface";
+import { Config } from "src/config";
+
+const DEFAULT_BAKER = "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur";
 
 export const generateConfig = (
-  args: { overdelegation_guard?: boolean } = {}
+  args: { baking_address?: string; overdelegation_guard?: boolean } = {}
 ): Config => {
   return {
-    baking_address: "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur",
+    baking_address: args.baking_address || DEFAULT_BAKER,
     default_fee: "5",
     redirect_payments: {},
     fee_exceptions: {},
