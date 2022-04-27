@@ -12,4 +12,5 @@ export interface CycleData {
   cycleStakingBalance: BigNumber;
   cycleRewards: BigNumber;
   cycleShares: { address: string; balance: BigNumber }[];
+  frozenDepositLimit: BigNumber;
 }

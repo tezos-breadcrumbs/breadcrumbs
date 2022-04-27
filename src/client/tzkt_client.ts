@@ -2,7 +2,7 @@ const JSONBigInt = require("json-bigint")({ alwaysParseAsBig: true });
 import axios, { AxiosInstance } from "axios";
 import _ from "lodash";
 import { sum } from "../utils/math";
-import { Client } from "./abstract_client";
+import { Client, CycleData } from "./abstract_client";
 
 export class TzKT extends Client {
   instance: AxiosInstance;
@@ -15,22 +15,30 @@ export class TzKT extends Client {
     });
   }
 
-  public getCycleData = (baker: string, cycle: number) => {
+  public getCycleData = (baker: string, cycle: number): Promise<CycleData> => {
     console.log("Fetching cycle data from TzKT ...");
     return this.instance
       .get(`rewards/split/${baker}/${cycle}`)
-      .then(({ data }) => {
-        return _.pick(
-          _.update(data, "delegators", (list) =>
-            _.map(list, (item) => _.pick(item, ["address", "balance"]))
+      .then(async ({ data }) => {
+        const {
+          data: { frozenDepositLimit },
+        } = await this.instance.get(`accounts/${baker}`);
+
+        return _.set(
+          _.pick(
+            _.update(data, "delegators", (list) =>
+              _.map(list, (item) => _.pick(item, ["address", "balance"]))
+            ),
+            [
+              "stakingBalance",
+              "delegators",
+              "delegatedBalance",
+              "blockRewards",
+              "endorsementRewards",
+            ]
           ),
-          [
-            "stakingBalance",
-            "delegators",
-            "delegatedBalance",
-            "blockRewards",
-            "endorsementRewards",
-          ]
+          "frozenDepositLimit",
+          frozenDepositLimit
         );
       })
       .then(
@@ -40,6 +48,7 @@ export class TzKT extends Client {
           delegatedBalance,
           blockRewards,
           endorsementRewards,
+          frozenDepositLimit,
         }) => {
           console.log("Received cycle data from TzKT.");
           return {
@@ -50,6 +59,7 @@ export class TzKT extends Client {
               balance,
             })),
             cycleRewards: sum(blockRewards, endorsementRewards),
+            frozenDepositLimit,
           };
         }
       );
