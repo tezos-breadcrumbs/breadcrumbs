@@ -57,12 +57,14 @@ describe("isOverDelegated", () => {
   test("returns `true` if the baker's stake is less than 10% of the staking balance", () => {
     const bakerBalance = new BigNumber(6000000000);
     const stakingBalance = bakerBalance.times(10).plus(10);
-    expect(isOverDelegated(bakerBalance, stakingBalance)).toEqual(true);
+    expect(isOverDelegated(bakerBalance, stakingBalance, null)).toEqual(true);
   });
 
   test("returns `false` if the baker's stake is greater than 10% of the staking balance", () => {
     const bakerBalance = new BigNumber(6000000000);
     const stakingBalance = bakerBalance.times(10).minus(1);
-    expect(isOverDelegated(bakerBalance, stakingBalance)).toEqual(false);
+    expect(isOverDelegated(bakerBalance, stakingBalance, null)).toEqual(false);
   });
+
+  // TODO: test frozen deposit limit
 });

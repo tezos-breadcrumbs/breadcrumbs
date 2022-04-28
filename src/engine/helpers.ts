@@ -13,7 +13,7 @@ export const getRedirectAddress = (config: Config, delegator: string) => {
 export const isOverDelegated = (
   bakerBalance: BigNumber,
   totalStake: BigNumber,
-  frozenDepositLimit: BigNumber
+  frozenDepositLimit: BigNumber | null
 ): boolean => {
   const base = frozenDepositLimit
     ? frozenDepositLimit.lt(bakerBalance)
