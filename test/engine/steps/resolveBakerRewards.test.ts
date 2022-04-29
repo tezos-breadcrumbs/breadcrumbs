@@ -13,7 +13,7 @@ import * as Polly from "test/helpers/polly";
 describe("resolveBakerRewards", () => {
   Polly.start();
 
-  test("adds baker stake to `cycleShares` for regular processing if not overdelegated", async () => {
+  test("allocates to proportional rewards to baker if not overdelegated", async () => {
     const config = generateConfig({ overdelegation_guard: true });
     const cycleData = await client.getCycleData(config.baking_address, 470);
     const {
@@ -67,7 +67,7 @@ describe("resolveBakerRewards", () => {
     ).toStrictEqual(actual.cycleData.cycleRewards);
   });
 
-  test("adds baker stake to `cycleShares` for regular processing if overdelegated and `overdelegation_guard` is false", async () => {
+  test("allocates proportional rewards to baker if overdelegated and `overdelegation_guard` is false", async () => {
     const config = generateConfig({
       baking_address: "tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof" /* Tezos Rio */,
       overdelegation_guard: false,
