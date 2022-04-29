@@ -1,12 +1,12 @@
 import { StepArguments } from "src/engine/interfaces";
-import { resolveProtectedBakerRewards } from "./resolveProtectedBakerRewards";
+import { resolveBakerRewards } from "./resolveBakerRewards";
 
 interface Steps {
   [key: string]: (args: StepArguments) => StepArguments;
 }
 
 const steps: Steps = {
-  resolveProtectedBakerRewards,
+  resolveBakerRewards,
 };
 
 export default steps;

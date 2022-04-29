@@ -5,12 +5,12 @@ import _ from "lodash";
 import client from "src/client";
 import { generateConfig } from "test/helpers";
 import { initializeCycleReport, isOverDelegated } from "src/engine/helpers";
-import { resolveProtectedBakerRewards } from "src/engine/steps/resolveProtectedBakerRewards";
+import { resolveBakerRewards } from "src/engine/steps/resolveBakerRewards";
 import { subtract } from "src/utils/math";
 
 import * as Polly from "test/helpers/polly";
 
-describe("resolveProtectedBakerRewards", () => {
+describe("resolveBakerRewards", () => {
   Polly.start();
 
   test("adds baker stake to `cycleShares` for regular processing if not overdelegated", async () => {
@@ -19,6 +19,7 @@ describe("resolveProtectedBakerRewards", () => {
     const {
       cycleShares,
       cycleStakingBalance,
+      cycleRewards,
       cycleDelegatedBalance,
       frozenDepositLimit,
     } = cycleData;
@@ -42,13 +43,28 @@ describe("resolveProtectedBakerRewards", () => {
       distributableRewards: cycleData.cycleRewards,
     };
 
-    const actual = resolveProtectedBakerRewards(args);
+    const lockedBondRewards = bakerBalance
+      .div(cycleStakingBalance)
+      .times(cycleRewards);
 
-    const expected = _.update(args, ["cycleData", "cycleShares"], (shares) =>
-      shares.concat({ address: config.baking_address, balance: bakerBalance })
-    );
+    const distributableRewards =
+      args.distributableRewards.minus(lockedBondRewards);
+
+    const actual = resolveBakerRewards(args);
+
+    const expected = {
+      ...args,
+      cycleReport: {
+        ...args.cycleReport,
+        lockedBondRewards,
+      },
+      distributableRewards,
+    };
 
     expect(actual).toStrictEqual(expected);
+    expect(
+      actual.distributableRewards.plus(actual.cycleReport.lockedBondRewards)
+    ).toStrictEqual(actual.cycleData.cycleRewards);
   });
 
   test("adds baker stake to `cycleShares` for regular processing if overdelegated and `overdelegation_guard` is false", async () => {
@@ -63,6 +79,7 @@ describe("resolveProtectedBakerRewards", () => {
       cycleStakingBalance,
       cycleDelegatedBalance,
       frozenDepositLimit,
+      cycleRewards,
     } = cycleData;
 
     const bakerIncludedInShares = _.some(cycleShares, {
@@ -85,13 +102,28 @@ describe("resolveProtectedBakerRewards", () => {
       distributableRewards: cycleData.cycleRewards,
     };
 
-    const actual = resolveProtectedBakerRewards(args);
+    const lockedBondRewards = bakerBalance
+      .div(cycleStakingBalance)
+      .times(cycleRewards);
 
-    const expected = _.update(args, ["cycleData", "cycleShares"], (shares) =>
-      shares.concat({ address: config.baking_address, balance: bakerBalance })
-    );
+    const distributableRewards =
+      args.distributableRewards.minus(lockedBondRewards);
+
+    const actual = resolveBakerRewards(args);
+
+    const expected = {
+      ...args,
+      cycleReport: {
+        ...args.cycleReport,
+        lockedBondRewards,
+      },
+      distributableRewards,
+    };
 
     expect(actual).toStrictEqual(expected);
+    expect(
+      actual.distributableRewards.plus(actual.cycleReport.lockedBondRewards)
+    ).toStrictEqual(actual.cycleData.cycleRewards);
   });
 
   test("allocates 10% of rewards to baker if overdelegated and `overdelegation_guard` is true  (case: frozen deposit limit)", async () => {
@@ -122,7 +154,7 @@ describe("resolveProtectedBakerRewards", () => {
       distributableRewards: cycleData.cycleRewards,
     };
 
-    const actual = resolveProtectedBakerRewards(args);
+    const actual = resolveBakerRewards(args);
 
     const expected = {
       ...args,
@@ -171,7 +203,7 @@ describe("resolveProtectedBakerRewards", () => {
       distributableRewards: cycleData.cycleRewards,
     };
 
-    const actual = resolveProtectedBakerRewards(args);
+    const actual = resolveBakerRewards(args);
 
     const expected = {
       ...args,
