@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import { CycleData } from "src/client/abstract_client";
 import { Config } from "src/config";
 
-interface Payment {
+export interface Payment {
   cycle: number;
   delegator: string;
   paymentAddress: string;
