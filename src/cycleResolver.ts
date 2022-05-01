@@ -12,7 +12,7 @@ const getLastProcessedCycle = async () => {
   return _.isEmpty(result) ? null : result[0].cycle;
 };
 
-export const getStartingCycle = async (): Promise<Number> => {
+export const getStartingCycle = async (): Promise<number> => {
   const lastCycle = await client.getLastCycle();
   const lastProcessedCycle = await getLastProcessedCycle();
 
