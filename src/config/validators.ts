@@ -42,3 +42,11 @@ export const validFeeExceptions: inquirerValidator = (input) => {
   }
   return true;
 };
+
+export const validAddressList: inquirerValidator = (input) => {
+  for (const delegator of input) {
+    if (validateAddress(delegator) !== ValidationResult.VALID)
+      return "Please enter valid address separated by a comma.";
+  }
+  return true;
+};

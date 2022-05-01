@@ -1,12 +1,13 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
 
-const { filterRedirects } = require("./filters");
+const { filterRedirects, filterOverDelegationBlacklist } = require("./filters");
 const {
   validAddress,
   validPercentage,
   validRedirect,
   validFeeExceptions,
+  validAddressList,
 } = require("./validators.ts");
 
 console.log("Welcome to breadcrumbs.");
@@ -45,11 +46,19 @@ const questions = [
     choices: ["YES", "NO"],
     filter: (value) => value === "YES",
   },
+  {
+    type: "input",
+    name: "overdelegation_blacklist",
+    message:
+      "Please list public keys whose reward share will be redistributed to the delegator pool",
+    filter: filterOverDelegationBlacklist,
+    validate: validAddressList,
+  },
 ];
 
 inquirer.prompt(questions).then((answers) => {
   const json = JSON.stringify(answers, null, "  ");
-  fs.writeFile("./config.ts", json, (err) => {
+  fs.writeFile("./config.json", json, (err) => {
     if (!err) {
       console.log("Successfully created configuration file.");
     }
