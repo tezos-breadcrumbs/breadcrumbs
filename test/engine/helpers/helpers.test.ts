@@ -5,16 +5,11 @@ import {
   getRedirectAddress,
   isOverDelegated,
 } from "src/engine/helpers";
+import { generateConfig } from "test/helpers";
 
 const TEST_DELEGATOR = "tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU";
 
-const BASE_CONFIG: Config = {
-  baking_address: "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur",
-  default_fee: "5",
-  redirect_payments: {},
-  fee_exceptions: {},
-  overdelegation_guard: true,
-};
+const BASE_CONFIG: Config = generateConfig();
 
 describe("getApplicableFee", () => {
   test("returns default fee if no exception is specified", () => {
