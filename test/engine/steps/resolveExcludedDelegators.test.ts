@@ -48,5 +48,15 @@ describe("resolveExcludedDelegators", () => {
     expect(
       _.some(actual.cycleData.cycleShares, ["address", excludedAddresses[1]])
     ).toBeFalsy();
+
+    expect(actual).toStrictEqual({
+      ...args,
+      cycleData: {
+        ...args.cycleData,
+        cycleShares: _.reject(args.cycleData.cycleShares, (share) =>
+          _.includes(config.overdelegation_blacklist, share.address)
+        ),
+      },
+    });
   });
 });
