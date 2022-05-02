@@ -6,7 +6,6 @@ import client from "src/client";
 import { generateConfig } from "test/helpers";
 import { initializeCycleReport, isOverDelegated } from "src/engine/helpers";
 import { resolveExcludedDelegators } from "src/engine/steps/resolveExcludedDelegators";
-import { subtract } from "src/utils/math";
 
 import * as Polly from "test/helpers/polly";
 
