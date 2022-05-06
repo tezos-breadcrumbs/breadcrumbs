@@ -16,7 +16,7 @@ export class TzKT extends Client {
   }
 
   public getCycleData = (baker: string, cycle: number): Promise<CycleData> => {
-    console.log("Fetching cycle data from TzKT ...");
+    console.info("Fetching cycle data from TzKT ...");
     return this.instance
       .get(`rewards/split/${baker}/${cycle}`)
       .then(async ({ data }) => {
@@ -50,7 +50,7 @@ export class TzKT extends Client {
           endorsementRewards,
           frozenDepositLimit,
         }) => {
-          console.log("Received cycle data from TzKT.");
+          console.info("Received cycle data from TzKT.");
           return {
             cycleDelegatedBalance: delegatedBalance,
             cycleStakingBalance: stakingBalance,
