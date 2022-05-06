@@ -1,16 +1,18 @@
-import BigNumber from "bignumber.js";
+import { BigNumber } from "bignumber.js";
+import _ from "lodash";
 import { getApplicableFee, getRedirectAddress } from "src/engine/helpers";
 import { Payment, StepArguments } from "src/engine/interfaces";
-import { add, divide, multiply, subtract } from "src/utils/math";
+import { add, divide, multiply, subtract, sum } from "src/utils/math";
 
 export const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
   const { config, cycleData, cycleReport, distributableRewards } = args;
-  const {
-    cycleDelegatedBalance: applicableTotalDelegatedBalance,
-    cycleStakingBalance,
-    cycleRewards,
-    cycleShares,
-  } = cycleData;
+  const { cycleStakingBalance, cycleRewards, cycleShares } = cycleData;
+
+  /* The total delegated balance minus any excluded delegator shares */
+  /* This proportionally distributes the reward share of excluded delegators to the rest of the pool */
+  const applicableTotalDelegatedBalance = sum(
+    ..._.map(cycleShares, (share) => share.balance)
+  );
 
   let delegatorPayments: Payment[] = [];
   let _feeIncome = new BigNumber(0);
