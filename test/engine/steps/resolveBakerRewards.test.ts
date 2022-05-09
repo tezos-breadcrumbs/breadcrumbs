@@ -9,6 +9,7 @@ import { resolveBakerRewards } from "src/engine/steps/resolveBakerRewards";
 import { subtract } from "src/utils/math";
 
 import * as Polly from "test/helpers/polly";
+import BigNumber from "bignumber.js";
 
 describe("resolveBakerRewards", () => {
   Polly.start();
@@ -45,7 +46,8 @@ describe("resolveBakerRewards", () => {
 
     const lockedBondRewards = bakerBalance
       .div(cycleStakingBalance)
-      .times(cycleRewards);
+      .times(cycleRewards)
+      .dp(0, BigNumber.ROUND_DOWN);
 
     const distributableRewards =
       args.distributableRewards.minus(lockedBondRewards);
@@ -104,7 +106,8 @@ describe("resolveBakerRewards", () => {
 
     const lockedBondRewards = bakerBalance
       .div(cycleStakingBalance)
-      .times(cycleRewards);
+      .times(cycleRewards)
+      .dp(0, BigNumber.ROUND_DOWN);
 
     const distributableRewards =
       args.distributableRewards.minus(lockedBondRewards);
@@ -156,13 +159,15 @@ describe("resolveBakerRewards", () => {
 
     const actual = resolveBakerRewards(args);
 
+    const lockedBondRewards = cycleRewards.div(10).dp(0, BigNumber.ROUND_DOWN);
+
     const expected = {
       ...args,
       cycleReport: {
         ...args.cycleReport,
-        lockedBondRewards: cycleRewards.div(10),
+        lockedBondRewards,
       },
-      distributableRewards: cycleRewards.minus(cycleRewards.div(10)),
+      distributableRewards: cycleRewards.minus(lockedBondRewards),
     };
 
     expect(actual).toStrictEqual(expected);
@@ -204,14 +209,15 @@ describe("resolveBakerRewards", () => {
     };
 
     const actual = resolveBakerRewards(args);
+    const lockedBondRewards = cycleRewards.div(10).dp(0, BigNumber.ROUND_DOWN);
 
     const expected = {
       ...args,
       cycleReport: {
         ...args.cycleReport,
-        lockedBondRewards: cycleRewards.div(10),
+        lockedBondRewards,
       },
-      distributableRewards: cycleRewards.minus(cycleRewards.div(10)),
+      distributableRewards: cycleRewards.minus(lockedBondRewards),
     };
 
     expect(actual).toStrictEqual(expected);

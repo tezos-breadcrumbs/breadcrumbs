@@ -1,4 +1,4 @@
-import BigNumber from "bignumber.js";
+import { BigNumber } from "bignumber.js";
 
 type BigNumberish = string | number | BigNumber;
 
@@ -24,4 +24,11 @@ export const sum = (...args: BigNumberish[]): BigNumber => {
     total = add(total, i);
   }
   return total;
+};
+
+export const integerize = (
+  input: BigNumberish,
+  roundingMode = BigNumber.ROUND_DOWN
+) => {
+  return new BigNumber(input).dp(0, roundingMode);
 };
