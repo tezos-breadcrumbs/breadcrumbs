@@ -2,7 +2,14 @@ import { BigNumber } from "bignumber.js";
 import _ from "lodash";
 import { getApplicableFee, getRedirectAddress } from "src/engine/helpers";
 import { Payment, StepArguments } from "src/engine/interfaces";
-import { add, divide, multiply, subtract, sum } from "src/utils/math";
+import {
+  add,
+  divide,
+  multiply,
+  subtract,
+  sum,
+  integerize,
+} from "src/utils/math";
 
 export const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
   const { config, cycleData, cycleReport, distributableRewards } = args;
@@ -77,7 +84,7 @@ const getRewardShare = (
   const bakerAbsoluteShare = multiply(delegatorAbsoluteShare, applicableFee);
 
   return {
-    bakerShare: bakerAbsoluteShare,
-    delegatorShare: subtract(delegatorAbsoluteShare, bakerAbsoluteShare),
+    bakerShare: integerize(bakerAbsoluteShare),
+    delegatorShare: integerize(subtract(delegatorAbsoluteShare, bakerAbsoluteShare)),
   };
 };
