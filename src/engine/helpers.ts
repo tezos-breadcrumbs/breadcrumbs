@@ -1,9 +1,11 @@
-import BigNumber from "bignumber.js";
+import { BigNumber } from "bignumber.js";
 import { Config } from "src/config";
 import { CycleReport } from "./interfaces";
 
 export const getApplicableFee = (config: Config, delegator: string) => {
-  return new BigNumber(config.fee_exceptions[delegator] || config.default_fee);
+  return new BigNumber(
+    config.fee_exceptions[delegator] || config.default_fee
+  ).div(100);
 };
 
 export const getRedirectAddress = (config: Config, delegator: string) => {

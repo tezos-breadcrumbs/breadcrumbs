@@ -1,4 +1,4 @@
-import BigNumber from "bignumber.js";
+import { BigNumber } from "bignumber.js";
 import { CycleData } from "src/client/abstract_client";
 import { Config } from "src/config";
 

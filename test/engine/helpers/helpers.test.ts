@@ -14,7 +14,7 @@ const BASE_CONFIG: Config = generateConfig();
 describe("getApplicableFee", () => {
   test("returns default fee if no exception is specified", () => {
     const actual = getApplicableFee(BASE_CONFIG, TEST_DELEGATOR);
-    const expected = new BigNumber("5");
+    const expected = new BigNumber("0.05");
     expect(actual).toStrictEqual(expected);
   });
 
@@ -24,7 +24,7 @@ describe("getApplicableFee", () => {
       fee_exceptions: { [TEST_DELEGATOR]: "8" },
     };
     const actual = getApplicableFee(config, TEST_DELEGATOR);
-    const expected = new BigNumber("8");
+    const expected = new BigNumber("0.08");
     expect(actual).toStrictEqual(expected);
   });
 });
