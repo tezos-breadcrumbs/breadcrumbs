@@ -1,13 +1,19 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
 
-const { filterRedirects, filterOverDelegationBlacklist } = require("./filters");
+const {
+  filterRedirects,
+  filterOverDelegationBlacklist,
+  filterNumber,
+} = require("./filters");
+
 const {
   validAddress,
   validPercentage,
   validRedirect,
   validFeeExceptions,
   validAddressList,
+  validNumber,
 } = require("./validators.ts");
 
 console.log("Welcome to breadcrumbs.");
@@ -53,6 +59,15 @@ const questions = [
       "Please list public keys whose reward share will be redistributed to the delegator pool",
     filter: filterOverDelegationBlacklist,
     validate: validAddressList,
+  },
+  {
+    type: "input",
+    name: "minimum_payment",
+    message:
+      "The minimum amount in XTZ payable to a delegator in a given cycle",
+    validate: validNumber,
+    filter: filterNumber,
+    default: "1",
   },
 ];
 

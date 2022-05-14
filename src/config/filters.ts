@@ -1,3 +1,4 @@
+import { BigNumber } from "bignumber.js";
 import _ from "lodash";
 
 export const filterRedirects = (
@@ -30,4 +31,8 @@ export const filterFeeExceptions = (
 export const filterOverDelegationBlacklist = (input: string): string[] => {
   if (input === "") return [];
   else return _.uniq(_.map(input.split(","), (v) => v.trim()));
+};
+
+export const filterNumber = (input: string): string => {
+  return new BigNumber(input).toString();
 };

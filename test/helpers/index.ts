@@ -10,6 +10,7 @@ export const generateConfig = (
     redirect_payments?: { [key: string]: string };
     fee_exceptions?: { [key: string]: string };
     default_fee?: string;
+    minimum_payment_amount?: string;
   } = {}
 ): Config => {
   return {
@@ -19,5 +20,6 @@ export const generateConfig = (
     fee_exceptions: args.fee_exceptions || {},
     overdelegation_guard: args.overdelegation_guard || false,
     overdelegation_blacklist: args.overdelegation_blacklist || [],
+    minimum_payment_amount: args.minimum_payment_amount || "0",
   };
 };

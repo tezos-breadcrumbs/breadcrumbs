@@ -3,6 +3,7 @@ import {
   validateAddress /* Accepts KT addresses */,
   ValidationResult,
 } from "@taquito/utils";
+import _ from "lodash";
 
 type inquirerValidator = (any) => boolean | string;
 
@@ -49,4 +50,9 @@ export const validAddressList: inquirerValidator = (input) => {
       return "Please enter valid address separated by a comma.";
   }
   return true;
+};
+
+export const validNumber: inquirerValidator = (input) => {
+  if (_.isNumber(Number(input))) return true;
+  else return "Please enter a valid number";
 };

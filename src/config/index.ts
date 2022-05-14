@@ -5,4 +5,5 @@ export interface Config {
   fee_exceptions: { [key: string]: string };
   overdelegation_guard: boolean;
   overdelegation_blacklist: string[];
+  minimum_payment_amount: string;
 }
