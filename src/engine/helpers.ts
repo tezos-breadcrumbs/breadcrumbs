@@ -35,3 +35,7 @@ export const initializeCycleReport = (cycle): CycleReport => {
     feeIncome: new BigNumber(0),
   };
 };
+
+export const getMinimumPaymentAmount = (config: Config) => {
+  return new BigNumber(config.minimum_payment_amount);
+};
