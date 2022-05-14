@@ -12,7 +12,27 @@ import * as Polly from "test/helpers/polly";
 describe("resolveExcludedDelegators", () => {
   Polly.start();
 
-  it("removes excluded delegators from cycleShares", async () => {
+  it("does not alter the input object if there are no excluded addresses", async () => {
+    const excludedAddresses = [];
+    const config = generateConfig({
+      overdelegation_blacklist: excludedAddresses,
+    });
+
+    const cycleData = await client.getCycleData(config.baking_address, 470);
+
+    const args = {
+      config,
+      cycleData,
+      cycleReport: initializeCycleReport(470),
+      distributableRewards: cycleData.cycleRewards,
+    };
+
+    const actual = resolveExcludedDelegators(args);
+
+    expect(actual).toStrictEqual(args);
+  });
+
+  it("removes excluded delegators from cycleShares if excluded address are specified", async () => {
     const excludedAddresses = [
       "KT1T9jvz4nPq6JkssNwXFPiReVgoX88bNwpH",
       "tz1M1dgUJooWnzYhb8MnWin6MkQrPA55TTCr",
