@@ -1,17 +1,21 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
-
 import _ from "lodash";
-import { BigNumber } from "bignumber.js";
+import BigNumber from "bignumber.js";
+
+import client from "src/client";
+import * as Polly from "test/helpers/polly";
+
 import { generateConfig } from "test/helpers";
 import { initializeCycleReport } from "src/engine/helpers";
 import { run } from "src/engine";
 import { subtract, sum } from "src/utils/math";
-import client from "src/client";
-import resolveBakerRewards from "src/engine/steps/resolveBakerRewards";
-import resolveExcludedDelegators from "src/engine/steps/resolveExcludedDelegators";
-import resolveDelegatorRewards from "src/engine/steps/resolveDelegatorRewards";
-import resolveExcludedPayments from "src/engine/steps/resolveExcludedPayments";
-import * as Polly from "test/helpers/polly";
+
+import {
+  resolveBakerRewards,
+  resolveDelegatorRewards,
+  resolveExcludedDelegators,
+  resolveExcludedPayments,
+} from "src/engine/steps";
 
 describe("sequential run", () => {
   Polly.start();
