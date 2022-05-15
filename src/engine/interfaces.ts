@@ -27,3 +27,5 @@ export interface StepArguments {
   cycleReport: CycleReport;
   distributableRewards: BigNumber;
 }
+
+export type StepFunction = (args: StepArguments) => StepArguments;

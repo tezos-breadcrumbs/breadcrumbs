@@ -1,14 +1,10 @@
-import { StepArguments } from "src/engine/interfaces";
-import { resolveBakerRewards } from "./resolveBakerRewards";
-import { resolveDelegatorRewards } from "./resolveDelegatorRewards";
-import { resolveExcludedDelegators } from "./resolveExcludedDelegators";
-import { resolveExcludedPayments } from "./resolveExcludedPayments";
+import { StepFunction } from "src/engine/interfaces";
+import resolveBakerRewards from "./resolveBakerRewards";
+import resolveDelegatorRewards from "./resolveDelegatorRewards";
+import resolveExcludedDelegators from "./resolveExcludedDelegators";
+import resolveExcludedPayments from "./resolveExcludedPayments";
 
-interface Steps {
-  [key: string]: (args: StepArguments) => StepArguments;
-}
-
-const steps: Steps = {
+const steps: { [key: string]: StepFunction } = {
   resolveBakerRewards,
   resolveDelegatorRewards,
   resolveExcludedDelegators,
