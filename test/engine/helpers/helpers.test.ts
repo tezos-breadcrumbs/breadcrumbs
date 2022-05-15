@@ -2,6 +2,7 @@ import { BigNumber } from "bignumber.js";
 import { Config } from "src/config";
 import {
   getApplicableFee,
+  getMinimumPaymentAmount,
   getRedirectAddress,
   isOverDelegated,
 } from "src/engine/helpers";
@@ -51,15 +52,52 @@ describe("getRedirectAddress", () => {
 describe("isOverDelegated", () => {
   test("returns `true` if the baker's stake is less than 10% of the staking balance", () => {
     const bakerBalance = new BigNumber(6000000000);
-    const stakingBalance = bakerBalance.times(10).plus(10);
+    const stakingBalance = bakerBalance.times(10).plus(1);
     expect(isOverDelegated(bakerBalance, stakingBalance, null)).toEqual(true);
   });
 
-  test("returns `false` if the baker's stake is greater than 10% of the staking balance", () => {
+  test("returns `true` if the frozen deposit limit is less than 10% of the staking balance", () => {
+    const bakerBalance = new BigNumber(10000000000);
+    const frozenDepositLimit = new BigNumber(6000000);
+    const stakingBalance = frozenDepositLimit.times(10).plus(1);
+
+    const result = isOverDelegated(
+      bakerBalance,
+      stakingBalance,
+      frozenDepositLimit
+    );
+
+    expect(result).toEqual(true);
+  });
+
+  test("returns `false` if the baker's stake is gte to 10% of the staking balance", () => {
     const bakerBalance = new BigNumber(6000000000);
-    const stakingBalance = bakerBalance.times(10).minus(1);
+    const stakingBalance = bakerBalance.times(10);
     expect(isOverDelegated(bakerBalance, stakingBalance, null)).toEqual(false);
   });
 
-  // TODO: test frozen deposit limit
+  test("returns `false` if the frozen deposit limit is gte to 10% of the staking balance", () => {
+    const bakerBalance = new BigNumber(10000000000);
+    const frozenDepositLimit = new BigNumber(6000000);
+    const stakingBalance = frozenDepositLimit.times(10);
+
+    const result = isOverDelegated(
+      bakerBalance,
+      stakingBalance,
+      frozenDepositLimit
+    );
+
+    expect(result).toEqual(false);
+  });
+
+  describe("getMinimumPaymentAmount", () => {
+    const minimumPaymentAmount = "1";
+    const config: Config = {
+      ...BASE_CONFIG,
+      minimum_payment_amount: minimumPaymentAmount,
+    };
+
+    const result = getMinimumPaymentAmount(config);
+    expect(result).toStrictEqual(new BigNumber(minimumPaymentAmount));
+  });
 });
