@@ -171,7 +171,7 @@ describe("sequential run", () => {
         )
         .dp(0, BigNumber.ROUND_DOWN);
 
-      expect(payment.paymentAmount).toStrictEqual(expectedPaymentAmount);
+      expect(payment.amount).toStrictEqual(expectedPaymentAmount);
     });
 
     expect(output.cycleReport.payments).toHaveLength(

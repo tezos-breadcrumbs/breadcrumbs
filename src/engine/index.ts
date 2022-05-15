@@ -1,4 +1,4 @@
-import { StepFunction } from "./interfaces";
+import { StepArguments, StepFunction } from "./interfaces";
 
 import resolveBakerRewards from "./steps/resolveBakerRewards";
 import resolveDelegatorRewards from "./steps/resolveDelegatorRewards";
@@ -12,7 +12,10 @@ const steps: StepFunction[] = [
   resolveExcludedPayments,
 ];
 
-export function run(args, remainingSteps: StepFunction[] = steps) {
+export function run(
+  args,
+  remainingSteps: StepFunction[] = steps
+): StepArguments {
   if (!remainingSteps.length) return args; /* base case */
 
   const nextArgs = remainingSteps[0](args);

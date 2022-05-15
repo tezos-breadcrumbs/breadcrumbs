@@ -90,7 +90,7 @@ describe("resolveDelegatorRewards", () => {
         ).div(100)
       );
 
-      const expectedPaymentAmount = share?.balance
+      const expectedamount = share?.balance
         .div(input.cycleData.cycleDelegatedBalance)
         .times(input.distributableRewards)
         .times(
@@ -103,7 +103,7 @@ describe("resolveDelegatorRewards", () => {
         )
         .dp(0, BigNumber.ROUND_DOWN);
 
-      expect(payment.paymentAmount).toStrictEqual(expectedPaymentAmount);
+      expect(payment.amount).toStrictEqual(expectedamount);
     });
 
     expect(output.cycleReport.payments).toHaveLength(
@@ -152,7 +152,7 @@ describe("resolveDelegatorRewards", () => {
           input.config.default_fee
       ).div(100);
 
-      const paymentAmount = share?.balance
+      const amount = share?.balance
         .div(input.cycleData.cycleDelegatedBalance)
         .times(input.distributableRewards)
         .times(
@@ -167,7 +167,7 @@ describe("resolveDelegatorRewards", () => {
 
       expect(payment.paymentAddress).toEqual(paymentAddress);
       expect(payment.feeRate).toStrictEqual(feeRate);
-      expect(payment.paymentAmount).toStrictEqual(paymentAmount);
+      expect(payment.amount).toStrictEqual(amount);
     });
 
     /* SANITY CHECK */
@@ -220,7 +220,7 @@ describe("resolveDelegatorRewards", () => {
           input.config.default_fee
       ).div(100);
 
-      const paymentAmount = share?.balance
+      const amount = share?.balance
         .div(input.cycleData.cycleDelegatedBalance)
         .times(input.distributableRewards)
         .times(
@@ -235,7 +235,7 @@ describe("resolveDelegatorRewards", () => {
 
       expect(payment.paymentAddress).toEqual(paymentAddress);
       expect(payment.feeRate).toStrictEqual(feeRate);
-      expect(payment.paymentAmount).toStrictEqual(paymentAmount);
+      expect(payment.amount).toStrictEqual(amount);
     });
 
     /* SANITY CHECK */
@@ -300,7 +300,7 @@ describe("resolveDelegatorRewards", () => {
           input.config.default_fee
       ).div(100);
 
-      let paymentAmount = share?.balance
+      let amount = share?.balance
         .div(applicableDelegatedBalance)
         .times(input.distributableRewards)
         .dp(0, BigNumber.ROUND_DOWN)
@@ -315,7 +315,7 @@ describe("resolveDelegatorRewards", () => {
 
       expect(payment.paymentAddress).toEqual(paymentAddress);
       expect(payment.feeRate).toStrictEqual(feeRate);
-      expect(payment.paymentAmount).toStrictEqual(paymentAmount);
+      expect(payment.amount).toStrictEqual(amount);
     });
 
     /* SANITY CHECK */
@@ -330,7 +330,7 @@ describe("resolveDelegatorRewards", () => {
     /* Payments are slightly lower than distributable rewards due to rounding */
     /* The below condition holds as the fee rate is zero for testing purposes */
     expect(
-      sum(..._.map(output.cycleReport.payments, (i) => i.paymentAmount))
+      sum(..._.map(output.cycleReport.payments, (i) => i.amount))
     ).toStrictEqual(input.distributableRewards.minus(ROUNDING_ADJUSTMENT));
   });
 });

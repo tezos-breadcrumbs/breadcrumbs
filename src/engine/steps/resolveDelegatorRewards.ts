@@ -44,7 +44,7 @@ const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
       bakerStakingBalance: cycleStakingBalance,
       bakerCycleRewards: cycleRewards,
       feeRate: applicableFee,
-      paymentAmount: delegatorShare,
+      amount: delegatorShare,
       paymentHash: "",
     });
 

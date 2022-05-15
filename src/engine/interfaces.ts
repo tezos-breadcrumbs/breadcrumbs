@@ -10,7 +10,7 @@ export interface Payment {
   bakerStakingBalance: BigNumber;
   bakerCycleRewards: BigNumber;
   feeRate: BigNumber;
-  paymentAmount: BigNumber;
+  amount: BigNumber;
   paymentHash: string;
 }
 

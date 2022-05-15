@@ -49,9 +49,7 @@ describe("resolveExcludedPayments", () => {
     );
 
     expect(
-      _.find(actual.cycleReport.payments, (payment) =>
-        payment.paymentAmount.eq(0)
-      )
+      _.find(actual.cycleReport.payments, (payment) => payment.amount.eq(0))
     ).toBeUndefined();
   });
 
@@ -92,14 +90,12 @@ describe("resolveExcludedPayments", () => {
     } = output;
 
     expect(
-      _.filter(outputPayments, (payment) => payment.paymentAmount.eq(0)).length
+      _.filter(outputPayments, (payment) => payment.amount.eq(0)).length
     ).toBeGreaterThan(0);
 
     for (let i = 0; i < inputPayments.length; i++) {
-      if (
-        inputPayments[i].paymentAmount.lt(minimumPaymentAmount.times(1000000))
-      ) {
-        expect(outputPayments[i].paymentAmount.eq(0));
+      if (inputPayments[i].amount.lt(minimumPaymentAmount.times(1000000))) {
+        expect(outputPayments[i].amount.eq(0));
       } else {
         expect(outputPayments[i]).toStrictEqual(inputPayments[i]);
       }

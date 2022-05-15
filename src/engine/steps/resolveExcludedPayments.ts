@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { StepArguments } from "src/engine/interfaces";
+import { Payment, StepArguments } from "src/engine/interfaces";
 import { getMinimumPaymentAmount } from "src/engine/helpers";
 import BigNumber from "bignumber.js";
 
@@ -14,10 +14,12 @@ const resolveExcludedPayments = (args: StepArguments): StepArguments => {
     ...args,
     cycleReport: {
       ...cycleReport,
-      payments: _.map(cycleReport.payments, (payment) =>
-        payment.paymentAmount.lt(minimumPaymentAmount)
-          ? { ...payment, paymentAmount: new BigNumber(0) }
-          : payment
+      payments: _.map(
+        cycleReport.payments,
+        (payment): Payment =>
+          payment.amount.lt(minimumPaymentAmount)
+            ? { ...payment, amount: new BigNumber(0) }
+            : payment
       ),
     },
   };
