@@ -1,15 +1,15 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 
 import _ from "lodash";
+import BigNumber from "bignumber.js";
 
 import client from "src/client";
+import * as Polly from "test/helpers/polly";
+
 import { generateConfig } from "test/helpers";
 import { initializeCycleReport, isOverDelegated } from "src/engine/helpers";
-import { resolveBakerRewards } from "src/engine/steps/resolveBakerRewards";
+import { resolveBakerRewards } from "src/engine/steps";
 import { subtract } from "src/utils/math";
-
-import * as Polly from "test/helpers/polly";
-import BigNumber from "bignumber.js";
 
 describe("resolveBakerRewards", () => {
   Polly.start();

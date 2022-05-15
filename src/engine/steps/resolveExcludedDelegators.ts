@@ -1,9 +1,7 @@
 import _ from "lodash";
 import { StepArguments } from "src/engine/interfaces";
 
-export const resolveExcludedDelegators = (
-  args: StepArguments
-): StepArguments => {
+const resolveExcludedDelegators = (args: StepArguments): StepArguments => {
   const { config, cycleData } = args;
   const { cycleShares } = cycleData;
 
@@ -16,3 +14,5 @@ export const resolveExcludedDelegators = (
     cycleData: { ...cycleData, cycleShares: updatedCycleShares },
   };
 };
+
+export default resolveExcludedDelegators;

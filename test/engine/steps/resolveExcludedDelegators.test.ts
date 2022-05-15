@@ -3,11 +3,14 @@
 import _ from "lodash";
 
 import client from "src/client";
+import * as Polly from "test/helpers/polly";
+
 import { generateConfig } from "test/helpers";
 import { initializeCycleReport, isOverDelegated } from "src/engine/helpers";
-import { resolveExcludedDelegators } from "src/engine/steps/resolveExcludedDelegators";
-
-import * as Polly from "test/helpers/polly";
+import {
+  resolveExcludedDelegators,
+  resolveBakerRewards,
+} from "src/engine/steps";
 
 describe("resolveExcludedDelegators", () => {
   Polly.start();
@@ -27,9 +30,10 @@ describe("resolveExcludedDelegators", () => {
       distributableRewards: cycleData.cycleRewards,
     };
 
-    const actual = resolveExcludedDelegators(args);
+    const input = resolveBakerRewards(args);
+    const output = resolveExcludedDelegators(input);
 
-    expect(actual).toStrictEqual(args);
+    expect(output).toStrictEqual(input);
   });
 
   it("removes excluded delegators from cycleShares if excluded address are specified", async () => {

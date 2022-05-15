@@ -3,7 +3,7 @@ import { StepArguments } from "src/engine/interfaces";
 import { getMinimumPaymentAmount } from "src/engine/helpers";
 import BigNumber from "bignumber.js";
 
-export const resolveExcludedPayments = (args: StepArguments): StepArguments => {
+const resolveExcludedPayments = (args: StepArguments): StepArguments => {
   const { config, cycleReport } = args;
 
   const MUTEZ_MULTIPLIER = 1000000;
@@ -22,3 +22,5 @@ export const resolveExcludedPayments = (args: StepArguments): StepArguments => {
     },
   };
 };
+
+export default resolveExcludedPayments;

@@ -1,17 +1,19 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 
 import _ from "lodash";
+import BigNumber from "bignumber.js";
 
 import client from "src/client";
-import { generateConfig } from "test/helpers";
-import { initializeCycleReport, isOverDelegated } from "src/engine/helpers";
-import { resolveExcludedDelegators } from "src/engine/steps/resolveExcludedDelegators";
-
 import * as Polly from "test/helpers/polly";
-import { resolveBakerRewards } from "src/engine/steps/resolveBakerRewards";
-import { resolveDelegatorRewards } from "src/engine/steps/resolveDelegatorRewards";
-import BigNumber from "bignumber.js";
-import { integerize, sum } from "src/utils/math";
+
+import { generateConfig } from "test/helpers";
+import { initializeCycleReport } from "src/engine/helpers";
+import { sum } from "src/utils/math";
+import {
+  resolveBakerRewards,
+  resolveDelegatorRewards,
+  resolveExcludedDelegators,
+} from "src/engine/steps";
 
 describe("resolveDelegatorRewards", () => {
   Polly.start();
