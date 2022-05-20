@@ -13,7 +13,7 @@ const steps: StepFunction[] = [
 ];
 
 export function run(
-  args,
+  args: StepArguments,
   remainingSteps: StepFunction[] = steps
 ): StepArguments {
   if (!remainingSteps.length) return args; /* base case */
