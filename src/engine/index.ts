@@ -12,7 +12,7 @@ const steps: StepFunction[] = [
   resolveExcludedPayments,
 ];
 
-export function run(
+function run(
   args: StepArguments,
   remainingSteps: StepFunction[] = steps
 ): StepArguments {
@@ -23,3 +23,5 @@ export function run(
 
   return run(nextArgs, nextSteps);
 }
+
+export default { run };
