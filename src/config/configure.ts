@@ -62,7 +62,7 @@ const questions = [
   },
   {
     type: "input",
-    name: "minimum_payment",
+    name: "minimum_payment_amount",
     message:
       "The minimum amount in XTZ payable to a delegator in a given cycle",
     validate: validNumber,
