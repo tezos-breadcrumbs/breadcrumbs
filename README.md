@@ -28,9 +28,21 @@ Roadmap:
 - [ ] Persist reward data on a local PostgresDB
 - [ ] Pay rewards in FA2 tokens via built-in swaps.
 
+... and more! 
+
 ### Requirements
 
-#### Installation
+- Node 16
+
+### Installation
+
+Install dependencies by running the following command in the root directory:
+
+```bash
+$ npm i
+```
+
+### Configuration
 
 ### Usage
 
