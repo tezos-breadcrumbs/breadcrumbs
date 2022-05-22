@@ -17,13 +17,16 @@ Reward payments from bakers to delegators are a cornerstone of Tezos' delegation
 - [x] Set a default service fee.
 - [x] Set fees on a per-delegator basis.
 - [x] Set separate payment addresses for given delegators.
-- [x] Exclude given delegators from payment in case of overdelegation. 
+- [x] Set minimum payment amounts.
+- [x] Exclude given delegators from payment in case of overdelegation.
 - [x] Protect the baker from overdelegation by ring-fencing 10% of the rewards.
 
-* minimum delegations
-* run as background task on Docker
-* persist cycle data on local PostgresDB
-* swaps
+Roadmap:
+
+- [ ] Set minimum delegation amounts.
+- [ ] Run the payouts script on a Docker container in the background.
+- [ ] Persist reward data on a local PostgresDB
+- [ ] Pay rewards in FA2 tokens via built-in swaps.
 
 ### Requirements
 
@@ -31,9 +34,6 @@ Reward payments from bakers to delegators are a cornerstone of Tezos' delegation
 
 ### Usage
 
-- configuration
-- run script
+### Credits
 
-### Built With
-
-### Contact
+This tool is powered by the [TzKT](https://tzkt.io) API and the [Tezos Taquito](https://tezostaquito.io/) library.
