@@ -17,8 +17,8 @@ Reward payments from bakers to delegators are a cornerstone of Tezos' delegation
 - [ ] Set a default service fee.
 - [ ] Set fees on a per-delegator basis.
 - [ ] Set separate payment addresses for given delegators.
-- [ ] Exclude given delegators from payment and distribute their share to the rest of the delegator pool.
-- [ ] Protect the baker from overdelegation by ring-fencing 10% of the rewards (i.e. minimum stake ratio)
+- [ ] Exclude given delegators from payment in case of overdelegation. 
+- [ ] Protect the baker from overdelegation by ring-fencing 10% of the rewards.
 
 * minimum delegations
 * run as background task on Docker
