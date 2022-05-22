@@ -39,7 +39,7 @@ const foo = async () => {
     prepareTransaction
   );
 
-  await submitBatch(provider, transactions);
+  //   await submitBatch(provider, transactions);
 };
 
 foo();

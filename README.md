@@ -28,7 +28,7 @@ Roadmap:
 - [ ] Persist reward data on a local PostgresDB
 - [ ] Pay rewards in FA2 tokens via built-in swaps.
 
-... and more! 
+... and more!
 
 ### Requirements
 
@@ -44,7 +44,16 @@ $ npm i
 
 ### Configuration
 
+1. Create a `.env` file as per `.env.template`
+2. Create a configuration file with the `npm run configure` command line prompt.
+
 ### Usage
+
+To run rewards for a given cycle:
+
+```bash
+$ npm run pay --cycle=484
+```
 
 ### Credits
 
