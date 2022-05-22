@@ -24,6 +24,7 @@ Reward payments from bakers to delegators are a cornerstone of Tezos' delegation
 Roadmap:
 
 - [ ] Set minimum delegation amounts.
+- [ ] Allow a granular distribution of the different categories of baker rewards.
 - [ ] Run the payouts script on a Docker container in the background.
 - [ ] Persist reward data on a local PostgresDB
 - [ ] Pay rewards in FA2 tokens via built-in swaps.
