@@ -52,7 +52,7 @@ $ npm i
 To run rewards for a given cycle:
 
 ```bash
-$ npm run pay --cycle=484
+$ npm run pay --cycle=<cycle>
 ```
 
 ### Credits
