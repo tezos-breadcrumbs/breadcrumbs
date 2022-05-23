@@ -3,7 +3,7 @@
 import _ from "lodash";
 import BigNumber from "bignumber.js";
 
-import client from "src/client";
+import client from "src/api-client";
 import * as Polly from "test/helpers/polly";
 
 import { generateConfig } from "test/helpers";

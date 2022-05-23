@@ -2,12 +2,12 @@
 import _ from "lodash";
 import BigNumber from "bignumber.js";
 
-import client from "src/client";
+import client from "src/api-client";
 import * as Polly from "test/helpers/polly";
 
 import { generateConfig } from "test/helpers";
 import { initializeCycleReport } from "src/engine/helpers";
-import { run } from "src/engine";
+import engine from "src/engine";
 import { subtract, sum } from "src/utils/math";
 
 import {
@@ -33,7 +33,7 @@ describe("sequential run", () => {
       distributableRewards: cycleRewards,
     };
 
-    const output = run(args, [resolveBakerRewards]);
+    const output = engine.run(args, [resolveBakerRewards]);
 
     const bakerBalance = subtract(cycleStakingBalance, cycleDelegatedBalance);
 
@@ -75,8 +75,11 @@ describe("sequential run", () => {
       distributableRewards: cycleData.cycleRewards,
     };
 
-    const output = run(args, [resolveBakerRewards, resolveExcludedDelegators]);
-    const expected = run(args, [resolveBakerRewards]);
+    const output = engine.run(args, [
+      resolveBakerRewards,
+      resolveExcludedDelegators,
+    ]);
+    const expected = engine.run(args, [resolveBakerRewards]);
 
     expect(output).toStrictEqual(expected);
   });
@@ -95,9 +98,12 @@ describe("sequential run", () => {
       distributableRewards: cycleRewards,
     };
 
-    const input = run(args, [resolveBakerRewards, resolveExcludedDelegators]);
+    const input = engine.run(args, [
+      resolveBakerRewards,
+      resolveExcludedDelegators,
+    ]);
 
-    const output = run(args, [
+    const output = engine.run(args, [
       resolveBakerRewards,
       resolveExcludedDelegators,
       resolveDelegatorRewards,
@@ -193,13 +199,13 @@ describe("sequential run", () => {
       distributableRewards: cycleRewards,
     };
 
-    const input = run(args, [
+    const input = engine.run(args, [
       resolveBakerRewards,
       resolveExcludedDelegators,
       resolveDelegatorRewards,
     ]);
 
-    const output = run(args, [
+    const output = engine.run(args, [
       resolveBakerRewards,
       resolveExcludedDelegators,
       resolveDelegatorRewards,

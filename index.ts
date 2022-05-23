@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { program } from "commander";
 
-import client from "src/client";
+import client from "src/api-client";
 import engine from "src/engine";
 
 import { initializeCycleReport } from "src/engine/helpers";

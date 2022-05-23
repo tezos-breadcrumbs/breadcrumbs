@@ -1,4 +1,4 @@
-import client from "./client";
+import client from "./api-client";
 import _ from "lodash";
 
 import { Payment } from "../database/models";

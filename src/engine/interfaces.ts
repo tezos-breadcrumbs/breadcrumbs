@@ -1,5 +1,5 @@
 import { BigNumber } from "bignumber.js";
-import { CycleData } from "src/client/abstract_client";
+import { CycleData } from "src/api-client/abstract_client";
 import { Config } from "src/config";
 
 export interface Payment {
