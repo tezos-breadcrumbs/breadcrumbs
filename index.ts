@@ -5,7 +5,11 @@ import client from "src/api-client";
 import engine from "src/engine";
 
 import { initializeCycleReport } from "src/engine/helpers";
-import { createProvider, prepareTransaction, submitBatch } from "src/tezos";
+import {
+  createProvider,
+  prepareTransaction,
+  submitBatch,
+} from "src/tezos-client";
 
 const foo = async () => {
   program
@@ -39,7 +43,7 @@ const foo = async () => {
     prepareTransaction
   );
 
-  //   await submitBatch(provider, transactions);
+  await submitBatch(provider, transactions);
 };
 
 foo();
