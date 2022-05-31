@@ -33,11 +33,11 @@ const foo = async () => {
   });
 
   const provider = createProvider();
-  const { payments } = result.cycleReport;
+  const { delegatorPayments } = result.cycleReport;
 
   const transactions = _.map(
     _.reject(
-      payments,
+      delegatorPayments,
       (p) => _.startsWith(p.paymentAddress, "KT") || p.amount.eq(0)
     ),
     prepareTransaction
