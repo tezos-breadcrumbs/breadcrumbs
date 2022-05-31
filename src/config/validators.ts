@@ -56,3 +56,27 @@ export const validNumber: inquirerValidator = (input) => {
   if (_.isNumber(Number(input))) return true;
   else return "Please enter a valid number";
 };
+
+export const validDistributionShares: inquirerValidator = (input) => {
+  if (_.isEmpty(input)) return true;
+  for (const recipient in input) {
+    if (validateAddress(recipient) !== ValidationResult.VALID)
+      return "Please enter valid addresses for all recipients'";
+
+    if (
+      _.isNumber(input[recipient]) &&
+      input[recipient] >= 0 &&
+      input[recipient] <= 1
+    ) {
+      return "Please enter a number between 0 and 1 for each recipient share";
+    }
+  }
+
+  const sum = _.sum(_.values(input).map(Number));
+
+  if (sum !== 1) {
+    return "The sum of shares must equal 1";
+  }
+
+  return true;
+};

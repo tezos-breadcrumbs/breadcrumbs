@@ -5,6 +5,7 @@ const {
   filterRedirects,
   filterOverDelegationBlacklist,
   filterNumber,
+  filterDistributionShares,
 } = require("./filters");
 
 const {
@@ -14,6 +15,7 @@ const {
   validFeeExceptions,
   validAddressList,
   validNumber,
+  validDistributionShares,
 } = require("./validators.ts");
 
 console.log("Welcome to breadcrumbs.");
@@ -68,6 +70,23 @@ const questions = [
     validate: validNumber,
     filter: filterNumber,
     default: "1",
+  },
+
+  {
+    type: "input",
+    name: "fee_income_recipients",
+    message: "The address that receives fee income",
+    validate: validDistributionShares,
+    filter: filterDistributionShares,
+  },
+
+  {
+    type: "input",
+    name: "bond_rewards_recipients",
+    message:
+      "The address that received baking rewards attributable to the baker's bond",
+    validate: validDistributionShares,
+    filter: filterDistributionShares,
   },
 ];
 

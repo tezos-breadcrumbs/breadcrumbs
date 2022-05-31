@@ -36,3 +36,18 @@ export const filterOverDelegationBlacklist = (input: string): string[] => {
 export const filterNumber = (input: string): string => {
   return new BigNumber(input).toString();
 };
+
+export const filterDistributionShares = (
+  input: any
+): { [key: string]: string } | null => {
+  if (input === "") return {};
+
+  const list = input.split(",");
+  const result = {};
+
+  for (const pair of list) {
+    const [recipient, share] = pair.trim().split(":");
+    result[recipient] = share;
+  }
+  return result;
+};
