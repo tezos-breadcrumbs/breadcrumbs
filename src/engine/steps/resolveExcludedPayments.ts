@@ -14,8 +14,8 @@ const resolveExcludedPayments = (args: StepArguments): StepArguments => {
     ...args,
     cycleReport: {
       ...cycleReport,
-      payments: _.map(
-        cycleReport.payments,
+      delegatorPayments: _.map(
+        cycleReport.delegatorPayments,
         (payment): Payment =>
           payment.amount.lt(minimumPaymentAmount)
             ? { ...payment, amount: new BigNumber(0) }

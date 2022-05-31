@@ -16,7 +16,7 @@ export interface Payment {
 
 export interface CycleReport {
   cycle: number;
-  payments: Payment[];
+  delegatorPayments: Payment[];
   feeIncome: BigNumber;
   lockedBondRewards: BigNumber;
 }

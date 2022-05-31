@@ -44,12 +44,14 @@ describe("resolveExcludedPayments", () => {
 
     const actual = resolveExcludedPayments(input);
 
-    expect(actual.cycleReport.payments).toStrictEqual(
-      input.cycleReport.payments
+    expect(actual.cycleReport.delegatorPayments).toStrictEqual(
+      input.cycleReport.delegatorPayments
     );
 
     expect(
-      _.find(actual.cycleReport.payments, (payment) => payment.amount.eq(0))
+      _.find(actual.cycleReport.delegatorPayments, (payment) =>
+        payment.amount.eq(0)
+      )
     ).toBeUndefined();
   });
 
@@ -82,11 +84,11 @@ describe("resolveExcludedPayments", () => {
     const output = resolveExcludedPayments(input);
 
     const {
-      cycleReport: { payments: inputPayments },
+      cycleReport: { delegatorPayments: inputPayments },
     } = input;
 
     const {
-      cycleReport: { payments: outputPayments },
+      cycleReport: { delegatorPayments: outputPayments },
     } = output;
 
     expect(

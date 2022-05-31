@@ -141,7 +141,7 @@ describe("sequential run", () => {
         .plus(ROUNDING_ADJUSTMENT_2)
     );
 
-    _.each(output.cycleReport.payments, (payment) => {
+    _.each(output.cycleReport.delegatorPayments, (payment) => {
       const share = _.find(
         output.cycleData.cycleShares,
         (share) => share.address === payment.delegator
@@ -180,7 +180,7 @@ describe("sequential run", () => {
       expect(payment.amount).toStrictEqual(expectedPaymentAmount);
     });
 
-    expect(output.cycleReport.payments).toHaveLength(
+    expect(output.cycleReport.delegatorPayments).toHaveLength(
       input.cycleData.cycleShares.length
     );
   });

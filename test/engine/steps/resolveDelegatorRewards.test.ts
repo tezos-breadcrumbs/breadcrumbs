@@ -67,7 +67,7 @@ describe("resolveDelegatorRewards", () => {
         .plus(ROUNDING_ADJUSTMENT_2)
     );
 
-    _.each(output.cycleReport.payments, (payment) => {
+    _.each(output.cycleReport.delegatorPayments, (payment) => {
       const share = _.find(
         output.cycleData.cycleShares,
         (share) => share.address === payment.delegator
@@ -106,7 +106,7 @@ describe("resolveDelegatorRewards", () => {
       expect(payment.amount).toStrictEqual(expectedamount);
     });
 
-    expect(output.cycleReport.payments).toHaveLength(
+    expect(output.cycleReport.delegatorPayments).toHaveLength(
       input.cycleData.cycleShares.length
     );
   });
@@ -132,7 +132,7 @@ describe("resolveDelegatorRewards", () => {
     const input = resolveExcludedDelegators(resolveBakerRewards(args));
     const output = resolveDelegatorRewards(input);
 
-    _.each(output.cycleReport.payments, (payment) => {
+    _.each(output.cycleReport.delegatorPayments, (payment) => {
       const share = _.find(
         output.cycleData.cycleShares,
         (share) => share.address === payment.delegator
@@ -173,7 +173,7 @@ describe("resolveDelegatorRewards", () => {
     /* SANITY CHECK */
     expect(
       _.find(
-        output.cycleReport.payments,
+        output.cycleReport.delegatorPayments,
         (payment) => payment.delegator == delegator
       )?.feeRate
     ).toEqual(new BigNumber("0.08"));
@@ -200,7 +200,7 @@ describe("resolveDelegatorRewards", () => {
     const input = resolveExcludedDelegators(resolveBakerRewards(args));
     const output = resolveDelegatorRewards(input);
 
-    _.each(output.cycleReport.payments, (payment) => {
+    _.each(output.cycleReport.delegatorPayments, (payment) => {
       const share = _.find(
         output.cycleData.cycleShares,
         (share) => share.address === payment.delegator
@@ -241,7 +241,7 @@ describe("resolveDelegatorRewards", () => {
     /* SANITY CHECK */
     expect(
       _.find(
-        output.cycleReport.payments,
+        output.cycleReport.delegatorPayments,
         (payment) => payment.delegator == delegator
       )?.paymentAddress
     ).toEqual(redirect);
@@ -280,7 +280,7 @@ describe("resolveDelegatorRewards", () => {
       ..._.map(input.cycleData.cycleShares, (share) => share.balance)
     );
 
-    _.each(output.cycleReport.payments, (payment) => {
+    _.each(output.cycleReport.delegatorPayments, (payment) => {
       const share = _.find(
         output.cycleData.cycleShares,
         (share) => share.address === payment.delegator
@@ -321,7 +321,7 @@ describe("resolveDelegatorRewards", () => {
     /* SANITY CHECK */
     expect(
       _.find(
-        output.cycleReport.payments,
+        output.cycleReport.delegatorPayments,
         (payment) => payment.delegator == delegator
       )?.paymentAddress
     ).toBeUndefined();
@@ -330,7 +330,7 @@ describe("resolveDelegatorRewards", () => {
     /* Payments are slightly lower than distributable rewards due to rounding */
     /* The below condition holds as the fee rate is zero for testing purposes */
     expect(
-      sum(..._.map(output.cycleReport.payments, (i) => i.amount))
+      sum(..._.map(output.cycleReport.delegatorPayments, (i) => i.amount))
     ).toStrictEqual(input.distributableRewards.minus(ROUNDING_ADJUSTMENT));
   });
 });

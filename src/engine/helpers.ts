@@ -30,7 +30,7 @@ export const isOverDelegated = (
 export const initializeCycleReport = (cycle): CycleReport => {
   return {
     cycle,
-    payments: [],
+    delegatorPayments: [],
     lockedBondRewards: new BigNumber(0),
     feeIncome: new BigNumber(0),
   };

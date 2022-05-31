@@ -56,7 +56,7 @@ const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
     cycleReport: {
       ...args.cycleReport,
       feeIncome: _feeIncome,
-      payments: args.cycleReport.payments.concat(delegatorPayments),
+      delegatorPayments,
     },
     distributableRewards: subtract(
       args.distributableRewards,
