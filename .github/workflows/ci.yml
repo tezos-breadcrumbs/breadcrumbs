@@ -1,8 +1,8 @@
-name: frontend
+name: ci
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 env: 
   NODE_VERSION: 16
