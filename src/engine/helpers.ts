@@ -31,6 +31,8 @@ export const initializeCycleReport = (cycle): CycleReport => {
   return {
     cycle,
     delegatorPayments: [],
+    feeIncomePayments: [],
+    bondRewardPayments: [],
     lockedBondRewards: new BigNumber(0),
     feeIncome: new BigNumber(0),
   };

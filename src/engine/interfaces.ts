@@ -14,9 +14,18 @@ export interface Payment {
   paymentHash: string;
 }
 
+export interface SimplePayment {
+  cycle: number;
+  recipient: string;
+  amount: BigNumber;
+  hash: string;
+}
+
 export interface CycleReport {
   cycle: number;
   delegatorPayments: Payment[];
+  feeIncomePayments: SimplePayment[];
+  bondRewardPayments: SimplePayment[];
   feeIncome: BigNumber;
   lockedBondRewards: BigNumber;
 }

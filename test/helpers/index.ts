@@ -11,6 +11,8 @@ export const generateConfig = (
     fee_exceptions?: { [key: string]: string };
     default_fee?: string;
     minimum_payment_amount?: string;
+    fee_income_recipients?: { [key: string]: string };
+    bond_reward_recipients?: { [key: string]: string };
   } = {}
 ): Config => {
   return {
@@ -21,5 +23,7 @@ export const generateConfig = (
     overdelegation_guard: args.overdelegation_guard || false,
     overdelegation_blacklist: args.overdelegation_blacklist || [],
     minimum_payment_amount: args.minimum_payment_amount || "0",
+    fee_income_recipients: args.fee_income_recipients || {},
+    bond_reward_recipients: args.bond_reward_recipients || {},
   };
 };
