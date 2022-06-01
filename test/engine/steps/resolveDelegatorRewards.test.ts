@@ -79,7 +79,7 @@ describe("resolveDelegatorRewards", () => {
       expect(payment.delegatorBalance).toEqual(share?.balance);
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
-      expect(payment.paymentAddress).toEqual(
+      expect(payment.recipient).toEqual(
         input.config.redirect_payments[payment.delegator] || payment.delegator
       );
 
@@ -165,7 +165,7 @@ describe("resolveDelegatorRewards", () => {
         )
         .dp(0, BigNumber.ROUND_DOWN);
 
-      expect(payment.paymentAddress).toEqual(paymentAddress);
+      expect(payment.recipient).toEqual(paymentAddress);
       expect(payment.feeRate).toStrictEqual(feeRate);
       expect(payment.amount).toStrictEqual(amount);
     });
@@ -233,7 +233,7 @@ describe("resolveDelegatorRewards", () => {
         )
         .dp(0, BigNumber.ROUND_DOWN);
 
-      expect(payment.paymentAddress).toEqual(paymentAddress);
+      expect(payment.recipient).toEqual(paymentAddress);
       expect(payment.feeRate).toStrictEqual(feeRate);
       expect(payment.amount).toStrictEqual(amount);
     });
@@ -243,7 +243,7 @@ describe("resolveDelegatorRewards", () => {
       _.find(
         output.cycleReport.delegatorPayments,
         (payment) => payment.delegator == delegator
-      )?.paymentAddress
+      )?.recipient
     ).toEqual(redirect);
   });
 
@@ -313,7 +313,7 @@ describe("resolveDelegatorRewards", () => {
             .dividedBy(100)
         );
 
-      expect(payment.paymentAddress).toEqual(paymentAddress);
+      expect(payment.recipient).toEqual(paymentAddress);
       expect(payment.feeRate).toStrictEqual(feeRate);
       expect(payment.amount).toStrictEqual(amount);
     });
@@ -323,7 +323,7 @@ describe("resolveDelegatorRewards", () => {
       _.find(
         output.cycleReport.delegatorPayments,
         (payment) => payment.delegator == delegator
-      )?.paymentAddress
+      )?.recipient
     ).toBeUndefined();
 
     const ROUNDING_ADJUSTMENT = 4;

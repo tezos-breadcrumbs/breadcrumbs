@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import _ from "lodash";
 import { getApplicableFee, getRedirectAddress } from "src/engine/helpers";
-import { Payment, StepArguments } from "src/engine/interfaces";
+import { DelegatorPayment, StepArguments } from "src/engine/interfaces";
 import {
   add,
   divide,
@@ -21,13 +21,13 @@ const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
     ..._.map(cycleShares, (share) => share.balance)
   );
 
-  let delegatorPayments: Payment[] = [];
+  let delegatorPayments: DelegatorPayment[] = [];
   let _feeIncome = new BigNumber(0);
   let _rewardsAllocated = new BigNumber(0);
 
   for (const share of cycleShares) {
     const applicableFee = getApplicableFee(config, share.address);
-    const paymentAddress = getRedirectAddress(config, share.address);
+    const recipient = getRedirectAddress(config, share.address);
 
     const { delegatorShare, bakerShare } = getRewardShare(
       share.balance,
@@ -39,13 +39,13 @@ const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
     delegatorPayments.push({
       cycle: cycleReport.cycle,
       delegator: share.address,
-      paymentAddress,
+      recipient,
       delegatorBalance: share.balance,
       bakerStakingBalance: cycleStakingBalance,
       bakerCycleRewards: cycleRewards,
       feeRate: applicableFee,
       amount: delegatorShare,
-      paymentHash: "",
+      hash: "",
     });
 
     _rewardsAllocated = add(_rewardsAllocated, add(delegatorShare, bakerShare));

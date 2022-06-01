@@ -1,6 +1,6 @@
 import { OpKind, TezosToolkit, WalletParamsWithKind } from "@taquito/taquito";
 import { InMemorySigner } from "@taquito/signer";
-import { Payment, SimplePayment } from "src/engine/interfaces";
+import { BasePayment } from "src/engine/interfaces";
 
 require("dotenv").config();
 const { RPC_URL, PKEY } = process.env;
@@ -13,19 +13,8 @@ export const createProvider = (): TezosToolkit => {
   return tezos;
 };
 
-export const prepareDelegatorTransaction = (
-  payment: Payment
-): WalletParamsWithKind => {
-  return {
-    kind: OpKind.TRANSACTION,
-    to: payment.paymentAddress,
-    amount: payment.amount.toNumber(),
-    mutez: true,
-  };
-};
-
 export const prepareTransaction = (
-  payment: SimplePayment
+  payment: BasePayment
 ): WalletParamsWithKind => {
   return {
     kind: OpKind.TRANSACTION,

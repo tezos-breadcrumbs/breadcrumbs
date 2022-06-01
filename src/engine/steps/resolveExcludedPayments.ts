@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Payment, StepArguments } from "src/engine/interfaces";
+import { DelegatorPayment, StepArguments } from "src/engine/interfaces";
 import { getMinimumPaymentAmount } from "src/engine/helpers";
 import BigNumber from "bignumber.js";
 
@@ -16,7 +16,7 @@ const resolveExcludedPayments = (args: StepArguments): StepArguments => {
       ...cycleReport,
       delegatorPayments: _.map(
         cycleReport.delegatorPayments,
-        (payment): Payment =>
+        (payment): DelegatorPayment =>
           payment.amount.lt(minimumPaymentAmount)
             ? { ...payment, amount: new BigNumber(0) }
             : payment

@@ -153,7 +153,7 @@ describe("sequential run", () => {
       expect(payment.delegatorBalance).toEqual(share?.balance);
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
-      expect(payment.paymentAddress).toEqual(
+      expect(payment.recipient).toEqual(
         input.config.redirect_payments[payment.delegator] || payment.delegator
       );
 

@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { SimplePayment, StepArguments } from "src/engine/interfaces";
+import { BasePayment, StepArguments } from "src/engine/interfaces";
 import { divide, multiply, integerize } from "src/utils/math";
 
 const resolveFeeIncomeDistribution = (args: StepArguments): StepArguments => {
@@ -13,7 +13,7 @@ const resolveFeeIncomeDistribution = (args: StepArguments): StepArguments => {
   if (skip) {
     return args;
   } else {
-    const payments: SimplePayment[] = [];
+    const payments: BasePayment[] = [];
     for (const recipient in config.fee_income_recipients) {
       const share = divide(config.fee_income_recipients[recipient], 1);
       const payable = integerize(multiply(share, feeIncome));
