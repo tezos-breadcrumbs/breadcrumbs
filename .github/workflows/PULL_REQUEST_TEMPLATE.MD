@@ -15,4 +15,4 @@ _Describe your changes and implementation choices_
 ...
 ## Usage and Testing
 
-_Describe how to test your new feature or bug fix._ 
+_Describe how to test your new feature/bug fix._ 
