@@ -7,6 +7,7 @@ import engine from "src/engine";
 import { initializeCycleReport } from "src/engine/helpers";
 import {
   createProvider,
+  prepareDelegatorTransaction,
   prepareTransaction,
   submitBatch,
 } from "src/tezos-client";
@@ -33,14 +34,31 @@ const foo = async () => {
   });
 
   const provider = createProvider();
-  const { delegatorPayments } = result.cycleReport;
+  const { delegatorPayments, feeIncomePayments, bondRewardPayments } =
+    result.cycleReport;
 
-  const transactions = _.map(
-    _.reject(
-      delegatorPayments,
-      (p) => _.startsWith(p.paymentAddress, "KT") || p.amount.eq(0)
+  const transactions = _.concat(
+    _.map(
+      _.reject(
+        delegatorPayments,
+        (p) => _.startsWith(p.paymentAddress, "KT") || p.amount.eq(0)
+      ),
+      prepareDelegatorTransaction
     ),
-    prepareTransaction
+    _.map(
+      _.reject(
+        feeIncomePayments,
+        (p) => _.startsWith(p.recipient, "KT") || p.amount.eq(0)
+      ),
+      prepareTransaction
+    ),
+    _.map(
+      _.reject(
+        bondRewardPayments,
+        (p) => _.startsWith(p.recipient, "KT") || p.amount.eq(0)
+      ),
+      prepareTransaction
+    )
   );
 
   await submitBatch(provider, transactions);
