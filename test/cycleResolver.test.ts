@@ -10,6 +10,7 @@ import * as Polly from "./helpers/polly";
 describe("test", () => {
   test("foo", () => {
     expect(true).toEqual(true);
+    expect(true).toEqual(true);
   });
   // let db: any = require("../database/models");
   // const { Payment } = db;
