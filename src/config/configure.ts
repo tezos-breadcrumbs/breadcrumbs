@@ -64,12 +64,21 @@ const questions = [
   },
   {
     type: "input",
+    name: "minimum_delegator_balance",
+    message:
+      "The minimum delegation amount for rewards distribution in a given cycle",
+    validate: validNumber,
+    filter: filterNumber,
+    default: "0",
+  },
+  {
+    type: "input",
     name: "minimum_payment_amount",
     message:
       "The minimum amount in XTZ payable to a delegator in a given cycle",
     validate: validNumber,
     filter: filterNumber,
-    default: "1",
+    default: "0",
   },
 
   {

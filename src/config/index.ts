@@ -6,6 +6,7 @@ export interface Config {
   overdelegation_guard: boolean;
   overdelegation_blacklist: string[];
   minimum_payment_amount: string;
+  minimum_delegator_balance: string;
   fee_income_recipients: { [key: string]: string };
   bond_reward_recipients: { [key: string]: string };
 }

@@ -41,3 +41,7 @@ export const initializeCycleReport = (cycle): CycleReport => {
 export const getMinimumPaymentAmount = (config: Config) => {
   return new BigNumber(config.minimum_payment_amount);
 };
+
+export const getMinimumDelegationAmount = (config: Config) => {
+  return new BigNumber(config.minimum_delegator_balance);
+};
