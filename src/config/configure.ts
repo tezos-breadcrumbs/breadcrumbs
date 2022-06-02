@@ -1,5 +1,6 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
+import { stringify } from "hjson"
 
 const {
   filterRedirects,
@@ -100,8 +101,8 @@ const questions = [
 ];
 
 inquirer.prompt(questions).then((answers) => {
-  const json = JSON.stringify(answers, null, "  ");
-  fs.writeFile("./config.json", json, (err) => {
+  const json = stringify(answers, { space: "  " });
+  fs.writeFile("./config.hjson", json, (err) => {
     if (!err) {
       console.log("Successfully created configuration file.");
     }
