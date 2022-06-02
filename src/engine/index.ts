@@ -1,15 +1,20 @@
 import { StepArguments, StepFunction } from "./interfaces";
-
-import resolveBakerRewards from "./steps/resolveBakerRewards";
-import resolveDelegatorRewards from "./steps/resolveDelegatorRewards";
-import resolveExcludedDelegators from "./steps/resolveExcludedDelegators";
-import resolveExcludedPayments from "./steps/resolveExcludedPayments";
+import {
+  resolveBakerRewards,
+  resolveBondRewardDistribution,
+  resolveDelegatorRewards,
+  resolveExcludedDelegators,
+  resolveExcludedPayments,
+  resolveFeeIncomeDistribution,
+} from "./steps";
 
 const steps: StepFunction[] = [
   resolveBakerRewards,
   resolveExcludedDelegators,
   resolveDelegatorRewards,
   resolveExcludedPayments,
+  resolveFeeIncomeDistribution,
+  resolveBondRewardDistribution,
 ];
 
 function run(

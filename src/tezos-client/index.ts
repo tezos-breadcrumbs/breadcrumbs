@@ -32,5 +32,7 @@ export const submitBatch = async (
   const batch = tezos.wallet.batch(payments);
   const operation = await batch.send();
   await operation.confirmation(2);
-  console.log(`Transaction confirmed: https://tzkt.io/${operation.opHash}`);
+  console.log(
+    `Transaction confirmed: https://ithacanet.tzkt.io/${operation.opHash}`
+  );
 };

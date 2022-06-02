@@ -82,7 +82,7 @@ const questions = [
 
   {
     type: "input",
-    name: "bond_rewards_recipients",
+    name: "bond_reward_recipients",
     message:
       "The address that received baking rewards attributable to the baker's bond",
     validate: validDistributionShares,
