@@ -30,11 +30,12 @@ export class TzKT extends Client {
               _.map(list, (item) => _.pick(item, ["address", "balance"]))
             ),
             [
-              "stakingBalance",
-              "delegators",
-              "delegatedBalance",
+              "blockFees",
               "blockRewards",
+              "delegatedBalance",
+              "delegators",
               "endorsementRewards",
+              "stakingBalance",
             ]
           ),
           "frozenDepositLimit",
@@ -49,6 +50,7 @@ export class TzKT extends Client {
           blockRewards,
           endorsementRewards,
           frozenDepositLimit,
+          blockFees,
         }) => {
           console.info("Received cycle data from TzKT.");
           return {
@@ -58,7 +60,7 @@ export class TzKT extends Client {
               address,
               balance,
             })),
-            cycleRewards: sum(blockRewards, endorsementRewards),
+            cycleRewards: sum(blockRewards, endorsementRewards, blockFees),
             frozenDepositLimit,
           };
         }
