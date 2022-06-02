@@ -2,7 +2,7 @@ import _ from "lodash";
 import { BasePayment, StepArguments } from "src/engine/interfaces";
 import { divide, multiply, integerize } from "src/utils/math";
 
-const resolveBondRewardDistribution = (args: StepArguments): StepArguments => {
+export const resolveBondRewardDistribution = (args: StepArguments): StepArguments => {
   const {
     config,
     cycleReport: { lockedBondRewards },
@@ -33,5 +33,3 @@ const resolveBondRewardDistribution = (args: StepArguments): StepArguments => {
     };
   }
 };
-
-export default resolveBondRewardDistribution;

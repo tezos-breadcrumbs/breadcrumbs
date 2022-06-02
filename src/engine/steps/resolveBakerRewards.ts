@@ -2,7 +2,7 @@ import { isOverDelegated } from "src/engine/helpers";
 import { StepArguments } from "src/engine/interfaces";
 import { divide, multiply, subtract, integerize } from "src/utils/math";
 
-const resolveBakerRewards = (args: StepArguments): StepArguments => {
+export const resolveBakerRewards = (args: StepArguments): StepArguments => {
   const { config, cycleData, cycleReport, distributableRewards } = args;
   const {
     cycleDelegatedBalance,
@@ -33,5 +33,3 @@ const resolveBakerRewards = (args: StepArguments): StepArguments => {
     distributableRewards: subtract(distributableRewards, bakerRewards),
   };
 };
-
-export default resolveBakerRewards;

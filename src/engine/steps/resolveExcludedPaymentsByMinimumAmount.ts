@@ -3,7 +3,7 @@ import { DelegatorPayment, StepArguments } from "src/engine/interfaces";
 import { getMinimumPaymentAmount } from "src/engine/helpers";
 import BigNumber from "bignumber.js";
 
-const resolveExcludedPaymentsByMinimumAmount = (
+export const resolveExcludedPaymentsByMinimumAmount = (
   args: StepArguments
 ): StepArguments => {
   const { config, cycleReport } = args;
@@ -31,5 +31,3 @@ const resolveExcludedPaymentsByMinimumAmount = (
     },
   };
 };
-
-export default resolveExcludedPaymentsByMinimumAmount;
