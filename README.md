@@ -18,13 +18,15 @@ Reward payments from bakers to delegators are a cornerstone of Tezos' delegation
 - [x] Set fees on a per-delegator basis.
 - [x] Set separate payment addresses for given delegators.
 - [x] Set minimum payment amounts.
+- [x] Set minimum delegator balances. 
 - [x] Exclude given delegators from payment in case of overdelegation.
 - [x] Protect the baker from overdelegation by ring-fencing 10% of the rewards.
+- [x] Allow customized distribution of rewards associated with the baker's frozen deposit. 
+- [x] Allow customized distribution of fee income. 
 
 Roadmap:
 
-- [ ] Set minimum delegation amounts.
-- [ ] Allow a granular distribution of the different categories of baker rewards.
+
 - [ ] Run the payouts script on a Docker container in the background.
 - [ ] Persist reward data on a local PostgresDB
 - [ ] Pay rewards in FA2 tokens via built-in swaps.
