@@ -18,12 +18,15 @@ const foo = async () => {
 
   const opts = program.opts();
   const config = require("./config");
-  const cycleReport = initializeCycleReport(opts.cycle);
 
-  const cycleData = await client.getCycleData(
-    config.baking_address,
-    opts.cycle
-  );
+  const cycle = Number(opts.cycle);
+
+  if (_.isNaN(cycle)) {
+    throw Error("No cycle number given.");
+  }
+
+  const cycleReport = initializeCycleReport(cycle);
+  const cycleData = await client.getCycleData(config.baking_address, cycle);
 
   const result = engine.run({
     config,
