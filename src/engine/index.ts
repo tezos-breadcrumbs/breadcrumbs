@@ -5,6 +5,7 @@ import {
   resolveDelegatorRewards,
   resolveExcludedDelegators,
   resolveExcludedPaymentsByMinimumAmount,
+  resolveExcludedPaymentsByMinimumDelegatorBalance,
   resolveFeeIncomeDistribution,
 } from "./steps";
 
@@ -13,6 +14,7 @@ const steps: StepFunction[] = [
   resolveExcludedDelegators,
   resolveDelegatorRewards,
   resolveExcludedPaymentsByMinimumAmount,
+  resolveExcludedPaymentsByMinimumDelegatorBalance,
   resolveFeeIncomeDistribution,
   resolveBondRewardDistribution,
 ];
