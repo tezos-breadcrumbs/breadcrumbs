@@ -1,6 +1,6 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 
-import _ from "lodash";
+import _, { add } from "lodash";
 import BigNumber from "bignumber.js";
 
 import client from "src/api-client";
@@ -95,12 +95,18 @@ describe("resolveExcludedPayments", () => {
       _.filter(outputPayments, (payment) => payment.amount.eq(0)).length
     ).toBeGreaterThan(0);
 
+    let additionalFeeIncome = new BigNumber(0);
     for (let i = 0; i < inputPayments.length; i++) {
       if (inputPayments[i].amount.lt(minimumPaymentAmount.times(1000000))) {
+        additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
         expect(outputPayments[i].amount.eq(0));
       } else {
         expect(outputPayments[i]).toStrictEqual(inputPayments[i]);
       }
     }
+
+    expect(output.cycleReport.feeIncome).toStrictEqual(
+      input.cycleReport.feeIncome.plus(additionalFeeIncome)
+    );
   });
 });
