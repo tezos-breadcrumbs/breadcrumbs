@@ -14,7 +14,7 @@ import {
   resolveBakerRewards,
   resolveDelegatorRewards,
   resolveExcludedDelegators,
-  resolveExcludedPayments,
+  resolveExcludedPaymentsByMinimumAmount,
 } from "src/engine/steps";
 
 describe("sequential run", () => {
@@ -209,7 +209,7 @@ describe("sequential run", () => {
       resolveBakerRewards,
       resolveExcludedDelegators,
       resolveDelegatorRewards,
-      resolveExcludedPayments,
+      resolveExcludedPaymentsByMinimumAmount,
     ]);
 
     expect(output).toStrictEqual(input);

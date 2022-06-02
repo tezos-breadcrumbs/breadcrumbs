@@ -12,10 +12,10 @@ import {
   resolveBakerRewards,
   resolveDelegatorRewards,
   resolveExcludedDelegators,
-  resolveExcludedPayments,
+  resolveExcludedPaymentsByMinimumAmount,
 } from "src/engine/steps";
 
-describe("resolveExcludedPayments", () => {
+describe("resolveExcludedPaymentsByMinimumAmount", () => {
   Polly.start();
 
   it("does not exclude payments if minimum payment amount is set at zero", async () => {
@@ -42,7 +42,7 @@ describe("resolveExcludedPayments", () => {
       resolveExcludedDelegators(resolveBakerRewards(args))
     );
 
-    const actual = resolveExcludedPayments(input);
+    const actual = resolveExcludedPaymentsByMinimumAmount(input);
 
     expect(actual.cycleReport.delegatorPayments).toStrictEqual(
       input.cycleReport.delegatorPayments
@@ -81,7 +81,7 @@ describe("resolveExcludedPayments", () => {
       resolveExcludedDelegators(resolveBakerRewards(args))
     );
 
-    const output = resolveExcludedPayments(input);
+    const output = resolveExcludedPaymentsByMinimumAmount(input);
 
     const {
       cycleReport: { delegatorPayments: inputPayments },
