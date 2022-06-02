@@ -21,7 +21,7 @@ Reward payments from bakers to delegators are a cornerstone of Tezos' delegation
 - [x] Set minimum delegator balances. 
 - [x] Exclude given delegators from payment in case of overdelegation.
 - [x] Protect the baker from overdelegation by ring-fencing 10% of the rewards.
-- [x] Allow customized distribution of rewards associated with the baker's frozen deposit. 
+- [x] Allow customized distribution of rewards associated with the baker's bond.
 - [x] Allow customized distribution of fee income. 
 
 Roadmap:
