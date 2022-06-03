@@ -1,5 +1,7 @@
 import _ from "lodash";
 import { program } from "commander";
+import { readFileSync } from "fs"
+import { parse } from "hjson"
 
 import client from "src/api-client";
 import engine from "src/engine";
@@ -17,7 +19,7 @@ const foo = async () => {
     .parse();
 
   const opts = program.opts();
-  const config = require("./config");
+  const config = parse(readFileSync("./config").toString());
 
   const cycle = Number(opts.cycle);
 

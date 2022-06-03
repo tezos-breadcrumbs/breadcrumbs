@@ -11,7 +11,7 @@ import {
   integerize,
 } from "src/utils/math";
 
-const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
+export const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
   const { config, cycleData, cycleReport, distributableRewards } = args;
   const { cycleStakingBalance, cycleRewards, cycleShares } = cycleData;
 
@@ -90,5 +90,3 @@ const getRewardShare = (
     ),
   };
 };
-
-export default resolveDelegatorRewards;
