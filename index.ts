@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { program } from "commander";
-import { readFileSync } from "fs"
-import { parse } from "hjson"
+import { readFileSync } from "fs";
+import { parse } from "hjson";
 
 import client from "src/api-client";
 import engine from "src/engine";
@@ -19,8 +19,8 @@ const foo = async () => {
     .parse();
 
   const opts = program.opts();
-  const config = parse(readFileSync("./config").toString());
 
+  const config = parse(readFileSync("./config.hjson").toString());
   const cycle = Number(opts.cycle);
 
   if (_.isNaN(cycle)) {
