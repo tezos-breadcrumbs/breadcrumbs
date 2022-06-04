@@ -1,7 +1,7 @@
 import { isNaN } from "lodash";
 import { program } from "commander";
-import { readFileSync } from "fs"
-import { parse } from "hjson"
+import { readFileSync } from "fs";
+import { parse } from "hjson";
 
 import client from "src/api-client";
 import engine from "src/engine";
