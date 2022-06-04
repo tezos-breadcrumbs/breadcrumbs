@@ -1,7 +1,7 @@
 import { isNaN } from "lodash";
 import { program } from "commander";
-import { readFileSync } from "fs";
-import { parse } from "hjson";
+import { readFileSync } from "fs"
+import { parse } from "hjson"
 
 import client from "src/api-client";
 import engine from "src/engine";
@@ -15,11 +15,18 @@ import {
 } from "src/tezos-client";
 import { print_payments_table } from "src/cli";
 
-const config = parse(readFileSync(process.env.BC_CONFIG ?? "./config.hjson").toString());
+program
+  .requiredOption("-c, --cycle <number>", "specify the cycle to process")
+  .option("--config <config>", "Path to configuration file", "./config.hjson")
+  .option("-d, --dry-run", "Prints out rewards. Won't sumbit transactions.")
+  .parse();
+const opts = program.opts();
+
+const config = parse(readFileSync(opts.config).toString());
 
 const paymentRequirements = [
   (p: BasePayment) => p.recipient !== config.baking_address,  // in case rewards are redirected to baker himself
-  (p: BasePayment) => !p.recipient.startsWith("KT"),           // TODO: we need to allow payments to smart contracts
+  (p: BasePayment) => !p.recipient.startsWith("KT"),          // TODO: we need to allow payments to smart contracts
   (p: BasePayment) => p.amount.gt(0)                          // TODO: Add check for transaction fee
 ]
 
@@ -30,15 +37,7 @@ const arePaymentsRequirementsMet = (p: BasePayment) =>{
   return true
 }
 
-const foo = async () => {
-  program
-    .requiredOption("-c, --cycle <number>", "specify the cycle to process")
-    .option("-d, --dry-run", "Prints out rewards. Won't sumbit transactions.")
-    .parse();
-
-  const opts = program.opts();
-
-  const config = parse(readFileSync("./config.hjson").toString());
+(async () => {
   const cycle = Number(opts.cycle);
 
   if (isNaN(cycle)) {
@@ -68,6 +67,4 @@ const foo = async () => {
   
   const provider = createProvider();
   await submitBatch(provider, transactions);
-};
-
-foo();
+})();
