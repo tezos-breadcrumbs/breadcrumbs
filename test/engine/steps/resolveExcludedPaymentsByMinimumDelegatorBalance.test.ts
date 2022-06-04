@@ -13,8 +13,8 @@ import {
   resolveDelegatorRewards,
   resolveExcludedDelegators,
   resolveExcludedPaymentsByMinimumAmount,
+  resolveExcludedPaymentsByMinimumDelegatorBalance,
 } from "src/engine/steps";
-import { resolveExcludedPaymentsByMinimumDelegatorBalance } from "src/engine/steps/resolveExcludedPaymentsByMinimumDelegatorBalance";
 
 describe("resolveExcludedPaymentsByMinimumAmount", () => {
   Polly.start();
