@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "pay": "ts-node index.ts --cycle $npm_config_cycle",
+    "pay": "ts-node index.ts",
     "configure": "ts-node src/config/configure.ts",
     "test": "jest --runInBand"
   },
@@ -21,6 +21,8 @@
     "axios": "^0.26.1",
     "bignumber.js": "^9.0.2",
     "commander": "^9.2.0",
+    "console-table-printer": "^2.11.0",
+    "dotenv": "^16.0.1",
     "hjson": "^3.2.2",
     "inquirer": "^8.2.2",
     "json-bigint": "^1.0.0",
