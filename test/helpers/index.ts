@@ -1,4 +1,4 @@
-import { Config } from "src/config";
+import { BreadcrumbsConfiguration } from "src/config";
 
 const DEFAULT_BAKER = "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur";
 
@@ -15,7 +15,7 @@ export const generateConfig = (
     fee_income_recipients?: { [key: string]: string };
     bond_reward_recipients?: { [key: string]: string };
   } = {}
-): Config => {
+): BreadcrumbsConfiguration => {
   return {
     baking_address: args.baking_address || DEFAULT_BAKER,
     default_fee: args.default_fee || "5",

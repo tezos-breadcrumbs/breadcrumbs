@@ -14,6 +14,7 @@ import {
   submitBatch,
 } from "src/tezos-client";
 import { print_payments_table } from "src/cli";
+import { BreadcrumbsConfiguration } from "src/config";
 
 program
   .requiredOption("-c, --cycle <number>", "specify the cycle to process")
@@ -22,7 +23,7 @@ program
   .parse();
 const opts = program.opts();
 
-const config = parse(readFileSync(opts.config).toString());
+const config = parse(readFileSync(opts.config).toString()) as BreadcrumbsConfiguration;
 
 const paymentRequirements = [
   (p: BasePayment) => p.recipient !== config.baking_address,  // in case rewards are redirected to baker himself
