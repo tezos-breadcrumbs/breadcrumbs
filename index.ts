@@ -15,7 +15,7 @@ import {
 } from "src/tezos-client";
 import { print_payments_table } from "src/cli";
 
-const config = parse(readFileSync("./config.hjson").toString());
+const config = parse(readFileSync(process.env.BC_CONFIG ?? "./config.hjson").toString());
 
 const paymentRequirements = [
   (p: BasePayment) => p.recipient !== config.baking_address,  // in case rewards are redirected to baker himself
