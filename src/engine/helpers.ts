@@ -40,9 +40,9 @@ export const initializeCycleReport = (cycle): CycleReport => {
 };
 
 export const getMinimumPaymentAmount = (config: BreadcrumbsConfiguration) => {
-  return new BigNumber(config.minimum_payment_amount);
+  return new BigNumber(config.minimum_payment_amount ?? 0);
 };
 
 export const getMinimumDelegationAmount = (config: BreadcrumbsConfiguration) => {
-  return new BigNumber(config.minimum_delegator_balance);
+  return new BigNumber(config.minimum_delegator_balance ?? 0);
 };
