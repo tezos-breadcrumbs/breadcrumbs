@@ -1,15 +1,16 @@
 import { BigNumber } from "bignumber.js";
 import { Config } from "src/config";
 import { CycleReport } from "./interfaces";
+import { get } from "lodash"
 
 export const getApplicableFee = (config: Config, delegator: string) => {
   return new BigNumber(
-    config.fee_exceptions[delegator] || config.default_fee
+    get(config.fee_exceptions, delegator, config.default_fee)
   ).div(100);
 };
 
 export const getRedirectAddress = (config: Config, delegator: string) => {
-  return config.redirect_payments[delegator] || delegator;
+  return get(config.redirect_payments, delegator, delegator);
 };
 
 export const isOverDelegated = (

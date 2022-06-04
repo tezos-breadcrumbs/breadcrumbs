@@ -1,10 +1,10 @@
 import { BigNumber } from "bignumber.js";
 import { AxiosInstance } from "axios";
 
-export abstract class Client {
-  abstract instance: AxiosInstance;
-  abstract getCycleData(baker: string, cycle: number): Promise<CycleData>;
-  abstract getLastCycle(): Promise<number | void>;
+export interface Client {
+  instance: AxiosInstance;
+  getCycleData(baker: string, cycle: number): Promise<CycleData>;
+  getLastCycle(): Promise<number | void>;
 }
 
 export interface CycleData {

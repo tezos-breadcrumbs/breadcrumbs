@@ -5,11 +5,10 @@ import _ from "lodash";
 import { sum } from "../utils/math";
 import { Client, CycleData } from "./abstract_client";
 
-export class TzKT extends Client {
+export class TzKT implements Client {
   instance: AxiosInstance;
 
   constructor() {
-    super();
     this.instance = axios.create({
       baseURL: "https://api.tzkt.io/v1/",
       transformResponse: [JSONBigInt.parse],

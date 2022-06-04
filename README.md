@@ -44,6 +44,8 @@ Install dependencies by running the following command in the root directory:
 
 ```bash
 $ npm i
+# or
+$ yarn install
 ```
 
 ### Configuration
@@ -56,7 +58,9 @@ $ npm i
 To run rewards for a given cycle:
 
 ```bash
-$ npm run pay --cycle=<cycle>
+$ npm run pay -- --cycle=<cycle>
+# or
+$ yarn pay -- --cycle=<cycle>
 ```
 
 ### Credits
