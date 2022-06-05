@@ -1,6 +1,6 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
-import { stringify } from "hjson"
+import { stringify } from "hjson";
 
 const {
   filterRedirects,

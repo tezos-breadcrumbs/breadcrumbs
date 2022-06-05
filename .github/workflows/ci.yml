@@ -2,9 +2,9 @@ name: ci
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
-env: 
+env:
   NODE_VERSION: 16
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
         with:
           path: node_modules
           key: node-modules-cache-${{ hashFiles('package-lock.json') }}
-      - name: Install Node dependencies. 
+      - name: Install Node dependencies.
         run: npm install
 
   test:

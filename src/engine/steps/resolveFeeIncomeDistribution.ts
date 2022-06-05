@@ -2,7 +2,9 @@ import _ from "lodash";
 import { BasePayment, StepArguments } from "src/engine/interfaces";
 import { divide, multiply, integerize } from "src/utils/math";
 
-export const resolveFeeIncomeDistribution = (args: StepArguments): StepArguments => {
+export const resolveFeeIncomeDistribution = (
+  args: StepArguments
+): StepArguments => {
   const {
     config,
     cycleReport: { feeIncome },
