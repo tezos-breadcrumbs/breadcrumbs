@@ -35,6 +35,6 @@ export const submitBatch = async (
   const operation = await batch.send();
   await operation.confirmation(2);
   console.log(
-    `Transaction confirmed: https://ithacanet.tzkt.io/${operation.opHash}`
+    `Transaction confirmed on https://ithacanet.tzkt.io/${operation.opHash}`
   );
 };
