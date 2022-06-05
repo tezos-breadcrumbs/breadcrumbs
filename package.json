@@ -6,7 +6,8 @@
   "scripts": {
     "pay": "ts-node index.ts",
     "configure": "ts-node src/config/configure.ts",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "lint": "eslint ."
   },
   "author": "",
   "license": "ISC",
