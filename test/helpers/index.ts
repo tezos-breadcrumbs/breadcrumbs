@@ -1,4 +1,5 @@
 import { BreadcrumbsConfiguration } from "src/config/interfaces";
+import { parseInt } from "src/utils/parse";
 
 const DEFAULT_BAKER = "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur";
 
@@ -18,19 +19,13 @@ export const generateConfig = (
 ): BreadcrumbsConfiguration => {
   return {
     baking_address: args.baking_address || DEFAULT_BAKER,
-    default_fee: !isNaN(Number(args.default_fee))
-      ? Number(args.default_fee)
-      : 5,
+    default_fee: parseInt(args.default_fee, 5),
     redirect_payments: args.redirect_payments || {},
     fee_exceptions: args.fee_exceptions || {},
     overdelegation_guard: args.overdelegation_guard || false,
     overdelegation_blacklist: args.overdelegation_blacklist || [],
-    minimum_payment_amount: !isNaN(Number(args.minimum_payment_amount))
-      ? Number(args.minimum_payment_amount)
-      : 0,
-    minimum_delegator_balance: !isNaN(Number(args.minimum_delegator_balance))
-      ? Number(args.minimum_delegator_balance)
-      : 0,
+    minimum_payment_amount: parseInt(args.minimum_payment_amount, 0),
+    minimum_delegator_balance: parseInt(args.minimum_delegator_balance, 0),
     fee_income_recipients: args.fee_income_recipients || {},
     bond_reward_recipients: args.bond_reward_recipients || {},
   };

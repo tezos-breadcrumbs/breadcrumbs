@@ -2,7 +2,7 @@ import { initializeCycleReport } from "src/engine/helpers";
 
 import client from "src/api-client";
 import engine from "src/engine";
-import { get_config } from "src/config";
+import { getConfig } from "src/config";
 import { printPaymentsTable } from "src/cli/print";
 import {
   createProvider,
@@ -17,7 +17,7 @@ export const pay = async (cycle: number) => {
     console.log(`Running in 'dry-run' mode...`);
   }
 
-  const config = get_config();
+  const config = getConfig();
 
   const cycleReport = initializeCycleReport(cycle);
   const cycleData = await client.getCycleData(config.baking_address, cycle);
