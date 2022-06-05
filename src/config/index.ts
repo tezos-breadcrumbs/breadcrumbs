@@ -1,12 +1,13 @@
-export interface BreadcrumbsConfiguration {
-  baking_address: string;
-  default_fee: number;
-  redirect_payments?: { [key: string]: string };
-  fee_exceptions?: { [key: string]: string };
-  overdelegation_guard?: boolean;
-  overdelegation_blacklist?: string[];
-  minimum_payment_amount?: number;
-  minimum_delegator_balance?: number;
-  fee_income_recipients?: { [key: string]: string };
-  bond_reward_recipients?: { [key: string]: string };
+import { ConfigurationBase } from "./base"
+import { BreadcrumbsConfiguration } from "./interfaces"
+
+const configurationBase = new ConfigurationBase()
+
+export function get_config(): BreadcrumbsConfiguration
+export function get_config<K extends keyof BreadcrumbsConfiguration>(key: K): BreadcrumbsConfiguration[K]
+export function get_config<K extends keyof BreadcrumbsConfiguration>(key?: K): BreadcrumbsConfiguration | BreadcrumbsConfiguration[K] {
+  if (key !== undefined) {
+    return configurationBase.Configuration[key]
+  }
+  return configurationBase.Configuration
 }

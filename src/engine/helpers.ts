@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
-import { BreadcrumbsConfiguration } from "src/config";
 import { CycleReport } from "./interfaces";
 import { get } from "lodash"
+import { BreadcrumbsConfiguration } from "src/config/interfaces";
 
 export const getApplicableFee = (config: BreadcrumbsConfiguration, delegator: string) => {
   return new BigNumber(

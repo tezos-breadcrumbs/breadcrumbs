@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "pay": "ts-node index.ts",
+    "pay": "ts-node index.ts pay",
     "configure": "ts-node src/config/configure.ts",
     "test": "jest --runInBand"
   },

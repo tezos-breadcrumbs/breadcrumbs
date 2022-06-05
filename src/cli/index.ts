@@ -1,20 +1,27 @@
-import { Table } from "console-table-printer";
-import { BasePayment } from "src/engine/interfaces";
-import { pick } from "lodash"
-import { MUTEZ_FACTOR } from "src/utils/constants";
-import { divide } from "src/utils/math";
-import { PrintablePayment } from "./interfaces";
+import { OptionValues, program } from "commander";
+import { pay } from "src";
 
-export const print_payments_table = (payments: BasePayment[]) => {
-	const table = new Table();
-	const columns = ["delegator", "recipient", "delegatorBalance", "amount", "feeRate"]
-	table.addColumns(columns)
-	for (const payment of payments) {
-		const paymentInfo: Partial<PrintablePayment> = pick(payment, columns)
+export let cliOptions: OptionValues = {}
+export const run = async () => {
+	// global options 
+	program
+		.requiredOption("-c, --cycle <number>", "specify the cycle to process")
+		.option("--config <config>", "Path to configuration file", "./config.hjson")
+		.option("-d, --dry-run", "Prints out rewards. Won't sumbit transactions.")
+		
+	// commands
+	program
+		.command("pay")
+		.action(pay)
 
-		paymentInfo.amount = `${divide(paymentInfo.amount ?? 0, MUTEZ_FACTOR)} TEZ`
-		paymentInfo.delegatorBalance = `${divide(paymentInfo.delegatorBalance ?? 0, MUTEZ_FACTOR)} TEZ`
-		table.addRow(paymentInfo)
-	}
-	table.printTable()
+
+	// we need to set global options before action is executed
+	program.hook("preAction", () => { 
+		cliOptions = program.opts()
+	})
+	await program.parseAsync()
 }
+
+export const get_cli_option = (opt: keyof OptionValues) => {
+	return cliOptions[opt]
+} 
