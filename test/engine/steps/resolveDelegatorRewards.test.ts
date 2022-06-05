@@ -119,8 +119,7 @@ describe("resolveDelegatorRewards", () => {
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
-    const { cycleRewards, cycleDelegatedBalance, cycleStakingBalance } =
-      cycleData;
+    const { cycleRewards, cycleStakingBalance } = cycleData;
 
     const args = {
       config,
@@ -187,8 +186,7 @@ describe("resolveDelegatorRewards", () => {
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
-    const { cycleRewards, cycleDelegatedBalance, cycleStakingBalance } =
-      cycleData;
+    const { cycleRewards, cycleStakingBalance } = cycleData;
 
     const args = {
       config,
@@ -300,7 +298,7 @@ describe("resolveDelegatorRewards", () => {
           input.config.default_fee
       ).div(100);
 
-      let amount = share?.balance
+      const amount = share?.balance
         .div(applicableDelegatedBalance)
         .times(input.distributableRewards)
         .dp(0, BigNumber.ROUND_DOWN)

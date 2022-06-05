@@ -21,7 +21,7 @@ export const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
     ..._.map(cycleShares, (share) => share.balance)
   );
 
-  let delegatorPayments: DelegatorPayment[] = [];
+  const delegatorPayments: DelegatorPayment[] = [];
   let _feeIncome = new BigNumber(0);
   let _rewardsAllocated = new BigNumber(0);
 

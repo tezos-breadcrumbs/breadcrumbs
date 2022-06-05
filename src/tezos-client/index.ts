@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
+
 import { OpKind, TezosToolkit, WalletParamsWithKind } from "@taquito/taquito";
 import { InMemorySigner } from "@taquito/signer";
 import { BasePayment } from "src/engine/interfaces";

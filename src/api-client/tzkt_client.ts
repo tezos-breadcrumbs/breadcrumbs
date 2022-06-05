@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
 const JSONBigInt = require("json-bigint")({ alwaysParseAsBig: true });
 
 import axios, { AxiosInstance } from "axios";

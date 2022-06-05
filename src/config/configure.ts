@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
 const inquirer = require("inquirer");
 const fs = require("fs");
 import { stringify } from "hjson";

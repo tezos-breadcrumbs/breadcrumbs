@@ -1,6 +1,6 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 
-import _, { add } from "lodash";
+import _ from "lodash";
 import BigNumber from "bignumber.js";
 
 import client from "src/api-client";

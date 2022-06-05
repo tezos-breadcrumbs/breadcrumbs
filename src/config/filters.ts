@@ -1,9 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import _ from "lodash";
 
-export const filterRedirects = (
-  input: any
-): { [key: string]: string } | null => {
+export const filterRedirects = (input): { [key: string]: string } | null => {
   if (input === "") return {};
   const list = input.split(",");
   const result = {};
@@ -15,7 +13,7 @@ export const filterRedirects = (
 };
 
 export const filterFeeExceptions = (
-  input: any
+  input
 ): { [key: string]: string } | null => {
   if (input === "") return {};
 
@@ -38,7 +36,7 @@ export const filterNumber = (input: string): string => {
 };
 
 export const filterDistributionShares = (
-  input: any
+  input
 ): { [key: string]: string } | null => {
   if (input === "") return {};
 
