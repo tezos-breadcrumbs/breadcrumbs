@@ -1,1 +1,1 @@
-export { pay } from "./pay"
+export { pay } from "./pay";
