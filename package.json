@@ -38,6 +38,7 @@
     "@types/jest": "^27.4.1",
     "@types/setup-polly-jest": "^0.5.1",
     "jest": "^27.4.1",
+    "prettier": "2.6.2",
     "setup-polly-jest": "^0.10.0",
     "ts-jest": "^27.1.4",
     "tsconfig-paths": "^4.0.0"
