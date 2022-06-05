@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { Config } from "src/config";
 import { CycleReport } from "./interfaces";
-import { get } from "lodash"
+import { get } from "lodash";
 
 export const getApplicableFee = (config: Config, delegator: string) => {
   return new BigNumber(

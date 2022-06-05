@@ -4,5 +4,5 @@ module.exports = {
   testEnvironment: "node",
   modulePaths: ["<rootDir>/"],
   setupFilesAfterEnv: ["<rootDir>/test/setup.ts"],
-  verbose: true
+  verbose: true,
 };

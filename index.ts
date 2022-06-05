@@ -25,17 +25,17 @@ const opts = program.opts();
 const config = parse(readFileSync(opts.config).toString());
 
 const paymentRequirements = [
-  (p: BasePayment) => p.recipient !== config.baking_address,  // in case rewards are redirected to baker himself
-  (p: BasePayment) => !p.recipient.startsWith("KT"),          // TODO: we need to allow payments to smart contracts
-  (p: BasePayment) => p.amount.gt(0)                          // TODO: Add check for transaction fee
-]
+  (p: BasePayment) => p.recipient !== config.baking_address, // in case rewards are redirected to baker himself
+  (p: BasePayment) => !p.recipient.startsWith("KT"), // TODO: we need to allow payments to smart contracts
+  (p: BasePayment) => p.amount.gt(0), // TODO: Add check for transaction fee
+];
 
-const arePaymentsRequirementsMet = (p: BasePayment) =>{
+const arePaymentsRequirementsMet = (p: BasePayment) => {
   for (const requirement of paymentRequirements) {
-    if (!requirement(p)) return false
+    if (!requirement(p)) return false;
   }
-  return true
-}
+  return true;
+};
 
 (async () => {
   const cycle = Number(opts.cycle);
@@ -55,16 +55,22 @@ const arePaymentsRequirementsMet = (p: BasePayment) =>{
   });
 
   const { delegatorPayments, feeIncomePayments, bondRewardPayments } =
-  result.cycleReport;
-  
-  const allPayments = [ ...delegatorPayments, ...feeIncomePayments, ...bondRewardPayments ];
-  const transactions = allPayments.filter(arePaymentsRequirementsMet).map(prepareTransaction)
-  
+    result.cycleReport;
+
+  const allPayments = [
+    ...delegatorPayments,
+    ...feeIncomePayments,
+    ...bondRewardPayments,
+  ];
+  const transactions = allPayments
+    .filter(arePaymentsRequirementsMet)
+    .map(prepareTransaction);
+
   if (opts.dryRun) {
-    print_payments_table(allPayments)
-    process.exit(0)
+    print_payments_table(allPayments);
+    process.exit(0);
   }
-  
+
   const provider = createProvider();
   await submitBatch(provider, transactions);
 })();

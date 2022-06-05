@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
 const JSONBigInt = require("json-bigint")({ alwaysParseAsBig: true });
 
 import axios, { AxiosInstance } from "axios";
@@ -17,8 +18,10 @@ export class TzKT implements Client {
 
   public async getCycleData(baker: string, cycle: number): Promise<CycleData> {
     console.info("Fetching cycle data from TzKT ...");
-    const { data } = await this.instance.get(`rewards/split/${baker}/${cycle}`)
-    const { data: { frozenDepositLimit } } = await this.instance.get(`accounts/${baker}`);
+    const { data } = await this.instance.get(`rewards/split/${baker}/${cycle}`);
+    const {
+      data: { frozenDepositLimit },
+    } = await this.instance.get(`accounts/${baker}`);
 
     const {
       stakingBalance,
@@ -27,7 +30,9 @@ export class TzKT implements Client {
       blockRewards,
       endorsementRewards,
       blockFees,
-    } = _.update(data, "delegators", (list) => _.map(list, (item) => _.pick(item, ["address", "balance"])))
+    } = _.update(data, "delegators", (list) =>
+      _.map(list, (item) => _.pick(item, ["address", "balance"]))
+    );
 
     console.info("Received cycle data from TzKT.");
     return {
@@ -37,14 +42,16 @@ export class TzKT implements Client {
       cycleRewards: sum(blockRewards, endorsementRewards, blockFees),
       frozenDepositLimit,
     };
-  };
+  }
 
   public getLastCycle = async () => {
     try {
-      const { data: { cycle: headCycle } } = await this.instance.get("/head")
-      return headCycle - 1
+      const {
+        data: { cycle: headCycle },
+      } = await this.instance.get("/head");
+      return headCycle - 1;
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   };
 }
