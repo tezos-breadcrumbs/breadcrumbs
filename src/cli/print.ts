@@ -5,7 +5,7 @@ import { MUTEZ_FACTOR } from "src/utils/constants";
 import { divide } from "src/utils/math";
 import { PrintablePayment } from "./interfaces";
 
-export const print_payments_table = (payments: BasePayment[]) => {
+export const printPaymentsTable = (payments: BasePayment[]) => {
 	const table = new Table();
 	const columns = ["delegator", "recipient", "delegatorBalance", "amount", "feeRate"]
 	table.addColumns(columns)
