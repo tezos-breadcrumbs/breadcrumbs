@@ -1,5 +1,5 @@
 import { BigNumber } from "bignumber.js";
-import { BreadcrumbsConfiguration } from "src/config";
+import { BreadcrumbsConfiguration } from "src/config/interfaces";
 import {
   getApplicableFee,
   getMinimumPaymentAmount,
@@ -91,7 +91,7 @@ describe("isOverDelegated", () => {
   });
 
   describe("getMinimumPaymentAmount", () => {
-    const minimumPaymentAmount = "1";
+    const minimumPaymentAmount = 1;
     const config: BreadcrumbsConfiguration = {
       ...BASE_CONFIG,
       minimum_payment_amount: minimumPaymentAmount,
