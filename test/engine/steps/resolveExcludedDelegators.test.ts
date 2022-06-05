@@ -6,7 +6,7 @@ import client from "src/api-client";
 import * as Polly from "test/helpers/polly";
 
 import { generateConfig } from "test/helpers";
-import { initializeCycleReport, isOverDelegated } from "src/engine/helpers";
+import { initializeCycleReport } from "src/engine/helpers";
 import {
   resolveExcludedDelegators,
   resolveBakerRewards,

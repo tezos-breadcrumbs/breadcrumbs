@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { DelegatorPayment, StepArguments } from "src/engine/interfaces";
+import { StepArguments } from "src/engine/interfaces";
 import { getMinimumPaymentAmount } from "src/engine/helpers";
 import BigNumber from "bignumber.js";
 

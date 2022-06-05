@@ -189,8 +189,7 @@ describe("sequential run", () => {
     const config = generateConfig();
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
-    const { cycleRewards, cycleDelegatedBalance, cycleStakingBalance } =
-      cycleData;
+    const { cycleRewards } = cycleData;
 
     const args = {
       config,
