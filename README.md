@@ -55,7 +55,7 @@ $ yarn install
 
 ### Usage
 
-To run rewards for a given cycle:
+To run rewards for a cycle:
 
 ```bash
 $ npm run pay -- --cycle=<cycle>
