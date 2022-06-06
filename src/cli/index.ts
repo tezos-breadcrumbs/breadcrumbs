@@ -23,6 +23,6 @@ export const run = async () => {
   await program.parseAsync();
 };
 
-export const get_cli_option = (opt: keyof OptionValues) => {
+export const getCliOption = (opt: keyof OptionValues) => {
   return cliOptions[opt];
 };
