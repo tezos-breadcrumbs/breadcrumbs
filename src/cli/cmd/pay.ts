@@ -11,6 +11,8 @@ import {
 } from "src/tezos-client";
 import { arePaymentsRequirementsMet } from "src/engine/validate";
 import { cliOptions } from "src/cli";
+import { writeCSV } from "src/fs-client";
+import _ from "lodash";
 
 export const pay = async (cycle: number) => {
   if (cliOptions.dryRun) {
@@ -47,5 +49,19 @@ export const pay = async (cycle: number) => {
   }
 
   const provider = createProvider();
-  await submitBatch(provider, transactions);
+  // await submitBatch(provider, transactions);
+
+  let headers = [
+    { id: "cycle", title: "Cycle" },
+    { id: "recipient", title: "Recipient" },
+    { id: "amount", title: "Amount" },
+  ];
+
+  let records = _.map(delegatorPayments, ({ cycle, recipient, amount }) => ({
+    cycle: cycle.toString(),
+    recipient,
+    amount: amount.toString(),
+  }));
+
+  await writeCSV(`delegator_payments/${cycle}.csv`, headers, records);
 };
