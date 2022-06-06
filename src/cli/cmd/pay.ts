@@ -12,13 +12,13 @@ import {
 import { arePaymentsRequirementsMet } from "src/engine/validate";
 import { cliOptions } from "src/cli";
 
-export const pay = async (cycle: number) => {
+export const pay = async (commandOptions) => {
   if (cliOptions.dryRun) {
     console.log(`Running in 'dry-run' mode...`);
   }
 
   const config = getConfig();
-
+  const cycle = commandOptions.cycle;
   const cycleReport = initializeCycleReport(cycle);
   const cycleData = await client.getCycleData(config.baking_address, cycle);
 
