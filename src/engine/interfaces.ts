@@ -1,6 +1,6 @@
 import { BigNumber } from "bignumber.js";
 import { CycleData } from "src/api-client/abstract_client";
-import { Config } from "src/config";
+import { BreadcrumbsConfiguration } from "src/config/interfaces";
 
 export interface CycleReport {
   cycle: number;
@@ -12,7 +12,7 @@ export interface CycleReport {
 }
 
 export interface StepArguments {
-  config: Config;
+  config: BreadcrumbsConfiguration;
   cycleData: CycleData;
   cycleReport: CycleReport;
   distributableRewards: BigNumber;

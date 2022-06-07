@@ -39,6 +39,6 @@ jobs:
 
       - name: Running test suite
         run: npm run test
-      
+
       - name: Linting files
         run: npm run lint

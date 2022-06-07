@@ -1,5 +1,5 @@
 import { BigNumber } from "bignumber.js";
-import { Config } from "src/config";
+import { BreadcrumbsConfiguration } from "src/config/interfaces";
 import {
   getApplicableFee,
   getMinimumPaymentAmount,
@@ -10,7 +10,7 @@ import { generateConfig } from "test/helpers";
 
 const TEST_DELEGATOR = "tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU";
 
-const BASE_CONFIG: Config = generateConfig();
+const BASE_CONFIG: BreadcrumbsConfiguration = generateConfig();
 
 describe("getApplicableFee", () => {
   test("returns default fee if no exception is specified", () => {
@@ -20,7 +20,7 @@ describe("getApplicableFee", () => {
   });
 
   test("returns alternative fee if  exception is specified", () => {
-    const config: Config = {
+    const config: BreadcrumbsConfiguration = {
       ...BASE_CONFIG,
       fee_exceptions: { [TEST_DELEGATOR]: "8" },
     };
@@ -39,7 +39,7 @@ describe("getRedirectAddress", () => {
 
   test("returns redirect address if it is specified", () => {
     const redirectAddress = "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur";
-    const updatedConfig: Config = {
+    const updatedConfig: BreadcrumbsConfiguration = {
       ...BASE_CONFIG,
       redirect_payments: { [TEST_DELEGATOR]: redirectAddress },
     };
@@ -91,8 +91,8 @@ describe("isOverDelegated", () => {
   });
 
   describe("getMinimumPaymentAmount", () => {
-    const minimumPaymentAmount = "1";
-    const config: Config = {
+    const minimumPaymentAmount = 1;
+    const config: BreadcrumbsConfiguration = {
       ...BASE_CONFIG,
       minimum_payment_amount: minimumPaymentAmount,
     };

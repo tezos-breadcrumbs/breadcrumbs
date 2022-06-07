@@ -14,6 +14,7 @@ import {
   resolveDelegatorRewards,
   resolveExcludedDelegators,
 } from "src/engine/steps";
+import { get } from "lodash";
 
 describe("resolveDelegatorRewards", () => {
   Polly.start();
@@ -80,13 +81,20 @@ describe("resolveDelegatorRewards", () => {
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
       expect(payment.recipient).toEqual(
-        input.config.redirect_payments[payment.delegator] || payment.delegator
+        get(
+          input.config.redirect_payments,
+          payment.delegator,
+          payment.delegator
+        )
       );
 
       expect(payment.feeRate).toStrictEqual(
         new BigNumber(
-          input.config.fee_exceptions[payment.delegator] ||
+          get(
+            input.config.fee_exceptions,
+            payment.delegator,
             input.config.default_fee
+          )
         ).div(100)
       );
 
@@ -96,8 +104,11 @@ describe("resolveDelegatorRewards", () => {
         .times(
           new BigNumber(100)
             .minus(
-              input.config.fee_exceptions[payment.delegator] ||
+              get(
+                input.config.fee_exceptions,
+                payment.delegator,
                 input.config.default_fee
+              )
             )
             .dividedBy(100)
         )
@@ -143,12 +154,18 @@ describe("resolveDelegatorRewards", () => {
       expect(payment.delegatorBalance).toEqual(share?.balance);
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
-      const paymentAddress =
-        input.config.redirect_payments[payment.delegator] || payment.delegator;
+      const paymentAddress = get(
+        input.config.redirect_payments,
+        payment.delegator,
+        payment.delegator
+      );
 
       const feeRate = new BigNumber(
-        input.config.fee_exceptions[payment.delegator] ||
+        get(
+          input.config.fee_exceptions,
+          payment.delegator,
           input.config.default_fee
+        )
       ).div(100);
 
       const amount = share?.balance
@@ -157,8 +174,11 @@ describe("resolveDelegatorRewards", () => {
         .times(
           new BigNumber(100)
             .minus(
-              input.config.fee_exceptions[payment.delegator] ||
+              get(
+                input.config.fee_exceptions,
+                payment.delegator,
                 input.config.default_fee
+              )
             )
             .dividedBy(100)
         )
@@ -210,12 +230,18 @@ describe("resolveDelegatorRewards", () => {
       expect(payment.delegatorBalance).toEqual(share?.balance);
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
-      const paymentAddress =
-        input.config.redirect_payments[payment.delegator] || payment.delegator;
+      const paymentAddress = get(
+        input.config.redirect_payments,
+        payment.delegator,
+        payment.delegator
+      );
 
       const feeRate = new BigNumber(
-        input.config.fee_exceptions[payment.delegator] ||
+        get(
+          input.config.fee_exceptions,
+          payment.delegator,
           input.config.default_fee
+        )
       ).div(100);
 
       const amount = share?.balance
@@ -224,8 +250,11 @@ describe("resolveDelegatorRewards", () => {
         .times(
           new BigNumber(100)
             .minus(
-              input.config.fee_exceptions[payment.delegator] ||
+              get(
+                input.config.fee_exceptions,
+                payment.delegator,
                 input.config.default_fee
+              )
             )
             .dividedBy(100)
         )
@@ -290,12 +319,18 @@ describe("resolveDelegatorRewards", () => {
       expect(payment.delegatorBalance).toEqual(share?.balance);
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
-      const paymentAddress =
-        input.config.redirect_payments[payment.delegator] || payment.delegator;
+      const paymentAddress = get(
+        input.config.redirect_payments,
+        payment.delegator,
+        payment.delegator
+      );
 
       const feeRate = new BigNumber(
-        input.config.fee_exceptions[payment.delegator] ||
+        get(
+          input.config.fee_exceptions,
+          payment.delegator,
           input.config.default_fee
+        )
       ).div(100);
 
       const amount = share?.balance
@@ -305,8 +340,11 @@ describe("resolveDelegatorRewards", () => {
         .times(
           new BigNumber(100)
             .minus(
-              input.config.fee_exceptions[payment.delegator] ||
+              get(
+                input.config.fee_exceptions,
+                payment.delegator,
                 input.config.default_fee
+              )
             )
             .dividedBy(100)
         );

@@ -1,5 +1,5 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
-import _ from "lodash";
+import _, { get } from "lodash";
 import BigNumber from "bignumber.js";
 
 import client from "src/api-client";
@@ -154,13 +154,20 @@ describe("sequential run", () => {
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
       expect(payment.recipient).toEqual(
-        input.config.redirect_payments[payment.delegator] || payment.delegator
+        get(
+          input.config.redirect_payments,
+          payment.delegator,
+          payment.delegator
+        )
       );
 
       expect(payment.feeRate).toStrictEqual(
         new BigNumber(
-          input.config.fee_exceptions[payment.delegator] ||
+          get(
+            input.config.fee_exceptions,
+            payment.delegator,
             input.config.default_fee
+          )
         ).div(100)
       );
 
@@ -170,8 +177,11 @@ describe("sequential run", () => {
         .times(
           new BigNumber(100)
             .minus(
-              input.config.fee_exceptions[payment.delegator] ||
+              get(
+                input.config.fee_exceptions,
+                payment.delegator,
                 input.config.default_fee
+              )
             )
             .dividedBy(100)
         )
