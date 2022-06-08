@@ -49,7 +49,7 @@ export const pay = async (commandOptions) => {
 
   try {
     const provider = createProvider();
-    // await submitBatch(provider, transactions);
+    await submitBatch(provider, transactions);
     await writeDelegatorReport(
       cycle,
       delegatorPayments,
