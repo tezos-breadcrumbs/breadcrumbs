@@ -3,9 +3,15 @@ import { createObjectCsvWriter } from "csv-writer";
 import { DelegatorPayment } from "src/engine/interfaces";
 
 const DELEGATOR_REPORT_HEADERS = [
-  { id: "cycle", title: "Cycle" },
-  { id: "recipient", title: "Recipient" },
-  { id: "amount", title: "Amount" },
+  { id: "cycle", title: "cycle" },
+  { id: "delegator", title: "delegator" },
+  { id: "delegator_balance", title: "delegated_balance" },
+  { id: "total_baker_balance", title: "total_baker_balance" },
+  { id: "total_cycle_rewards", title: "total_cycle_rewards" },
+  { id: "fee_rate", title: "fee_rate" },
+  { id: "amount", title: "amount" },
+  { id: "recipient", title: "recipient" },
+  { id: "timestamp", title: "timestamp" },
 ];
 
 export const writeDelegatorPayments = async (
@@ -18,7 +24,6 @@ export const writeDelegatorPayments = async (
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path, { recursive: true });
   }
-  console.log;
 
   await writeFile(`${path}/${cycle}.csv`, DELEGATOR_REPORT_HEADERS, records);
 };
@@ -26,8 +31,14 @@ export const writeDelegatorPayments = async (
 export const prepareDelegatorReport = (payment: DelegatorPayment) => {
   return {
     cycle: payment.cycle.toString(),
+    delegator: payment.delegator,
+    delegator_balance: payment.delegatorBalance.toString(),
+    total_baker_balance: payment.bakerStakingBalance.toString(),
+    total_cycle_rewards: payment.bakerCycleRewards.toString(),
+    fee_rate: payment.feeRate.toString(),
     recipient: payment.recipient,
     amount: payment.amount.toString(),
+    timestamp: new Date().toUTCString(),
   };
 };
 
