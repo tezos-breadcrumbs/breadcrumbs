@@ -38,7 +38,7 @@ export const prepareDelegatorReport = (payment: DelegatorPayment) => {
     fee_rate: payment.feeRate.toString(),
     recipient: payment.recipient,
     amount: payment.amount.toString(),
-    timestamp: new Date().toUTCString(),
+    timestamp: new Date().toISOString(),
   };
 };
 
