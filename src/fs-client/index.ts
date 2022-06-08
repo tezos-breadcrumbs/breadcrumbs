@@ -1,6 +1,8 @@
-const fs = require("fs");
+import fs from "fs";
 import { createObjectCsvWriter } from "csv-writer";
-import { DelegatorPayment } from "src/engine/interfaces";
+import { stringify } from "hjson";
+
+import { CycleReport, DelegatorPayment } from "src/engine/interfaces";
 
 const DELEGATOR_REPORT_HEADERS = [
   { id: "cycle", title: "cycle" },
@@ -14,7 +16,7 @@ const DELEGATOR_REPORT_HEADERS = [
   { id: "timestamp", title: "timestamp" },
 ];
 
-export const writeDelegatorPayments = async (
+export const writeDelegatorReport = async (
   cycle: number,
   payments: DelegatorPayment[],
   path: string
@@ -25,10 +27,29 @@ export const writeDelegatorPayments = async (
     fs.mkdirSync(path, { recursive: true });
   }
 
-  await writeFile(`${path}/${cycle}.csv`, DELEGATOR_REPORT_HEADERS, records);
+  await writeCSV(`${path}/${cycle}.csv`, DELEGATOR_REPORT_HEADERS, records);
 };
 
-export const prepareDelegatorReport = (payment: DelegatorPayment) => {
+export const writeCycleReport = async (
+  cycleReport: CycleReport,
+  path: string
+) => {
+  if (!fs.existsSync(path)) {
+    fs.mkdirSync(path, { recursive: true });
+  }
+
+  await writeHJSON(path, cycleReport.cycle, prepareCycleReport(cycleReport));
+};
+
+const prepareCycleReport = (cycleReport: CycleReport) => {
+  return {
+    cycle: cycleReport.cycle,
+    feeIncome: cycleReport.feeIncome.toString(),
+    lockedBondRewards: cycleReport.lockedBondRewards.toString(),
+  };
+};
+
+const prepareDelegatorReport = (payment: DelegatorPayment) => {
   return {
     cycle: payment.cycle.toString(),
     delegator: payment.delegator,
@@ -42,7 +63,7 @@ export const prepareDelegatorReport = (payment: DelegatorPayment) => {
   };
 };
 
-const writeFile = async (
+const writeCSV = async (
   path: string,
   header: { id: string; title: string }[],
   records: { [key: string]: string }[]
@@ -53,4 +74,15 @@ const writeFile = async (
   });
 
   await CSVWriter.writeRecords(records);
+};
+
+const writeHJSON = async (
+  path: string,
+  cycle: number,
+  object: { [key: string]: any }
+) => {
+  const json = stringify(object, { space: "  " });
+  await fs.writeFile(`${path}/${cycle}.hjson`, json, (err) => {
+    if (err) console.log(err);
+  });
 };

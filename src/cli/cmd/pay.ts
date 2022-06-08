@@ -11,7 +11,7 @@ import {
 } from "src/tezos-client";
 import { arePaymentsRequirementsMet } from "src/engine/validate";
 import { cliOptions } from "src/cli";
-import { writeDelegatorPayments } from "src/fs-client";
+import { writeCycleReport, writeDelegatorReport } from "src/fs-client";
 
 export const pay = async (commandOptions) => {
   if (cliOptions.dryRun) {
@@ -50,8 +50,18 @@ export const pay = async (commandOptions) => {
   try {
     const provider = createProvider();
     // await submitBatch(provider, transactions);
-    await writeDelegatorPayments(cycle, delegatorPayments, "reports/success");
+    await writeDelegatorReport(
+      cycle,
+      delegatorPayments,
+      "reports/delegator_payments/success"
+    );
+
+    await writeCycleReport(result.cycleReport, "reports/cycle_summary/");
   } catch (e) {
-    await writeDelegatorPayments(cycle, delegatorPayments, "reports/failed");
+    await writeDelegatorReport(
+      cycle,
+      delegatorPayments,
+      "reports/delegator_payments/failed"
+    );
   }
 };
