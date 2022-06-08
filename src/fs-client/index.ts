@@ -13,6 +13,7 @@ const DELEGATOR_REPORT_HEADERS = [
   { id: "fee_rate", title: "fee_rate" },
   { id: "amount", title: "amount" },
   { id: "recipient", title: "recipient" },
+  { id: "tx_hash", title: "tx_hash" },
   { id: "timestamp", title: "timestamp" },
 ];
 
@@ -60,6 +61,7 @@ const prepareDelegatorReport = (payment: DelegatorPayment) => {
     recipient: payment.recipient,
     amount: payment.amount.toString(),
     timestamp: new Date().toISOString(),
+    tx_hash: payment.hash,
   };
 };
 

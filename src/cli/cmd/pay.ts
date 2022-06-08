@@ -12,6 +12,7 @@ import {
 import { arePaymentsRequirementsMet } from "src/engine/validate";
 import { cliOptions } from "src/cli";
 import { writeCycleReport, writeDelegatorReport } from "src/fs-client";
+import { map } from "lodash";
 
 export const pay = async (commandOptions) => {
   if (cliOptions.dryRun) {
@@ -49,10 +50,11 @@ export const pay = async (commandOptions) => {
 
   try {
     const provider = createProvider();
-    await submitBatch(provider, transactions);
+    const opHash = await submitBatch(provider, transactions);
+
     await writeDelegatorReport(
       cycle,
-      delegatorPayments,
+      map(delegatorPayments, (p) => ({ ...p, hash: opHash })),
       "reports/delegator_payments/success"
     );
 
