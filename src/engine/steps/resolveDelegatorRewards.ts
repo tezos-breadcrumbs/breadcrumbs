@@ -49,6 +49,7 @@ export const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
       bakerStakingBalance: cycleStakingBalance,
       bakerCycleRewards: cycleRewards,
       feeRate: applicableFee,
+      fee: bakerShare,
       amount: delegatorShare,
       hash: "",
     });

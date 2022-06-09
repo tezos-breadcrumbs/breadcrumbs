@@ -2,27 +2,34 @@ import fs from "fs";
 import { createObjectCsvWriter } from "csv-writer";
 import { stringify } from "hjson";
 
-import { CycleReport, DelegatorPayment } from "src/engine/interfaces";
+import {
+  BasePayment,
+  CycleReport,
+  DelegatorPayment,
+} from "src/engine/interfaces";
+import { get } from "lodash";
 
 const DELEGATOR_REPORT_HEADERS = [
   { id: "cycle", title: "cycle" },
+  { id: "payment_type", title: "payment_type" },
   { id: "delegator", title: "delegator" },
   { id: "delegator_balance", title: "delegated_balance" },
   { id: "total_baker_balance", title: "total_baker_balance" },
   { id: "total_cycle_rewards", title: "total_cycle_rewards" },
   { id: "fee_rate", title: "fee_rate" },
+  { id: "fee", title: "fee" },
   { id: "amount", title: "amount" },
   { id: "recipient", title: "recipient" },
   { id: "tx_hash", title: "tx_hash" },
   { id: "timestamp", title: "timestamp" },
 ];
 
-export const writeDelegatorReport = async (
+export const writePaymentReport = async (
   cycle: number,
-  payments: DelegatorPayment[],
+  payments: (DelegatorPayment | BasePayment)[],
   path: string
 ) => {
-  const records = payments.map(prepareDelegatorReport);
+  const records = payments.map(formatPayment);
 
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path, { recursive: true });
@@ -50,20 +57,27 @@ const prepareCycleReport = (cycleReport: CycleReport) => {
   };
 };
 
-const prepareDelegatorReport = (payment: DelegatorPayment) => {
+function formatPayment(payment: DelegatorPayment): any;
+function formatPayment(payment: BasePayment): any;
+
+function formatPayment(payment: DelegatorPayment | BasePayment) {
   return {
+    payment_type: payment.type,
     cycle: payment.cycle.toString(),
-    delegator: payment.delegator,
-    delegator_balance: payment.delegatorBalance.toString(),
-    total_baker_balance: payment.bakerStakingBalance.toString(),
-    total_cycle_rewards: payment.bakerCycleRewards.toString(),
-    fee_rate: payment.feeRate.toString(),
     recipient: payment.recipient,
     amount: payment.amount.toString(),
     timestamp: new Date().toISOString(),
     tx_hash: payment.hash,
+    /* The below fields are applicable to delegator payments only */
+
+    delegator: get(payment, "delegator", ""),
+    delegator_balance: get(payment, "delegatorBalance", "").toString(),
+    total_baker_balance: get(payment, "bakerStakingBalance", "").toString(),
+    total_cycle_rewards: get(payment, "bakerCycleRewards", "").toString(),
+    fee: get(payment, "fee", "").toString(),
+    fee_rate: get(payment, "feeRate", "").toString(),
   };
-};
+}
 
 const writeCSV = async (
   path: string,

@@ -11,7 +11,7 @@ import {
 } from "src/tezos-client";
 import { arePaymentsRequirementsMet } from "src/engine/validate";
 import { cliOptions } from "src/cli";
-import { writeCycleReport, writeDelegatorReport } from "src/fs-client";
+import { writeCycleReport, writePaymentReport } from "src/fs-client";
 import { map } from "lodash";
 
 export const pay = async (commandOptions) => {
@@ -39,6 +39,7 @@ export const pay = async (commandOptions) => {
     ...feeIncomePayments,
     ...bondRewardPayments,
   ];
+
   const transactions = allPayments
     .filter(arePaymentsRequirementsMet)
     .map(prepareTransaction);
@@ -52,18 +53,17 @@ export const pay = async (commandOptions) => {
     const provider = createProvider();
     const opHash = await submitBatch(provider, transactions);
 
-    await writeDelegatorReport(
+    const successfulPayments = map(allPayments, (p) => ({
+      ...p,
+      hash: opHash,
+    }));
+    await writePaymentReport(
       cycle,
-      map(delegatorPayments, (p) => ({ ...p, hash: opHash })),
-      "reports/delegator_payments/success"
+      successfulPayments,
+      "reports/payments/success"
     );
-
     await writeCycleReport(result.cycleReport, "reports/cycle_summary/");
   } catch (e) {
-    await writeDelegatorReport(
-      cycle,
-      delegatorPayments,
-      "reports/delegator_payments/failed"
-    );
+    await writePaymentReport(cycle, allPayments, "reports/payments/failed");
   }
 };

@@ -37,6 +37,7 @@ export interface DelegatorPayment extends BasePayment {
   delegatorBalance: BigNumber;
   bakerStakingBalance: BigNumber;
   bakerCycleRewards: BigNumber;
+  fee: BigNumber;
   feeRate: BigNumber;
 }
 
