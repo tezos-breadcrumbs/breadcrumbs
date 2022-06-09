@@ -16,7 +16,11 @@ export const resolveExcludedPaymentsByMinimumAmount = (
   const delegatorPayments = _.map(cycleReport.delegatorPayments, (payment) => {
     if (payment.amount.lt(minimumPaymentAmount)) {
       feeIncome = feeIncome.plus(payment.amount);
-      return { ...payment, amount: new BigNumber(0) };
+      return {
+        ...payment,
+        amount: new BigNumber(0),
+        note: "payment_below_minimum",
+      };
     } else {
       return payment;
     }

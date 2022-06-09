@@ -17,7 +17,11 @@ export const resolveExcludedPaymentsByMinimumDelegatorBalance = (
   const delegatorPayments = _.map(cycleReport.delegatorPayments, (payment) => {
     if (payment.delegatorBalance.lt(minimumDelegatorBalance)) {
       feeIncome = feeIncome.plus(payment.amount);
-      return { ...payment, amount: new BigNumber(0) };
+      return {
+        ...payment,
+        amount: new BigNumber(0),
+        note: "balance_below_minimum",
+      };
     } else {
       return payment;
     }

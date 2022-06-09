@@ -39,6 +39,7 @@ export interface DelegatorPayment extends BasePayment {
   bakerCycleRewards: BigNumber;
   fee: BigNumber;
   feeRate: BigNumber;
+  note?: string;
 }
 
 export type StepFunction = (args: StepArguments) => StepArguments;

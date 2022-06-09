@@ -22,6 +22,7 @@ const DELEGATOR_REPORT_HEADERS = [
   { id: "recipient", title: "recipient" },
   { id: "tx_hash", title: "tx_hash" },
   { id: "timestamp", title: "timestamp" },
+  { id: "note", title: "note" },
 ];
 
 export const writePaymentReport = async (
@@ -69,13 +70,13 @@ function formatPayment(payment: DelegatorPayment | BasePayment) {
     timestamp: new Date().toISOString(),
     tx_hash: payment.hash,
     /* The below fields are applicable to delegator payments only */
-
     delegator: get(payment, "delegator", ""),
     delegator_balance: get(payment, "delegatorBalance", "").toString(),
     total_baker_balance: get(payment, "bakerStakingBalance", "").toString(),
     total_cycle_rewards: get(payment, "bakerCycleRewards", "").toString(),
     fee: get(payment, "fee", "").toString(),
     fee_rate: get(payment, "feeRate", "").toString(),
+    note: get(payment, "note", "").toString(),
   };
 }
 
