@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { StepArguments } from "src/engine/interfaces";
+import { ENoteType, StepArguments } from "src/engine/interfaces";
 import { getMinimumPaymentAmount } from "src/engine/helpers";
 import BigNumber from "bignumber.js";
 
@@ -19,7 +19,7 @@ export const resolveExcludedPaymentsByMinimumAmount = (
       return {
         ...payment,
         amount: new BigNumber(0),
-        note: "payment_below_minimum",
+        note: ENoteType.PaymentBelowMinimum,
       };
     } else {
       return payment;

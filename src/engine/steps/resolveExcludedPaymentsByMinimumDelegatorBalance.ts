@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { StepArguments } from "src/engine/interfaces";
+import { ENoteType, StepArguments } from "src/engine/interfaces";
 import { getMinimumDelegationAmount } from "src/engine/helpers";
 import BigNumber from "bignumber.js";
 
@@ -20,7 +20,7 @@ export const resolveExcludedPaymentsByMinimumDelegatorBalance = (
       return {
         ...payment,
         amount: new BigNumber(0),
-        note: "balance_below_minimum",
+        note: ENoteType.BalanceBelowMinimum,
       };
     } else {
       return payment;

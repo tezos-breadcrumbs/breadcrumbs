@@ -24,6 +24,11 @@ export enum EPaymentType {
   BondReward = "bond_reward",
 }
 
+export enum ENoteType {
+  BalanceBelowMinimum = "balance_below_minimum",
+  PaymentBelowMinimum = "payment_below_minimum",
+}
+
 export interface BasePayment {
   type: EPaymentType;
   cycle: number;
@@ -39,7 +44,7 @@ export interface DelegatorPayment extends BasePayment {
   bakerCycleRewards: BigNumber;
   fee: BigNumber;
   feeRate: BigNumber;
-  note?: string;
+  note?: ENoteType;
 }
 
 export type StepFunction = (args: StepArguments) => StepArguments;
