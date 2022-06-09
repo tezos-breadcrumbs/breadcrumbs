@@ -15,6 +15,7 @@ import {
   resolveExcludedDelegators,
 } from "src/engine/steps";
 import { get } from "lodash";
+import { EPaymentType } from "src/engine/interfaces";
 
 describe("resolveDelegatorRewards", () => {
   Polly.start();
@@ -148,6 +149,7 @@ describe("resolveDelegatorRewards", () => {
         (share) => share.address === payment.delegator
       );
 
+      expect(payment.type).toEqual(EPaymentType.Delegator);
       expect(payment.bakerStakingBalance).toEqual(cycleStakingBalance);
       expect(payment.cycle).toEqual(input.cycleReport.cycle);
       expect(payment.delegator).toEqual(share?.address);
@@ -224,6 +226,7 @@ describe("resolveDelegatorRewards", () => {
         (share) => share.address === payment.delegator
       );
 
+      expect(payment.type).toEqual(EPaymentType.Delegator);
       expect(payment.bakerStakingBalance).toEqual(cycleStakingBalance);
       expect(payment.cycle).toEqual(input.cycleReport.cycle);
       expect(payment.delegator).toEqual(share?.address);
@@ -313,6 +316,7 @@ describe("resolveDelegatorRewards", () => {
         (share) => share.address === payment.delegator
       );
 
+      expect(payment.type).toEqual(EPaymentType.Delegator);
       expect(payment.bakerStakingBalance).toEqual(cycleStakingBalance);
       expect(payment.cycle).toEqual(input.cycleReport.cycle);
       expect(payment.delegator).toEqual(share?.address);

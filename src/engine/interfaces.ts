@@ -18,7 +18,14 @@ export interface StepArguments {
   distributableRewards: BigNumber;
 }
 
+export enum EPaymentType {
+  Delegator = "delegator_payment",
+  FeeIncome = "fee_income_payment",
+  BondReward = "bond_reward",
+}
+
 export interface BasePayment {
+  type: EPaymentType;
   cycle: number;
   recipient: string;
   amount: BigNumber;

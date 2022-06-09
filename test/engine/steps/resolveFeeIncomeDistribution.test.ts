@@ -14,6 +14,7 @@ import {
 } from "src/engine/steps";
 
 import { initializeCycleReport } from "src/engine/helpers";
+import { EPaymentType } from "src/engine/interfaces";
 
 describe("resolveFeeIncomeDistrubtion", () => {
   Polly.start();
@@ -65,6 +66,7 @@ describe("resolveFeeIncomeDistrubtion", () => {
     } = resolveFeeIncomeDistribution(input);
 
     expect(feeIncomePayments).toHaveLength(1);
+    expect(feeIncomePayments[0].type).toEqual(EPaymentType.FeeIncome);
     expect(feeIncomePayments[0].recipient).toEqual(recipientAddress);
     expect(feeIncomePayments[0].amount).toEqual(input.cycleReport.feeIncome);
   });

@@ -1,5 +1,9 @@
 import _ from "lodash";
-import { BasePayment, StepArguments } from "src/engine/interfaces";
+import {
+  BasePayment,
+  EPaymentType,
+  StepArguments,
+} from "src/engine/interfaces";
 import { divide, multiply, integerize } from "src/utils/math";
 
 export const resolveFeeIncomeDistribution = (
@@ -21,6 +25,7 @@ export const resolveFeeIncomeDistribution = (
       const payable = integerize(multiply(share, feeIncome));
 
       const payment = {
+        type: EPaymentType.FeeIncome,
         cycle: args.cycleReport.cycle,
         recipient,
         amount: payable,
