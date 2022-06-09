@@ -20,6 +20,7 @@ export const resolveExcludedPaymentsByMinimumDelegatorBalance = (
       return {
         ...payment,
         amount: new BigNumber(0),
+        fee: payment.amount,
         note: ENoteType.BalanceBelowMinimum,
       };
     } else {

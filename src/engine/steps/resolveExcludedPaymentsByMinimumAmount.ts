@@ -18,6 +18,7 @@ export const resolveExcludedPaymentsByMinimumAmount = (
       feeIncome = feeIncome.plus(payment.amount);
       return {
         ...payment,
+        fee: payment.amount,
         amount: new BigNumber(0),
         note: ENoteType.PaymentBelowMinimum,
       };

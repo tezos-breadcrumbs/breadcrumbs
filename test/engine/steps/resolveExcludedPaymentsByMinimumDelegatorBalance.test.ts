@@ -113,6 +113,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
       ) {
         additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
         expect(outputPayments[i].amount.eq(0));
+        expect(outputPayments[i].fee).toStrictEqual(inputPayments[i].amount);
         expect(outputPayments[i].note).toEqual(ENoteType.BalanceBelowMinimum);
       } else {
         expect(outputPayments[i]).toStrictEqual(inputPayments[i]);
