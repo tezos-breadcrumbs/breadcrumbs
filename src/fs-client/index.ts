@@ -10,6 +10,7 @@ import {
 import { get } from "lodash";
 
 const DELEGATOR_REPORT_HEADERS = [
+  { id: "timestamp", title: "timestamp" },
   { id: "cycle", title: "cycle" },
   { id: "payment_type", title: "payment_type" },
   { id: "delegator", title: "delegator" },
@@ -21,7 +22,6 @@ const DELEGATOR_REPORT_HEADERS = [
   { id: "amount", title: "amount" },
   { id: "recipient", title: "recipient" },
   { id: "tx_hash", title: "tx_hash" },
-  { id: "timestamp", title: "timestamp" },
   { id: "note", title: "note" },
 ];
 
@@ -58,10 +58,9 @@ const prepareCycleReport = (cycleReport: CycleReport) => {
   };
 };
 
-function formatPayment(payment: DelegatorPayment): any;
-function formatPayment(payment: BasePayment): any;
-
-function formatPayment(payment: DelegatorPayment | BasePayment) {
+function formatPayment(payment: DelegatorPayment | BasePayment): {
+  [key: string]: string;
+} {
   return {
     payment_type: payment.type,
     cycle: payment.cycle.toString(),
