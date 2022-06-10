@@ -62,7 +62,11 @@ export const pay = async (commandOptions) => {
       successfulPayments,
       "reports/payments/success"
     );
-    await writeCycleReport(result.cycleReport, "reports/cycle_summary/");
+    await writeCycleReport(
+      result.cycleReport,
+      cycleData,
+      "reports/cycle_summary/"
+    );
   } catch (e) {
     await writePaymentReport(cycle, allPayments, "reports/payments/failed");
   }
