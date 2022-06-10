@@ -11,17 +11,17 @@ import {
 } from "src/engine/interfaces";
 
 const DELEGATOR_REPORT_HEADERS = [
-  { id: "timestamp", title: "timestamp" },
-  { id: "cycle", title: "cycle" },
-  { id: "payment_type", title: "payment_type" },
-  { id: "delegator", title: "delegator" },
-  { id: "delegator_balance", title: "delegated_balance" },
-  { id: "fee_rate", title: "fee_rate" },
-  { id: "fee", title: "fee" },
-  { id: "amount", title: "amount" },
-  { id: "recipient", title: "recipient" },
-  { id: "tx_hash", title: "tx_hash" },
-  { id: "note", title: "note" },
+  { id: "timestamp", title: "Timestamp" },
+  { id: "cycle", title: "Cycle" },
+  { id: "payment_type", title: "Payment Type" },
+  { id: "delegator", title: "Delegator" },
+  { id: "delegator_balance", title: "Delegated Balance" },
+  { id: "fee_rate", title: "Fee Rate" },
+  { id: "fee", title: "Fee" },
+  { id: "amount", title: "Amount" },
+  { id: "recipient", title: "Recipient" },
+  { id: "tx_hash", title: "Transaction Hash" },
+  { id: "note", title: "Note" },
 ];
 
 export const writePaymentReport = async (

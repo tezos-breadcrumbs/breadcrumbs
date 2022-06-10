@@ -19,14 +19,14 @@ export interface StepArguments {
 }
 
 export enum EPaymentType {
-  Delegator = "delegator_payment",
-  FeeIncome = "fee_income_payment",
-  BondReward = "bond_reward",
+  Delegator = "Delegator Payment",
+  FeeIncome = "Fee Income Payment",
+  BondReward = "Bond Reward Payment",
 }
 
 export enum ENoteType {
-  BalanceBelowMinimum = "balance_below_minimum",
-  PaymentBelowMinimum = "payment_below_minimum",
+  BalanceBelowMinimum = "Balance Below Minimum",
+  PaymentBelowMinimum = "Payment Amount Below Minimum",
 }
 
 export interface BasePayment {
