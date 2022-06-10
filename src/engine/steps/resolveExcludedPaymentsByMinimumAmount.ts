@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { StepArguments } from "src/engine/interfaces";
+import { ENoteType, StepArguments } from "src/engine/interfaces";
 import { getMinimumPaymentAmount } from "src/engine/helpers";
 import BigNumber from "bignumber.js";
 
@@ -16,7 +16,12 @@ export const resolveExcludedPaymentsByMinimumAmount = (
   const delegatorPayments = _.map(cycleReport.delegatorPayments, (payment) => {
     if (payment.amount.lt(minimumPaymentAmount)) {
       feeIncome = feeIncome.plus(payment.amount);
-      return { ...payment, amount: new BigNumber(0) };
+      return {
+        ...payment,
+        fee: payment.amount,
+        amount: new BigNumber(0),
+        note: ENoteType.PaymentBelowMinimum,
+      };
     } else {
       return payment;
     }

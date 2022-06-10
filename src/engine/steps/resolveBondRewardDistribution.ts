@@ -1,5 +1,9 @@
 import _ from "lodash";
-import { BasePayment, StepArguments } from "src/engine/interfaces";
+import {
+  BasePayment,
+  EPaymentType,
+  StepArguments,
+} from "src/engine/interfaces";
 import { divide, multiply, integerize } from "src/utils/math";
 
 export const resolveBondRewardDistribution = (
@@ -21,6 +25,7 @@ export const resolveBondRewardDistribution = (
       const payable = integerize(multiply(share, lockedBondRewards));
 
       const payment = {
+        type: EPaymentType.BondReward,
         cycle: args.cycleReport.cycle,
         recipient,
         amount: payable,

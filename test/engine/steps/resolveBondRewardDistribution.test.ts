@@ -14,6 +14,7 @@ import {
 } from "src/engine/steps";
 
 import { initializeCycleReport } from "src/engine/helpers";
+import { EPaymentType } from "src/engine/interfaces";
 
 describe("resolveBondRewardDistribution", () => {
   Polly.start();
@@ -66,6 +67,7 @@ describe("resolveBondRewardDistribution", () => {
     } = resolveBondRewardDistribution(input);
 
     expect(bondRewardPayments).toHaveLength(1);
+    expect(bondRewardPayments[0].type).toEqual(EPaymentType.BondReward);
     expect(bondRewardPayments[0].recipient).toEqual(recipientAddress);
     expect(bondRewardPayments[0].amount).toEqual(
       input.cycleReport.lockedBondRewards

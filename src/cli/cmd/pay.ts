@@ -11,6 +11,8 @@ import {
 } from "src/tezos-client";
 import { arePaymentsRequirementsMet } from "src/engine/validate";
 import { cliOptions } from "src/cli";
+import { writeCycleReport, writePaymentReport } from "src/fs-client";
+import { map } from "lodash";
 
 export const pay = async (commandOptions) => {
   if (cliOptions.dryRun) {
@@ -37,6 +39,7 @@ export const pay = async (commandOptions) => {
     ...feeIncomePayments,
     ...bondRewardPayments,
   ];
+
   const transactions = allPayments
     .filter(arePaymentsRequirementsMet)
     .map(prepareTransaction);
@@ -46,6 +49,25 @@ export const pay = async (commandOptions) => {
     process.exit(0);
   }
 
-  const provider = createProvider();
-  await submitBatch(provider, transactions);
+  try {
+    const provider = createProvider();
+    const opHash = await submitBatch(provider, transactions);
+
+    const successfulPayments = map(allPayments, (p) => ({
+      ...p,
+      hash: opHash,
+    }));
+    await writePaymentReport(
+      cycle,
+      successfulPayments,
+      "reports/payments/success"
+    );
+    await writeCycleReport(
+      result.cycleReport,
+      cycleData,
+      "reports/cycle_summary/"
+    );
+  } catch (e) {
+    await writePaymentReport(cycle, allPayments, "reports/payments/failed");
+  }
 };

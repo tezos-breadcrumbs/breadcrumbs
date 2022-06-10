@@ -29,7 +29,7 @@ export const prepareTransaction = (
 export const submitBatch = async (
   tezos: TezosToolkit,
   payments: WalletParamsWithKind[]
-) => {
+): Promise<string> => {
   console.log("Submitting batch");
   const batch = tezos.wallet.batch(payments);
   const operation = await batch.send();
@@ -37,4 +37,5 @@ export const submitBatch = async (
   console.log(
     `Transaction confirmed on https://ithacanet.tzkt.io/${operation.opHash}`
   );
+  return operation.opHash;
 };

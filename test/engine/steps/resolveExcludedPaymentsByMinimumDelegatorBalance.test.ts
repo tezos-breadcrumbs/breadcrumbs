@@ -15,6 +15,8 @@ import {
   resolveExcludedPaymentsByMinimumAmount,
   resolveExcludedPaymentsByMinimumDelegatorBalance,
 } from "src/engine/steps";
+import { MUTEZ_FACTOR } from "src/utils/constants";
+import { ENoteType } from "src/engine/interfaces";
 
 describe("resolveExcludedPaymentsByMinimumAmount", () => {
   Polly.start();
@@ -106,11 +108,13 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
     for (let i = 0; i < inputPayments.length; i++) {
       if (
         inputPayments[i].delegatorBalance.lt(
-          minimumDelegatorBalance.times(1000000)
+          minimumDelegatorBalance.times(MUTEZ_FACTOR)
         )
       ) {
         additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
         expect(outputPayments[i].amount.eq(0));
+        expect(outputPayments[i].fee).toStrictEqual(inputPayments[i].amount);
+        expect(outputPayments[i].note).toEqual(ENoteType.BalanceBelowMinimum);
       } else {
         expect(outputPayments[i]).toStrictEqual(inputPayments[i]);
       }

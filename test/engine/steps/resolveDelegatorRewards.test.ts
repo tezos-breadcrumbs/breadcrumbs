@@ -15,6 +15,7 @@ import {
   resolveExcludedDelegators,
 } from "src/engine/steps";
 import { get } from "lodash";
+import { EPaymentType } from "src/engine/interfaces";
 
 describe("resolveDelegatorRewards", () => {
   Polly.start();
@@ -98,7 +99,7 @@ describe("resolveDelegatorRewards", () => {
         ).div(100)
       );
 
-      const expectedamount = share?.balance
+      const expectedAmount = share?.balance
         .div(input.cycleData.cycleDelegatedBalance)
         .times(input.distributableRewards)
         .times(
@@ -114,7 +115,23 @@ describe("resolveDelegatorRewards", () => {
         )
         .dp(0, BigNumber.ROUND_DOWN);
 
-      expect(payment.amount).toStrictEqual(expectedamount);
+      expect(payment.amount).toStrictEqual(expectedAmount);
+
+      const expectedFee = share?.balance
+        .div(input.cycleData.cycleDelegatedBalance)
+        .times(input.distributableRewards)
+        .times(
+          new BigNumber(
+            get(
+              input.config.fee_exceptions,
+              payment.delegator,
+              input.config.default_fee
+            )
+          ).dividedBy(100)
+        )
+        .dp(0, BigNumber.ROUND_DOWN);
+
+      expect(payment.fee).toStrictEqual(expectedFee);
     });
 
     expect(output.cycleReport.delegatorPayments).toHaveLength(
@@ -148,6 +165,7 @@ describe("resolveDelegatorRewards", () => {
         (share) => share.address === payment.delegator
       );
 
+      expect(payment.type).toEqual(EPaymentType.Delegator);
       expect(payment.bakerStakingBalance).toEqual(cycleStakingBalance);
       expect(payment.cycle).toEqual(input.cycleReport.cycle);
       expect(payment.delegator).toEqual(share?.address);
@@ -184,9 +202,24 @@ describe("resolveDelegatorRewards", () => {
         )
         .dp(0, BigNumber.ROUND_DOWN);
 
+      const expectedFee = share?.balance
+        .div(input.cycleData.cycleDelegatedBalance)
+        .times(input.distributableRewards)
+        .times(
+          new BigNumber(
+            get(
+              input.config.fee_exceptions,
+              payment.delegator,
+              input.config.default_fee
+            )
+          ).dividedBy(100)
+        )
+        .dp(0, BigNumber.ROUND_DOWN);
+
       expect(payment.recipient).toEqual(paymentAddress);
       expect(payment.feeRate).toStrictEqual(feeRate);
       expect(payment.amount).toStrictEqual(amount);
+      expect(payment.fee).toStrictEqual(expectedFee);
     });
 
     /* SANITY CHECK */
@@ -224,6 +257,7 @@ describe("resolveDelegatorRewards", () => {
         (share) => share.address === payment.delegator
       );
 
+      expect(payment.type).toEqual(EPaymentType.Delegator);
       expect(payment.bakerStakingBalance).toEqual(cycleStakingBalance);
       expect(payment.cycle).toEqual(input.cycleReport.cycle);
       expect(payment.delegator).toEqual(share?.address);
@@ -260,9 +294,24 @@ describe("resolveDelegatorRewards", () => {
         )
         .dp(0, BigNumber.ROUND_DOWN);
 
+      const expectedFee = share?.balance
+        .div(input.cycleData.cycleDelegatedBalance)
+        .times(input.distributableRewards)
+        .times(
+          new BigNumber(
+            get(
+              input.config.fee_exceptions,
+              payment.delegator,
+              input.config.default_fee
+            )
+          ).dividedBy(100)
+        )
+        .dp(0, BigNumber.ROUND_DOWN);
+
       expect(payment.recipient).toEqual(paymentAddress);
       expect(payment.feeRate).toStrictEqual(feeRate);
       expect(payment.amount).toStrictEqual(amount);
+      expect(payment.fee).toStrictEqual(expectedFee);
     });
 
     /* SANITY CHECK */
@@ -313,6 +362,7 @@ describe("resolveDelegatorRewards", () => {
         (share) => share.address === payment.delegator
       );
 
+      expect(payment.type).toEqual(EPaymentType.Delegator);
       expect(payment.bakerStakingBalance).toEqual(cycleStakingBalance);
       expect(payment.cycle).toEqual(input.cycleReport.cycle);
       expect(payment.delegator).toEqual(share?.address);
@@ -349,9 +399,24 @@ describe("resolveDelegatorRewards", () => {
             .dividedBy(100)
         );
 
+      const expectedFee = share?.balance
+        .div(input.cycleData.cycleDelegatedBalance)
+        .times(input.distributableRewards)
+        .times(
+          new BigNumber(
+            get(
+              input.config.fee_exceptions,
+              payment.delegator,
+              input.config.default_fee
+            )
+          ).dividedBy(100)
+        )
+        .dp(0, BigNumber.ROUND_DOWN);
+
       expect(payment.recipient).toEqual(paymentAddress);
       expect(payment.feeRate).toStrictEqual(feeRate);
       expect(payment.amount).toStrictEqual(amount);
+      expect(payment.fee).toStrictEqual(expectedFee);
     });
 
     /* SANITY CHECK */

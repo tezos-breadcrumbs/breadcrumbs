@@ -1,7 +1,11 @@
 import { BigNumber } from "bignumber.js";
 import _ from "lodash";
 import { getApplicableFee, getRedirectAddress } from "src/engine/helpers";
-import { DelegatorPayment, StepArguments } from "src/engine/interfaces";
+import {
+  DelegatorPayment,
+  EPaymentType,
+  StepArguments,
+} from "src/engine/interfaces";
 import {
   add,
   divide,
@@ -37,6 +41,7 @@ export const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
     );
 
     delegatorPayments.push({
+      type: EPaymentType.Delegator,
       cycle: cycleReport.cycle,
       delegator: share.address,
       recipient,
@@ -44,6 +49,7 @@ export const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
       bakerStakingBalance: cycleStakingBalance,
       bakerCycleRewards: cycleRewards,
       feeRate: applicableFee,
+      fee: bakerShare,
       amount: delegatorShare,
       hash: "",
     });

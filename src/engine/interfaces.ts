@@ -18,7 +18,19 @@ export interface StepArguments {
   distributableRewards: BigNumber;
 }
 
+export enum EPaymentType {
+  Delegator = "Delegator Payment",
+  FeeIncome = "Fee Income Payment",
+  BondReward = "Bond Reward Payment",
+}
+
+export enum ENoteType {
+  BalanceBelowMinimum = "Balance Below Minimum",
+  PaymentBelowMinimum = "Payment Amount Below Minimum",
+}
+
 export interface BasePayment {
+  type: EPaymentType;
   cycle: number;
   recipient: string;
   amount: BigNumber;
@@ -30,7 +42,9 @@ export interface DelegatorPayment extends BasePayment {
   delegatorBalance: BigNumber;
   bakerStakingBalance: BigNumber;
   bakerCycleRewards: BigNumber;
+  fee: BigNumber;
   feeRate: BigNumber;
+  note?: ENoteType;
 }
 
 export type StepFunction = (args: StepArguments) => StepArguments;
