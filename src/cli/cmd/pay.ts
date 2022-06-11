@@ -4,18 +4,15 @@ import client from "src/api-client";
 import engine from "src/engine";
 import { getConfig } from "src/config";
 import { printPaymentsTable } from "src/cli/print";
-import {
-  createProvider,
-  prepareTransaction,
-  submitBatch,
-} from "src/tezos-client";
+import { createProvider, prepareTransaction } from "src/tezos-client";
 import { arePaymentsRequirementsMet } from "src/engine/validate";
-import { cliOptions } from "src/cli";
+import { globalCliOptions } from "src/cli";
 import { writeCycleReport, writePaymentReport } from "src/fs-client";
-import { map } from "lodash";
+import inquirer from "inquirer";
+import { BasePayment } from "src/engine/interfaces";
 
 export const pay = async (commandOptions) => {
-  if (cliOptions.dryRun) {
+  if (globalCliOptions.dryRun) {
     console.log(`Running in 'dry-run' mode...`);
   }
 
@@ -40,34 +37,60 @@ export const pay = async (commandOptions) => {
     ...bondRewardPayments,
   ];
 
-  const transactions = allPayments
-    .filter(arePaymentsRequirementsMet)
-    .map(prepareTransaction);
+  const transactions = allPayments.filter(arePaymentsRequirementsMet);
 
-  if (cliOptions.dryRun) {
-    printPaymentsTable(allPayments);
+  const provider = createProvider();
+
+  const preprocessedTransactions =
+    await provider.preprocessTransactionsIntoBatches(transactions, {
+      minimumPayoutAmount: getConfig("minimum_payment_amount"),
+    });
+  // TODO: accounting - transactionBatches.toBeAccounted
+  printPaymentsTable(preprocessedTransactions.batches.flatMap((x) => x));
+  if (globalCliOptions.dryRun) {
     process.exit(0);
   }
+  if (!commandOptions.confirm) {
+    const result = await inquirer.prompt({
+      type: "confirm",
+      name: "confirm",
+      message: "Do you really want to send above rewards?",
+      default: false,
+    });
+    if (!result.confirm) {
+      console.log(`Aborting...`);
+      process.exit(0);
+    }
+  }
 
-  try {
-    const provider = createProvider();
-    const opHash = await submitBatch(provider, transactions);
+  console.log(`Sending rewards in ${preprocessedTransactions.totalTxs} txs...`);
+  const successfulPayments: Array<BasePayment> = [];
+  const failedPayments: Array<BasePayment> = [];
+  for (const batch of preprocessedTransactions.batches) {
+    try {
+      console.log(`Sending batch of ${batch.length} txs...`);
+      const opHash = ""; // await provider.submitBatch(batch.map(prepareTransaction));
+      successfulPayments.push(...batch.map((p) => ({ ...p, hash: opHash })));
+    } catch (e) {
+      console.error(e);
+      failedPayments.push(...batch);
+    }
+  }
 
-    const successfulPayments = map(allPayments, (p) => ({
-      ...p,
-      hash: opHash,
-    }));
+  if (successfulPayments.length > 0) {
     await writePaymentReport(
       cycle,
       successfulPayments,
       "reports/payments/success"
     );
-    await writeCycleReport(
-      result.cycleReport,
-      cycleData,
-      "reports/cycle_summary/"
-    );
-  } catch (e) {
+  }
+  if (failedPayments.length > 0) {
     await writePaymentReport(cycle, allPayments, "reports/payments/failed");
   }
+
+  await writeCycleReport(
+    result.cycleReport,
+    cycleData,
+    "reports/cycle_summary/"
+  );
 };

@@ -13,12 +13,14 @@ export const printPaymentsTable = (payments: BasePayment[]) => {
     "delegatorBalance",
     "amount",
     "feeRate",
+    "txFee",
   ];
   table.addColumns(columns);
   for (const payment of payments) {
     const paymentInfo: Partial<PrintablePayment> = pick(payment, columns);
 
     paymentInfo.amount = `${divide(paymentInfo.amount ?? 0, MUTEZ_FACTOR)} TEZ`;
+    paymentInfo.txFee = `${divide(paymentInfo.txFee ?? 0, MUTEZ_FACTOR)} TEZ`;
     paymentInfo.delegatorBalance = `${divide(
       paymentInfo.delegatorBalance ?? 0,
       MUTEZ_FACTOR

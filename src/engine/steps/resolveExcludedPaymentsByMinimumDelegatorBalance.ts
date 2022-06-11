@@ -2,6 +2,7 @@ import _ from "lodash";
 import { ENoteType, StepArguments } from "src/engine/interfaces";
 import { getMinimumDelegationAmount } from "src/engine/helpers";
 import BigNumber from "bignumber.js";
+import { MUTEZ_FACTOR } from "src/utils/constants";
 
 export const resolveExcludedPaymentsByMinimumDelegatorBalance = (
   args: StepArguments
@@ -12,7 +13,7 @@ export const resolveExcludedPaymentsByMinimumDelegatorBalance = (
 
   /* Convert minimum amount to mutez */
   const minimumDelegatorBalance =
-    getMinimumDelegationAmount(config).times(1000000);
+    getMinimumDelegationAmount(config).times(MUTEZ_FACTOR);
 
   const delegatorPayments = _.map(cycleReport.delegatorPayments, (payment) => {
     if (payment.delegatorBalance.lt(minimumDelegatorBalance)) {

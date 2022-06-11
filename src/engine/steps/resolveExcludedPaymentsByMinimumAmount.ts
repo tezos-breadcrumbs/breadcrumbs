@@ -2,6 +2,7 @@ import _ from "lodash";
 import { ENoteType, StepArguments } from "src/engine/interfaces";
 import { getMinimumPaymentAmount } from "src/engine/helpers";
 import BigNumber from "bignumber.js";
+import { MUTEZ_FACTOR } from "src/utils/constants";
 
 export const resolveExcludedPaymentsByMinimumAmount = (
   args: StepArguments
@@ -11,7 +12,8 @@ export const resolveExcludedPaymentsByMinimumAmount = (
   let feeIncome = cycleReport.feeIncome;
 
   /* Convert minimum amount to mutez */
-  const minimumPaymentAmount = getMinimumPaymentAmount(config).times(1000000);
+  const minimumPaymentAmount =
+    getMinimumPaymentAmount(config).times(MUTEZ_FACTOR);
 
   const delegatorPayments = _.map(cycleReport.delegatorPayments, (payment) => {
     if (payment.amount.lt(minimumPaymentAmount)) {

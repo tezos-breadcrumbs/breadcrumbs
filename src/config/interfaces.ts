@@ -1,5 +1,15 @@
+import BigNumber from "bignumber.js";
+
+export interface BreadcrumbsNetworkConfiguration {
+  rpc: string;
+  suppress_smartcontract_payments?: boolean;
+  explorer_addr_format?: "https://ithacanet.tzkt.io/<ophash>";
+}
+
 export interface BreadcrumbsConfiguration {
   baking_address: string;
+  payout_wallet_key: string;
+  network_configuration?: BreadcrumbsNetworkConfiguration;
   default_fee: number;
   redirect_payments?: { [key: string]: string };
   fee_exceptions?: { [key: string]: string };

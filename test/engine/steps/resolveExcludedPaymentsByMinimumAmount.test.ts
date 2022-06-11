@@ -22,7 +22,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
 
   it("does not exclude payments if minimum payment amount is set at zero", async () => {
     const config = generateConfig({
-      minimum_payment_amount: "0",
+      minimum_payment_amount: 0,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -58,10 +58,10 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
   });
 
   it("exclude payments if they are below the specified minimum amount", async () => {
-    const minimumPaymentAmount = new BigNumber("2");
+    const minimumPaymentAmount = 2;
 
     const config = generateConfig({
-      minimum_payment_amount: minimumPaymentAmount.toString(),
+      minimum_payment_amount: minimumPaymentAmount,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -100,7 +100,9 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
     let additionalFeeIncome = new BigNumber(0);
     for (let i = 0; i < inputPayments.length; i++) {
       if (
-        inputPayments[i].amount.lt(minimumPaymentAmount.times(MUTEZ_FACTOR))
+        inputPayments[i].amount.lt(
+          new BigNumber(minimumPaymentAmount).times(MUTEZ_FACTOR)
+        )
       ) {
         additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
         expect(outputPayments[i].amount.eq(0));

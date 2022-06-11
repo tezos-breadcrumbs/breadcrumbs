@@ -2,7 +2,7 @@ import { OptionValues, program } from "commander";
 import { pay } from "./cmd";
 import { validateCycleOpt } from "./validate";
 
-export let cliOptions: OptionValues = {};
+export const globalCliOptions: OptionValues = {};
 
 export const run = async () => {
   // global options
@@ -15,15 +15,15 @@ export const run = async () => {
   program
     .command("pay")
     .option("-c, --cycle <cycle>", "Cycle to pay rewards for", validateCycleOpt)
+    .option(
+      "--confirm",
+      "Automatically sends rewards without need for confirmation."
+    )
     .action(pay);
 
   // we need to set global options before action is executed
   program.hook("preAction", () => {
-    cliOptions = program.opts();
+    Object.assign(globalCliOptions, program.opts());
   });
   await program.parseAsync();
-};
-
-export const getCliOption = (opt: keyof OptionValues) => {
-  return cliOptions[opt];
 };

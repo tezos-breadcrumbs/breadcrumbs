@@ -6,4 +6,5 @@ export interface PrintablePayment {
   amount: BigNumber | string;
   delegatorBalance: BigNumber | string;
   hash: string;
+  txFee: BigNumber | string;
 }

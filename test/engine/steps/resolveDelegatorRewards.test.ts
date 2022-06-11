@@ -143,7 +143,7 @@ describe("resolveDelegatorRewards", () => {
     const delegator = "tz1TRSPwnJD6qv5LeE76uSQ1YppVEvzomFvS";
     const config = generateConfig({
       fee_exceptions: { [delegator]: "8" },
-      default_fee: "0",
+      default_fee: 0,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -327,7 +327,7 @@ describe("resolveDelegatorRewards", () => {
     const delegator = "tz1TRSPwnJD6qv5LeE76uSQ1YppVEvzomFvS";
     const config = generateConfig({
       overdelegation_blacklist: [delegator],
-      default_fee: "0",
+      default_fee: 0,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);

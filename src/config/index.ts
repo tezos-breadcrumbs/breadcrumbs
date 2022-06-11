@@ -1,8 +1,8 @@
+import { globalCliOptions } from "src/cli";
 import { ConfigurationBase } from "./base";
 import { BreadcrumbsConfiguration } from "./interfaces";
 
-const configurationBase = new ConfigurationBase();
-
+let configurationBase: ConfigurationBase | undefined;
 export function getConfig(): BreadcrumbsConfiguration;
 export function getConfig<K extends keyof BreadcrumbsConfiguration>(
   key: K
@@ -10,6 +10,10 @@ export function getConfig<K extends keyof BreadcrumbsConfiguration>(
 export function getConfig<K extends keyof BreadcrumbsConfiguration>(
   key?: K
 ): BreadcrumbsConfiguration | BreadcrumbsConfiguration[K] {
+  if (configurationBase === undefined) {
+    configurationBase = new ConfigurationBase(globalCliOptions.config);
+    console.log(`Configuration:`, configurationBase.Configuration);
+  }
   if (key !== undefined) {
     return configurationBase.Configuration[key];
   }

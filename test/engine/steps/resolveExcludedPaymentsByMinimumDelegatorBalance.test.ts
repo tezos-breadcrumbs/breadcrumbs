@@ -23,7 +23,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
 
   it("does not exclude payments if minimum delegator balance is set to zero", async () => {
     const config = generateConfig({
-      minimum_delegator_balance: "0",
+      minimum_delegator_balance: 0,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -63,10 +63,10 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
   });
 
   it("exclude payments if the associated delegation balance is below the minimum", async () => {
-    const minimumDelegatorBalance = new BigNumber("500");
+    const minimumDelegatorBalance = 500;
 
     const config = generateConfig({
-      minimum_delegator_balance: minimumDelegatorBalance.toString(),
+      minimum_delegator_balance: minimumDelegatorBalance,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -108,7 +108,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
     for (let i = 0; i < inputPayments.length; i++) {
       if (
         inputPayments[i].delegatorBalance.lt(
-          minimumDelegatorBalance.times(MUTEZ_FACTOR)
+          new BigNumber(minimumDelegatorBalance).times(MUTEZ_FACTOR)
         )
       ) {
         additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);

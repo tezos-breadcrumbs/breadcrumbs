@@ -35,6 +35,7 @@ export interface BasePayment {
   recipient: string;
   amount: BigNumber;
   hash: string;
+  txFee?: BigNumber;
 }
 
 export interface DelegatorPayment extends BasePayment {
