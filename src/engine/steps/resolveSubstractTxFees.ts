@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { StepArguments } from "src/engine/interfaces";
 
 export const resolveSubstractTxFees = (args: StepArguments): StepArguments => {
