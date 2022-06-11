@@ -33,7 +33,7 @@ describe("sequential run", () => {
       distributableRewards: cycleRewards,
     };
 
-    const output = engine.run(args, [resolveBakerRewards]);
+    const output = await engine.run(args, {}, [resolveBakerRewards]);
 
     const bakerBalance = subtract(cycleStakingBalance, cycleDelegatedBalance);
 
@@ -75,11 +75,11 @@ describe("sequential run", () => {
       distributableRewards: cycleData.cycleRewards,
     };
 
-    const output = engine.run(args, [
+    const output = await engine.run(args, {}, [
       resolveBakerRewards,
       resolveExcludedDelegators,
     ]);
-    const expected = engine.run(args, [resolveBakerRewards]);
+    const expected = await engine.run(args, {}, [resolveBakerRewards]);
 
     expect(output).toStrictEqual(expected);
   });
@@ -98,12 +98,12 @@ describe("sequential run", () => {
       distributableRewards: cycleRewards,
     };
 
-    const input = engine.run(args, [
+    const input = await engine.run(args, {}, [
       resolveBakerRewards,
       resolveExcludedDelegators,
     ]);
 
-    const output = engine.run(args, [
+    const output = await engine.run(args, {}, [
       resolveBakerRewards,
       resolveExcludedDelegators,
       resolveDelegatorRewards,
@@ -208,13 +208,13 @@ describe("sequential run", () => {
       distributableRewards: cycleRewards,
     };
 
-    const input = engine.run(args, [
+    const input = await engine.run(args, {}, [
       resolveBakerRewards,
       resolveExcludedDelegators,
       resolveDelegatorRewards,
     ]);
 
-    const output = engine.run(args, [
+    const output = await engine.run(args, {}, [
       resolveBakerRewards,
       resolveExcludedDelegators,
       resolveDelegatorRewards,

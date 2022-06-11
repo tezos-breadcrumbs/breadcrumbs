@@ -1,34 +1,43 @@
-import { StepArguments, StepFunction } from "./interfaces";
+import { EngineOptions, StepArguments, StepFunction } from "./interfaces";
 import {
   resolveBakerRewards,
   resolveBondRewardDistribution,
   resolveDelegatorRewards,
+  resolveEstimateTxFees,
   resolveExcludedDelegators,
   resolveExcludedPaymentsByMinimumAmount,
   resolveExcludedPaymentsByMinimumDelegatorBalance,
   resolveFeeIncomeDistribution,
+  resolveSplitIntoBatches,
+  resolveSubstractTxFees,
+  resolveExcludeByTxContext,
 } from "./steps";
 
 const steps: StepFunction[] = [
   resolveBakerRewards,
   resolveExcludedDelegators,
   resolveDelegatorRewards,
+  resolveExcludeByTxContext,
+  resolveEstimateTxFees,
   resolveExcludedPaymentsByMinimumAmount,
   resolveExcludedPaymentsByMinimumDelegatorBalance,
+  resolveSubstractTxFees,
   resolveFeeIncomeDistribution,
   resolveBondRewardDistribution,
+  resolveSplitIntoBatches,
 ];
 
-function run(
+const run = async (
   args: StepArguments,
+  options: EngineOptions,
   remainingSteps: StepFunction[] = steps
-): StepArguments {
+): Promise<StepArguments> => {
   if (!remainingSteps.length) return args; /* base case */
 
-  const nextArgs = remainingSteps[0](args);
+  const nextArgs = await remainingSteps[0](args, options);
   const nextSteps = remainingSteps.slice(1);
 
-  return run(nextArgs, nextSteps);
-}
+  return await run(nextArgs, options, nextSteps);
+};
 
 export default { run };

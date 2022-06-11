@@ -62,6 +62,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
 
     const config = generateConfig({
       minimum_payment_amount: minimumPaymentAmount,
+      baker_pays_tx_fee: true,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);

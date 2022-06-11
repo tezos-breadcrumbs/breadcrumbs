@@ -1,3 +1,4 @@
+import { TezosToolkit } from "@taquito/taquito";
 import { BigNumber } from "bignumber.js";
 import { CycleData } from "src/api-client/abstract_client";
 import { BreadcrumbsConfiguration } from "src/config/interfaces";
@@ -7,8 +8,10 @@ export interface CycleReport {
   delegatorPayments: DelegatorPayment[];
   feeIncomePayments: BasePayment[];
   bondRewardPayments: BasePayment[];
+  toBeAccountedPayments: BasePayment[];
   feeIncome: BigNumber;
   lockedBondRewards: BigNumber;
+  batches: Array<BasePayment[]>;
 }
 
 export interface StepArguments {
@@ -22,6 +25,7 @@ export enum EPaymentType {
   Delegator = "Delegator Payment",
   FeeIncome = "Fee Income Payment",
   BondReward = "Bond Reward Payment",
+  Accounted = "Accounted",
 }
 
 export enum ENoteType {
@@ -36,6 +40,8 @@ export interface BasePayment {
   amount: BigNumber;
   hash: string;
   txFee?: BigNumber;
+  storageLimit?: BigNumber | number;
+  gasLimit?: BigNumber | number;
 }
 
 export interface DelegatorPayment extends BasePayment {
@@ -48,4 +54,11 @@ export interface DelegatorPayment extends BasePayment {
   note?: ENoteType;
 }
 
-export type StepFunction = (args: StepArguments) => StepArguments;
+export interface EngineOptions {
+  tezos?: TezosToolkit;
+}
+
+export type StepFunction = (
+  args: StepArguments,
+  options: EngineOptions
+) => StepArguments | Promise<StepArguments>;

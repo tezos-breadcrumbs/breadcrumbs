@@ -24,6 +24,8 @@ export const resolveBakerRewards = (args: StepArguments): StepArguments => {
     );
   }
 
+  // TODO: add accounted from last cycle
+
   /* Standardize to mutez */
   bakerRewards = integerize(bakerRewards);
 

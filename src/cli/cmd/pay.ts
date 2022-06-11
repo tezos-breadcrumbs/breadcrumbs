@@ -4,8 +4,11 @@ import client from "src/api-client";
 import engine from "src/engine";
 import { getConfig } from "src/config";
 import { printPaymentsTable } from "src/cli/print";
-import { createProvider, prepareTransaction } from "src/tezos-client";
-import { arePaymentsRequirementsMet } from "src/engine/validate";
+import {
+  createProvider,
+  prepareTransaction,
+  submitBatch,
+} from "src/tezos-client";
 import { globalCliOptions } from "src/cli";
 import { writeCycleReport, writePaymentReport } from "src/fs-client";
 import inquirer from "inquirer";
@@ -21,32 +24,26 @@ export const pay = async (commandOptions) => {
   const cycleReport = initializeCycleReport(cycle);
   const cycleData = await client.getCycleData(config.baking_address, cycle);
 
-  const result = engine.run({
-    config,
-    cycleReport,
-    cycleData,
-    distributableRewards: cycleData.cycleRewards,
-  });
+  const provider = createProvider();
+  const result = await engine.run(
+    {
+      config,
+      cycleReport,
+      cycleData,
+      distributableRewards: cycleData.cycleRewards,
+    },
+    { tezos: provider }
+  );
 
-  const { delegatorPayments, feeIncomePayments, bondRewardPayments } =
+  const { batches: transactionBatches, toBeAccountedPayments } =
     result.cycleReport;
 
-  const allPayments = [
-    ...delegatorPayments,
-    ...feeIncomePayments,
-    ...bondRewardPayments,
-  ];
-
-  const transactions = allPayments.filter(arePaymentsRequirementsMet);
-
-  const provider = createProvider();
-
-  const preprocessedTransactions =
-    await provider.preprocessTransactionsIntoBatches(transactions, {
-      minimumPayoutAmount: getConfig("minimum_payment_amount"),
-    });
   // TODO: accounting - transactionBatches.toBeAccounted
-  printPaymentsTable(preprocessedTransactions.batches.flatMap((x) => x));
+  const allPayments = transactionBatches.flatMap((x) => x);
+  console.log(`Transcations to account:`);
+  printPaymentsTable(toBeAccountedPayments);
+  console.log(`Transcations to send:`);
+  printPaymentsTable(allPayments);
   if (globalCliOptions.dryRun) {
     process.exit(0);
   }
@@ -63,13 +60,13 @@ export const pay = async (commandOptions) => {
     }
   }
 
-  console.log(`Sending rewards in ${preprocessedTransactions.totalTxs} txs...`);
+  console.log(`Sending rewards in ${allPayments.length} txs...`);
   const successfulPayments: Array<BasePayment> = [];
   const failedPayments: Array<BasePayment> = [];
-  for (const batch of preprocessedTransactions.batches) {
+  for (const batch of transactionBatches) {
     try {
       console.log(`Sending batch of ${batch.length} txs...`);
-      const opHash = ""; // await provider.submitBatch(batch.map(prepareTransaction));
+      const opHash = await submitBatch(provider, batch.map(prepareTransaction));
       successfulPayments.push(...batch.map((p) => ({ ...p, hash: opHash })));
     } catch (e) {
       console.error(e);
