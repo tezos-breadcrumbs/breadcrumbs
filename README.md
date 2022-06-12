@@ -12,6 +12,14 @@ Reward payments from bakers to delegators are a cornerstone of Tezos' delegation
 - establishing payout tool accessible to (and open to contribution from) the ecosystem of JS/TS developers.
 - delivering life improvements to bakers continuously
 
+### Quick Start
+
+To install breadcrumbs just:
+
+1. [download latest binary release](https://github.com/kalouo/breadcrumbs/releases).
+2. (linux only) enable executable flag
+   - `chmod +x bc-linux-*`
+
 ### Features
 
 - [x] Set a default service fee.
@@ -33,6 +41,8 @@ Roadmap:
 - [ ] Pay rewards in FA2 tokens via built-in swaps.
 
 ... and more!
+
+## Development
 
 ### Requirements
 
