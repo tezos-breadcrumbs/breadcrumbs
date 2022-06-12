@@ -1,26 +1,26 @@
 /* eslint @typescript-eslint/no-var-requires: "off" */
-const inquirer = require("inquirer");
-const fs = require("fs");
+import inquirer from "inquirer";
+import fs from "fs";
 import { stringify } from "hjson";
 
-const {
-  filterRedirects,
-  filterOverDelegationBlacklist,
-  filterNumber,
-  filterDistributionShares,
-} = require("./filters");
+const advancedParams = {
+  redirect_payments: {},
+  fee_exceptions: {},
+  overdelegation_blacklist: [],
+  minimum_payment_amount: [],
+  fee_income_recipients: [],
+  bond_reward_recipients: {},
+};
+
+const { filterNumber } = require("./filters");
 
 const {
   validAddress,
   validPercentage,
-  validRedirect,
-  validFeeExceptions,
-  validAddressList,
   validNumber,
-  validDistributionShares,
 } = require("./validators.ts");
 
-console.log("Welcome to breadcrumbs.");
+console.log("Welcome to the breadcrumbs configuration helper.");
 
 const questions = [
   {
@@ -35,20 +35,7 @@ const questions = [
     message: "Please enter your default service fee:",
     validate: validPercentage,
   },
-  {
-    type: "input",
-    name: "redirect_payments",
-    message: "Specify rules to redirect payments:",
-    validate: validRedirect,
-    filter: filterRedirects,
-  },
-  {
-    type: "input",
-    name: "fee_exceptions",
-    message: "Specify delegators subject to alternative fees:",
-    validate: validFeeExceptions,
-    filter: filterRedirects,
-  },
+
   {
     type: "list",
     name: "overdelegation_guard",
@@ -58,54 +45,22 @@ const questions = [
   },
   {
     type: "input",
-    name: "overdelegation_blacklist",
-    message:
-      "Please list public keys whose reward share will be redistributed to the delegator pool",
-    filter: filterOverDelegationBlacklist,
-    validate: validAddressList,
-  },
-  {
-    type: "input",
     name: "minimum_delegator_balance",
     message:
-      "The minimum delegation amount for rewards distribution in a given cycle",
+      "The minimum delegation amount to receive rewards in the given cycle",
     validate: validNumber,
     filter: filterNumber,
     default: "0",
-  },
-  {
-    type: "input",
-    name: "minimum_payment_amount",
-    message:
-      "The minimum amount in XTZ payable to a delegator in a given cycle",
-    validate: validNumber,
-    filter: filterNumber,
-    default: "0",
-  },
-
-  {
-    type: "input",
-    name: "fee_income_recipients",
-    message: "The address that receives fee income",
-    validate: validDistributionShares,
-    filter: filterDistributionShares,
-  },
-
-  {
-    type: "input",
-    name: "bond_reward_recipients",
-    message:
-      "The address that received baking rewards attributable to the baker's bond",
-    validate: validDistributionShares,
-    filter: filterDistributionShares,
   },
 ];
 
 inquirer.prompt(questions).then((answers) => {
-  const json = stringify(answers, { space: "  " });
+  const json = stringify({ ...answers, ...advancedParams }, { space: "  " });
   fs.writeFile("./config.hjson", json, (err) => {
     if (!err) {
-      console.log("Successfully created configuration file.");
+      console.log(
+        "Successfully created configuration file `config.hjson`. Please edit directly for more advanced configuration"
+      );
     }
   });
 });
