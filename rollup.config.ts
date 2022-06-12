@@ -2,15 +2,9 @@ import typescript from "@rollup/plugin-typescript";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
-// import { createBasicConfig } from '@open-wc/building-rollup';
-
-// const baseConfig = createBasicConfig();
-// console.log(baseConfig)
 
 export default {
   input: "./index.ts",
-  // preserveEntrySignatures: false,
-  // treeshake: true,
   output: {
     file: "build/bc.js",
     format: "cjs",
