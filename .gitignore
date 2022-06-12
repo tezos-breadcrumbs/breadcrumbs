@@ -6,3 +6,5 @@ yarn.lock
 
 reports/*
 !reports/.gitkeep
+build
+bin
