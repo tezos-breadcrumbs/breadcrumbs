@@ -5,7 +5,18 @@ import { InMemorySigner } from "@taquito/signer";
 import { BasePayment } from "src/engine/interfaces";
 
 require("dotenv").config();
-const { RPC_URL, PKEY } = process.env;
+
+if ("RPC_URL" in process.env === false) {
+  console.error("No RPC URL given");
+  process.exit(1);
+}
+
+if ("PKEY" in process.env === false) {
+  console.error("No private key given");
+  process.exit(1);
+}
+
+const { PKEY, RPC_URL } = process.env;
 
 export const createProvider = (): TezosToolkit => {
   if (!RPC_URL) throw Error("No RPC URL given");
