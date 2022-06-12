@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "prepare": "husky install",
     "build": "rimraf build/* && rollup --config rollup.config.ts --configPlugin typescript",
-    "pkg": "rimraf dist/* && pkg ./pkg.config.json --output bin/bc --no-bytecode --public-packages * --public -C Brotli"
+    "pkg": "rimraf bin/* && pkg --output bin/bc --no-bytecode --public-packages '*' --public -C Brotli -c pkg.config.json build/bc.js"
   },
   "author": "",
   "license": "GPL-3",
