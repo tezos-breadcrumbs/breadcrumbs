@@ -16,8 +16,10 @@ Reward payments from bakers to delegators are a cornerstone of Tezos' delegation
 
 To install breadcrumbs just:
 
-1. [download latest binary release](https://github.com/kalouo/breadcrumbs/releases).
-2. (linux only) enable executable flag
+1. Change working directory to directory where you want to store breadcrumbs Installation
+   - e.g. on linux: `mkdir /breadcrumbs && cd /breadcrumbs`
+2. [download latest binary release](https://github.com/kalouo/breadcrumbs/releases).
+3. (linux only) enable executable flag
    - `chmod +x bc-linux-*`
 
 ### Features
