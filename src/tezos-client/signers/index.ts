@@ -1,13 +1,15 @@
 import { getConfig } from "src/config";
 import { EPayoutWalletMode } from "src/config/interfaces";
-import { getInMemorySigner } from "./in-memory";
-import { getLedgerSigner } from "./ledger";
 
 export const getSigner = async () => {
   switch (getConfig(`payout_wallet_mode`)) {
-    case EPayoutWalletMode.Ledger:
+    case EPayoutWalletMode.Ledger: {
+      const { getLedgerSigner } = await import("./ledger");
       return await getLedgerSigner();
-    default:
+    }
+    default: {
+      const { getInMemorySigner } = await import("./in-memory");
       return await getInMemorySigner();
+    }
   }
 };

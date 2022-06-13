@@ -13,7 +13,7 @@ export interface BreadcrumbsConfiguration {
   baking_address: string;
   network_configuration?: BreadcrumbsNetworkConfiguration;
   default_fee: number;
-  payout_wallet_mode: EPayoutWalletMode;
+  payout_wallet_mode?: EPayoutWalletMode;
   redirect_payments?: { [key: string]: string };
   fee_exceptions?: { [key: string]: string };
   baker_pays_tx_fee?: boolean;

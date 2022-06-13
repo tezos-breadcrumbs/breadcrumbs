@@ -12,7 +12,6 @@ export const generateConfig = (
 ): BreadcrumbsConfiguration => {
   return {
     baking_address: args.baking_address || DEFAULT_BAKER,
-    payout_wallet_key: args.payout_wallet_key || PKEY || "",
     network_configuration: Object.assign(
       {
         rpc: "https://ithacanet.ecadinfra.com",
