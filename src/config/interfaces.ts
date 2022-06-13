@@ -1,4 +1,7 @@
-import BigNumber from "bignumber.js";
+export enum EPayoutWalletMode {
+  PrivateKey = "private-key",
+  Ledger = "ledger",
+}
 
 export interface BreadcrumbsNetworkConfiguration {
   rpc: string;
@@ -8,9 +11,9 @@ export interface BreadcrumbsNetworkConfiguration {
 
 export interface BreadcrumbsConfiguration {
   baking_address: string;
-  payout_wallet_key: string;
   network_configuration?: BreadcrumbsNetworkConfiguration;
   default_fee: number;
+  payout_wallet_mode: EPayoutWalletMode;
   redirect_payments?: { [key: string]: string };
   fee_exceptions?: { [key: string]: string };
   baker_pays_tx_fee?: boolean;

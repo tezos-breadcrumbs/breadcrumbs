@@ -1,21 +1,18 @@
 /* eslint @typescript-eslint/no-var-requires: "off" */
 
-import { InMemorySigner } from "@taquito/signer";
 import { OpKind, TezosToolkit, WalletParamsWithKind } from "@taquito/taquito";
 import { getConfig } from "src/config";
 import { BasePayment } from "src/engine/interfaces";
+import { getSigner } from "./signers";
 
 require("dotenv").config();
 
-export const createProvider = (): TezosToolkit => {
-  const { RPC_URL, PKEY } = Object.assign(process.env, {
-    RPC_URL: getConfig("network_configuration")?.rpc,
-    PKEY: getConfig("payout_wallet_key"),
-  });
-  if (!RPC_URL) throw Error("No RPC URL given");
-  if (!PKEY) throw Error("No private key given");
+export const createProvider = async () => {
+  const RPC_URL =
+    process.env.RPC_URL ?? getConfig("network_configuration")?.rpc;
+  if (RPC_URL === undefined) throw Error("No RPC URL given");
   const tezos = new TezosToolkit(RPC_URL);
-  tezos.setProvider({ signer: new InMemorySigner(PKEY) });
+  tezos.setProvider({ signer: await getSigner() });
   return tezos;
 };
 
