@@ -1,8 +1,11 @@
 import { getConfig } from "src/config";
-import { EPayoutWalletMode } from "src/config/interfaces";
+import {
+  BreadcrumbsConfiguration,
+  EPayoutWalletMode,
+} from "src/config/interfaces";
 
-export const getSigner = async () => {
-  switch (getConfig(`payout_wallet_mode`)) {
+export const getSigner = async (config: BreadcrumbsConfiguration) => {
+  switch (config.payout_wallet_mode) {
     case EPayoutWalletMode.Ledger: {
       const { getLedgerSigner } = await import("./ledger");
       return await getLedgerSigner();

@@ -24,7 +24,7 @@ export const pay = async (commandOptions) => {
   const cycleReport = initializeCycleReport(cycle);
   const cycleData = await client.getCycleData(config.baking_address, cycle);
 
-  const provider = await createProvider();
+  const provider = await createProvider(config);
   const result = await engine.run(
     {
       config,
