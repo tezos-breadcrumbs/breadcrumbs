@@ -7,12 +7,12 @@ import { printPaymentsTable } from "src/cli/print";
 import {
   createProvider,
   prepareTransaction,
-  submitBatch,
+  sendBatch,
 } from "src/tezos-client";
 import { globalCliOptions } from "src/cli";
 import { writeCycleReport, writePaymentReport } from "src/fs-client";
 import inquirer from "inquirer";
-import { BasePayment } from "src/engine/interfaces";
+import { BasePayment, DelegatorPayment } from "src/engine/interfaces";
 
 export const pay = async (commandOptions) => {
   if (globalCliOptions.dryRun) {
@@ -66,10 +66,20 @@ export const pay = async (commandOptions) => {
   for (const batch of transactionBatches) {
     try {
       console.log(`Sending batch of ${batch.length} txs...`);
-      const opHash = await submitBatch(provider, batch.map(prepareTransaction));
-      successfulPayments.push(...batch.map((p) => ({ ...p, hash: opHash })));
-    } catch (e) {
+      const opBatch = await sendBatch(provider, batch.map(prepareTransaction));
+      for (const payment of batch) {
+        payment.hash = opBatch.opHash;
+      }
+      await opBatch.confirmation(2);
+      console.log(
+        `Transaction confirmed on https://ithacanet.tzkt.io/${opBatch.opHash}`
+      );
+      successfulPayments.push(...batch);
+    } catch (e: unknown) {
       console.error(e);
+      for (const payment of batch) {
+        (payment as DelegatorPayment).note = (e as Error).message;
+      }
       failedPayments.push(...batch);
     }
   }
