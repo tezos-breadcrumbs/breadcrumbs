@@ -1,25 +1,41 @@
-import { getConfig } from "src/config";
+import { BreadcrumbsConfiguration } from "src/config/interfaces";
 import { BasePayment } from "./interfaces";
 
-export const paymentContextRequirements = [
-  (p: BasePayment) => p.recipient !== getConfig("baking_address"), // in case rewards are redirected to baker himself
-  (p: BasePayment) =>
-    getConfig("network_configuration")?.suppress_smartcontract_payments !=
-      true || !p.recipient.startsWith("KT"),
+type Validator = (payment: BasePayment) => boolean;
+
+export const paymentContextRequirements = (
+  config: BreadcrumbsConfiguration
+): Validator[] => {
+  return [
+    (p: BasePayment) => p.recipient !== config.baking_address, // in case rewards are redirected to baker himself
+    (p: BasePayment) =>
+      config.network_configuration?.suppress_smartcontract_payments
+        ? !p.recipient.startsWith("KT")
+        : true,
+  ];
+};
+
+export const paymentAmountRequirements: Validator[] = [
+  (p: BasePayment) => p.amount.gt(0),
 ];
 
-export const paymentAmountRequirements = [(p: BasePayment) => p.amount.gt(0)];
+export const paymentContextRequirementsFactory = (config) =>
+  requirementsFactory(paymentContextRequirements(config));
 
-export const arePaymentsRequirementsMet = (
+export const requirementsFactory =
+  (requirements: Validator[]) => (p: BasePayment) =>
+    arePaymentsRequirementsMet(p, requirements);
+
+export const paymentRequirementsMetFactory =
+  (requirements: Validator[]) => (p: BasePayment) =>
+    arePaymentsRequirementsMet(p, requirements);
+
+const arePaymentsRequirementsMet = (
   p: BasePayment,
-  requirements: Array<(arg0: BasePayment) => boolean>
+  requirements: Validator[]
 ) => {
   for (const requirement of requirements) {
     if (!requirement(p)) return false;
   }
   return true;
 };
-
-export const paymentRequirementsMetFactory =
-  (requirements: Array<(arg0: BasePayment) => boolean>) => (p: BasePayment) =>
-    arePaymentsRequirementsMet(p, requirements);

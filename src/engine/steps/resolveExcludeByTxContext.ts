@@ -1,16 +1,13 @@
 import { StepArguments } from "src/engine/interfaces";
-import {
-  paymentContextRequirements,
-  paymentRequirementsMetFactory,
-} from "../validate";
+import { paymentContextRequirementsFactory } from "src/engine/validate";
 
 export const resolveExcludeByTxContext = (
   args: StepArguments
 ): StepArguments => {
-  const { cycleReport } = args;
+  const { cycleReport, config } = args;
 
   const delegatorPayments = cycleReport.delegatorPayments.filter(
-    paymentRequirementsMetFactory(paymentContextRequirements)
+    paymentContextRequirementsFactory(config)
   );
 
   return {
