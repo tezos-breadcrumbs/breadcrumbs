@@ -86,7 +86,7 @@ describe("resolveExcludedPaymentsByContext", () => {
 
     const output = resolveExcludedPaymentsByContext(input);
 
-    /* In cycle 470 – Sentry & Legate has two payments to KT addresses */
+    /* Sentry & Legate had two payments to KT addresses in cycle 470 */
     expect(output.cycleReport.delegatorPayments.length).toEqual(
       input.cycleData.cycleShares.length - 2
     );
@@ -124,7 +124,7 @@ describe("resolveExcludedPaymentsByContext", () => {
 
     const output = resolveExcludedPaymentsByContext(input);
 
-    /* In cycle 470 – Sentry & Legate has two payments to KT addresses */
+    /* Sentry & Legate had two payments to KT addresses in cycle 470 */
     expect(output.cycleReport.delegatorPayments.length).toEqual(
       input.cycleData.cycleShares.length
     );
