@@ -1,15 +1,13 @@
 import BigNumber from "bignumber.js";
 import { isEmpty } from "lodash";
+import { paymentAmountRequirementsFactory } from "../validate";
+
 import {
   BasePayment,
   EngineOptions,
   EPaymentType,
   StepArguments,
 } from "../interfaces";
-import {
-  paymentAmountRequirements,
-  paymentRequirementsMetFactory,
-} from "../validate";
 
 export const resolveSplitIntoBatches = async (
   args: StepArguments,
@@ -44,7 +42,7 @@ export const resolveSplitIntoBatches = async (
 
   for (const payment of delegatorPayments
     .filter((p) => p.type !== EPaymentType.Accounted)
-    .filter(paymentRequirementsMetFactory(paymentAmountRequirements))) {
+    .filter(paymentAmountRequirementsFactory)) {
     if (
       currentBatch.storageTotal
         .plus(payment.storageLimit ?? 0)
@@ -69,17 +67,9 @@ export const resolveSplitIntoBatches = async (
 
   if (!isEmpty(currentBatch.payments)) batches.push(currentBatch.payments); // final batch
   if (!isEmpty(feeIncomePayments))
-    batches.push(
-      feeIncomePayments.filter(
-        paymentRequirementsMetFactory(paymentAmountRequirements)
-      )
-    );
+    batches.push(feeIncomePayments.filter(paymentAmountRequirementsFactory));
   if (!isEmpty(bondRewardPayments))
-    batches.push(
-      bondRewardPayments.filter(
-        paymentRequirementsMetFactory(paymentAmountRequirements)
-      )
-    );
+    batches.push(bondRewardPayments.filter(paymentAmountRequirementsFactory));
 
   return {
     ...args,

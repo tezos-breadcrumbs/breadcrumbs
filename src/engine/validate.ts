@@ -1,9 +1,9 @@
 import { BreadcrumbsConfiguration } from "src/config/interfaces";
-import { BasePayment } from "./interfaces";
+import { BasePayment } from "src/engine/interfaces";
 
 type Validator = (payment: BasePayment) => boolean;
 
-export const paymentContextRequirements = (
+const paymentContextRequirements = (
   config: BreadcrumbsConfiguration
 ): Validator[] => {
   return [
@@ -15,20 +15,9 @@ export const paymentContextRequirements = (
   ];
 };
 
-export const paymentAmountRequirements: Validator[] = [
+const paymentAmountRequirements: Validator[] = [
   (p: BasePayment) => p.amount.gt(0),
 ];
-
-export const paymentContextRequirementsFactory = (config) =>
-  requirementsFactory(paymentContextRequirements(config));
-
-export const requirementsFactory =
-  (requirements: Validator[]) => (p: BasePayment) =>
-    arePaymentsRequirementsMet(p, requirements);
-
-export const paymentRequirementsMetFactory =
-  (requirements: Validator[]) => (p: BasePayment) =>
-    arePaymentsRequirementsMet(p, requirements);
 
 const arePaymentsRequirementsMet = (
   p: BasePayment,
@@ -39,3 +28,13 @@ const arePaymentsRequirementsMet = (
   }
   return true;
 };
+
+const requirementsFactory = (requirements: Validator[]) => (p: BasePayment) =>
+  arePaymentsRequirementsMet(p, requirements);
+
+export const paymentAmountRequirementsFactory = requirementsFactory(
+  paymentAmountRequirements
+);
+
+export const paymentContextRequirementsFactory = (config) =>
+  requirementsFactory(paymentContextRequirements(config));
