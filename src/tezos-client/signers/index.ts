@@ -1,4 +1,3 @@
-import { getConfig } from "src/config";
 import {
   BreadcrumbsConfiguration,
   EPayoutWalletMode,
