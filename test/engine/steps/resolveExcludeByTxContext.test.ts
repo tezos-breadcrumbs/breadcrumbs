@@ -61,9 +61,6 @@ describe("resolveExcludeByTxContext", () => {
   });
 
   it("excludes payments to KT addresses if this is configured", async () => {
-    const DELEGATOR = "tz1TRSPwnJD6qv5LeE76uSQ1YppVEvzomFvS";
-    const BAKER = "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur";
-
     const config = generateConfig({
       network_configuration: {
         rpc: "https://ithacanet.ecadinfra.com",
@@ -102,9 +99,6 @@ describe("resolveExcludeByTxContext", () => {
   });
 
   it("does not exclude payments to KT addresses if this is not configured", async () => {
-    const DELEGATOR = "tz1TRSPwnJD6qv5LeE76uSQ1YppVEvzomFvS";
-    const BAKER = "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur";
-
     const config = generateConfig({
       network_configuration: {
         rpc: "https://ithacanet.ecadinfra.com",

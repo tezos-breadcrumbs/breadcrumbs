@@ -5,7 +5,6 @@ import {
 import { parseInt, parseFloat } from "src/utils/parse";
 
 const DEFAULT_BAKER = "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur";
-const { PKEY } = process.env;
 
 export const generateConfig = (
   args: Partial<BreadcrumbsConfiguration> = {}
