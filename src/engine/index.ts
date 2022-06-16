@@ -10,14 +10,14 @@ import {
   resolveFeeIncomeDistribution,
   resolveSplitIntoBatches,
   resolveSubstractTxFees,
-  resolveExcludeByTxContext,
+  resolveExcludedPaymentsByContext,
 } from "./steps";
 
 const steps: StepFunction[] = [
   resolveBakerRewards,
   resolveExcludedDelegators,
   resolveDelegatorRewards,
-  resolveExcludeByTxContext,
+  resolveExcludedPaymentsByContext,
   resolveEstimateTxFees,
   resolveExcludedPaymentsByMinimumAmount,
   resolveExcludedPaymentsByMinimumDelegatorBalance,

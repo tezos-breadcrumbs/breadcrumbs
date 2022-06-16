@@ -8,13 +8,13 @@ import { generateConfig } from "test/helpers";
 import {
   resolveBakerRewards,
   resolveDelegatorRewards,
-  resolveExcludeByTxContext,
+  resolveExcludedPaymentsByContext,
   resolveExcludedDelegators,
 } from "src/engine/steps";
 
 import { initializeCycleReport } from "src/engine/helpers";
 
-describe("resolveExcludeByTxContext", () => {
+describe("resolveExcludedPaymentsByContext", () => {
   Polly.start();
 
   it("excludes payments directed to the baking address", async () => {
@@ -45,7 +45,7 @@ describe("resolveExcludeByTxContext", () => {
       resolveExcludedDelegators(resolveBakerRewards(args))
     );
 
-    const output = resolveExcludeByTxContext(input);
+    const output = resolveExcludedPaymentsByContext(input);
 
     /* Check one payment is excluded */
     expect(output.cycleReport.delegatorPayments.length).toEqual(
@@ -84,7 +84,7 @@ describe("resolveExcludeByTxContext", () => {
       resolveExcludedDelegators(resolveBakerRewards(args))
     );
 
-    const output = resolveExcludeByTxContext(input);
+    const output = resolveExcludedPaymentsByContext(input);
 
     /* In cycle 470 – Sentry & Legate has two payments to KT addresses */
     expect(output.cycleReport.delegatorPayments.length).toEqual(
@@ -122,7 +122,7 @@ describe("resolveExcludeByTxContext", () => {
       resolveExcludedDelegators(resolveBakerRewards(args))
     );
 
-    const output = resolveExcludeByTxContext(input);
+    const output = resolveExcludedPaymentsByContext(input);
 
     /* In cycle 470 – Sentry & Legate has two payments to KT addresses */
     expect(output.cycleReport.delegatorPayments.length).toEqual(

@@ -1,7 +1,7 @@
 import { StepArguments } from "src/engine/interfaces";
 import { paymentContextRequirementsFactory } from "src/engine/validate";
 
-export const resolveExcludeByTxContext = (
+export const resolveExcludedPaymentsByContext = (
   args: StepArguments
 ): StepArguments => {
   const { cycleReport, config } = args;

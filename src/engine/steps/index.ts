@@ -8,4 +8,4 @@ export { resolveFeeIncomeDistribution } from "./resolveFeeIncomeDistribution";
 export { resolveSplitIntoBatches } from "./resolveSplitIntoBatches";
 export { resolveEstimateTxFees } from "./resolveEstimateTxFees";
 export { resolveSubstractTxFees } from "./resolveSubstractTxFees";
-export { resolveExcludeByTxContext } from "./resolveExcludeByTxContext";
+export { resolveExcludedPaymentsByContext } from "./resolveExcludedPaymentsByContext";
