@@ -51,7 +51,7 @@ export interface DelegatorPayment extends BasePayment {
   bakerCycleRewards: BigNumber;
   fee: BigNumber;
   feeRate: BigNumber;
-  note?: ENoteType;
+  note?: ENoteType | string;
 }
 
 export interface EngineOptions {

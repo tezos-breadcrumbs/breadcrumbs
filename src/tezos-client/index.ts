@@ -1,6 +1,7 @@
 /* eslint @typescript-eslint/no-var-requires: "off" */
 
 import { OpKind, TezosToolkit, WalletParamsWithKind } from "@taquito/taquito";
+import { BatchWalletOperation } from "@taquito/taquito/dist/types/wallet/batch-operation";
 import { BreadcrumbsConfiguration } from "src/config/interfaces";
 import { BasePayment } from "src/engine/interfaces";
 import { getSigner } from "./signers";
@@ -8,7 +9,7 @@ import { getSigner } from "./signers";
 require("dotenv").config();
 
 export const createProvider = async (config: BreadcrumbsConfiguration) => {
-  const RPC_URL = process.env.RPC_URL ?? config.network_configuration?.rpc;
+  const RPC_URL = config.network_configuration?.rpc;
   if (RPC_URL === undefined) throw Error("No RPC URL given");
   const tezos = new TezosToolkit(RPC_URL);
   tezos.setProvider({ signer: await getSigner(config) });
@@ -26,16 +27,12 @@ export const prepareTransaction = (
   };
 };
 
-export const submitBatch = async (
+export const sendBatch = async (
   tezos: TezosToolkit,
   payments: WalletParamsWithKind[]
-): Promise<string> => {
+): Promise<BatchWalletOperation> => {
   console.log("Submitting batch");
   const batch = tezos.wallet.batch(payments);
   const operation = await batch.send();
-  await operation.confirmation(2);
-  console.log(
-    `Transaction confirmed on https://ithacanet.tzkt.io/${operation.opHash}`
-  );
-  return operation.opHash;
+  return operation;
 };
