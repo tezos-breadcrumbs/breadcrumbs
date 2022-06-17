@@ -8,8 +8,12 @@ export const run = async () => {
   // global options
   program
     //.enablePositionalOptions(true)
-    .option("--config <config>", "Path to configuration file", "./config.hjson")
-    .option("-d, --dry-run", "Prints out rewards. Won't sumbit transactions.");
+    .option("-d, --dry-run", "Prints out rewards. Won't sumbit transactions.")
+    .option(
+      "-h, --home",
+      "Set directory breadcrumbs should operate on.",
+      process.cwd()
+    );
 
   // commands
   program
