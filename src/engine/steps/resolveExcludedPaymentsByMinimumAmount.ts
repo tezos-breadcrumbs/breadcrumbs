@@ -1,6 +1,7 @@
+import BigNumber from "bignumber.js";
+
 import { ENoteType, EPaymentType, StepArguments } from "src/engine/interfaces";
 import { getMinimumPaymentAmount } from "src/engine/helpers";
-import BigNumber from "bignumber.js";
 import { MUTEZ_FACTOR } from "src/utils/constants";
 
 export const resolveExcludedPaymentsByMinimumAmount = (
