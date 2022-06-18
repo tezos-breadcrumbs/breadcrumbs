@@ -5,17 +5,17 @@ import { parse } from "hjson";
 import { CONFIG_FILE } from "src/utils/constants";
 
 export class ConfigurationBase {
-  private homeDir: string;
+  private workDir: string;
   private configuration?: BreadcrumbsConfiguration;
 
-  constructor(home: string) {
-    this.homeDir = home;
+  constructor(workDir: string) {
+    this.workDir = workDir;
   }
 
   get Configuration() {
     if (this.configuration !== undefined) return this.configuration;
     this.configuration = parse(
-      readFileSync(join(this.homeDir, CONFIG_FILE)).toString()
+      readFileSync(join(this.workDir, CONFIG_FILE)).toString()
     ) as BreadcrumbsConfiguration;
     return this.configuration;
   }

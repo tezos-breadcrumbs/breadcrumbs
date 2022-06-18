@@ -11,7 +11,7 @@ export function getConfig<K extends keyof BreadcrumbsConfiguration>(
   key?: K
 ): BreadcrumbsConfiguration | BreadcrumbsConfiguration[K] {
   if (configurationBase === undefined) {
-    configurationBase = new ConfigurationBase(globalCliOptions.home);
+    configurationBase = new ConfigurationBase(globalCliOptions.workDir);
     console.log(`Configuration:`, configurationBase.Configuration);
   }
   if (key !== undefined) {

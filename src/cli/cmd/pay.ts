@@ -93,14 +93,14 @@ export const pay = async (commandOptions) => {
     await writePaymentReport(
       cycle,
       successfulPayments,
-      join(globalCliOptions.home, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
+      join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
     );
   }
   if (failedPayments.length > 0) {
     await writePaymentReport(
       cycle,
       allPayments,
-      join(globalCliOptions.home, REPORTS_FAILED_PAYMENTS_DIRECTORY)
+      join(globalCliOptions.workDir, REPORTS_FAILED_PAYMENTS_DIRECTORY)
     );
   }
 

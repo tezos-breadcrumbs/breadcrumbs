@@ -10,7 +10,7 @@ export const run = async () => {
     //.enablePositionalOptions(true)
     .option("-d, --dry-run", "Prints out rewards. Won't sumbit transactions.")
     .option(
-      "-h, --home",
+      "-w, --work-dir <workDir>",
       "Set directory breadcrumbs should operate on.",
       process.cwd()
     );
