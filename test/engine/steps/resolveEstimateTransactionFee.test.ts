@@ -8,7 +8,7 @@ import {
   resolveDelegatorRewards,
   resolveExcludedPaymentsByContext,
   resolveExcludedDelegators,
-  resolveEstimateTxFees,
+  resolveEstimateTransactionFees,
 } from "src/engine/steps";
 import { initializeCycleReport } from "src/engine/helpers";
 
@@ -59,14 +59,16 @@ describe("resolveExcludedPaymentsByContext", () => {
       }))
     );
 
-    const output = await resolveEstimateTxFees(input, { tezos: provider });
+    const output = await resolveEstimateTransactionFees(input, {
+      tezos: provider,
+    });
 
     for (const [
       index,
       payment,
     ] of output.cycleReport.delegatorPayments.entries()) {
-      expect(payment.gasLimit).toEqual(index);
-      expect(payment.storageLimit).toEqual(index + 1);
+      expect(payment.gasLimit).toStrictEqual(new BigNumber(index));
+      expect(payment.storageLimit).toStrictEqual(new BigNumber(index + 1));
       expect(payment.txFee).toStrictEqual(new BigNumber(index + 2));
     }
   });
