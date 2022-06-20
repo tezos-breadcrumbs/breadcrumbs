@@ -16,7 +16,7 @@ import * as Polly from "test/helpers/polly";
 import { generateConfig } from "test/helpers";
 import BigNumber from "bignumber.js";
 
-describe("resolveExcludedPaymentsByContext", () => {
+describe("resolveEstimateTransactionFees", () => {
   Polly.start();
   const provider = new TezosToolkit("https://ithacanet.ecadinfra.com");
 
@@ -69,7 +69,7 @@ describe("resolveExcludedPaymentsByContext", () => {
     ] of output.cycleReport.delegatorPayments.entries()) {
       expect(payment.gasLimit).toStrictEqual(new BigNumber(index));
       expect(payment.storageLimit).toStrictEqual(new BigNumber(index + 1));
-      expect(payment.txFee).toStrictEqual(new BigNumber(index + 2));
+      expect(payment.transactionFee).toStrictEqual(new BigNumber(index + 2));
     }
   });
 });
