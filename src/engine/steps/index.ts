@@ -7,5 +7,5 @@ export { resolveExcludedPaymentsByMinimumDelegatorBalance } from "./resolveExclu
 export { resolveFeeIncomeDistribution } from "./resolveFeeIncomeDistribution";
 export { resolveSplitIntoBatches } from "./resolveSplitIntoBatches";
 export { resolveEstimateTransactionFees } from "./resolveEstimateTransactionFees";
-export { resolveSubstractTxFees } from "./resolveSubstractTxFees";
+export { resolveSubstractTransactionFees } from "./resolveSubstractTransactionFees";
 export { resolveExcludedPaymentsByContext } from "./resolveExcludedPaymentsByContext";

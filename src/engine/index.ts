@@ -9,7 +9,7 @@ import {
   resolveExcludedPaymentsByMinimumDelegatorBalance,
   resolveFeeIncomeDistribution,
   resolveSplitIntoBatches,
-  resolveSubstractTxFees,
+  resolveSubstractTransactionFees,
   resolveExcludedPaymentsByContext,
 } from "./steps";
 
@@ -21,7 +21,7 @@ const steps: StepFunction[] = [
   resolveEstimateTransactionFees,
   resolveExcludedPaymentsByMinimumAmount,
   resolveExcludedPaymentsByMinimumDelegatorBalance,
-  resolveSubstractTxFees,
+  resolveSubstractTransactionFees,
   resolveFeeIncomeDistribution,
   resolveBondRewardDistribution,
   resolveSplitIntoBatches,

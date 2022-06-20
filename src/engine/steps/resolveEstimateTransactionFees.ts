@@ -31,7 +31,7 @@ export const resolveEstimateTransactionFees = async (
 
     delegatorPayments.push({
       ...cycleReport.delegatorPayments[index],
-      txFee: new BigNumber(estimate.totalCost),
+      transactionFee: new BigNumber(estimate.totalCost),
       storageLimit: new BigNumber(estimate.storageLimit),
       gasLimit: new BigNumber(estimate.gasLimit),
     });

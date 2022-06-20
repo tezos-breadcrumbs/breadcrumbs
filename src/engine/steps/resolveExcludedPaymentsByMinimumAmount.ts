@@ -25,19 +25,21 @@ export const resolveExcludedPaymentsByMinimumAmount = (
             type: EPaymentType.Accounted,
             // restore tx fee to amount if not paid by baker
             amount: payment.amount.plus(
-              config.baker_pays_tx_fee ? 0 : payment.txFee ?? 0
+              config.baker_pays_tx_fee ? 0 : payment.transactionFee ?? 0
             ),
-            txFee: new BigNumber(0),
+            transactionFee: new BigNumber(0),
             note: ENoteType.PaymentBelowMinimum,
           });
           break;
         default:
-          feeIncome = feeIncome.plus(payment.amount.plus(payment.txFee ?? 0));
+          feeIncome = feeIncome.plus(
+            payment.amount.plus(payment.transactionFee ?? 0)
+          );
           delegatorPayments.push({
             ...payment,
-            fee: payment.amount.plus(payment.txFee ?? 0),
+            fee: payment.amount.plus(payment.transactionFee ?? 0),
             amount: new BigNumber(0),
-            txFee: new BigNumber(0),
+            transactionFee: new BigNumber(0),
             note: ENoteType.PaymentBelowMinimum,
           });
           break;
