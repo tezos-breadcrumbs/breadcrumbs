@@ -52,7 +52,6 @@ export const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
       fee: bakerShare,
       amount: delegatorShare,
       hash: "",
-      transactionFee: new BigNumber(0),
     });
 
     _rewardsAllocated = add(_rewardsAllocated, add(delegatorShare, bakerShare));
