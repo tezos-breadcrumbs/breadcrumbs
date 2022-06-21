@@ -10,6 +10,7 @@ export interface CycleReport {
   bondRewardPayments: BasePayment[];
   toBeAccountedPayments: BasePayment[];
   feeIncome: BigNumber;
+  feesPaid: BigNumber;
   lockedBondRewards: BigNumber;
   batches: Array<BasePayment[]>;
 }
@@ -19,6 +20,7 @@ export interface StepArguments {
   cycleData: CycleData;
   cycleReport: CycleReport;
   distributableRewards: BigNumber;
+  tezos: TezosToolkit;
 }
 
 export enum EPaymentType {
@@ -33,15 +35,20 @@ export enum ENoteType {
   PaymentBelowMinimum = "Payment Amount Below Minimum",
 }
 
+export enum EFeePayer {
+  Delegator = "D",
+  Baker = "B",
+}
+
 export interface BasePayment {
   type: EPaymentType;
   cycle: number;
   recipient: string;
   amount: BigNumber;
   hash: string;
-  txFee?: BigNumber;
-  storageLimit?: BigNumber | number;
-  gasLimit?: BigNumber | number;
+  transactionFee?: BigNumber;
+  storageLimit?: BigNumber;
+  gasLimit?: BigNumber;
 }
 
 export interface DelegatorPayment extends BasePayment {
@@ -52,13 +59,9 @@ export interface DelegatorPayment extends BasePayment {
   fee: BigNumber;
   feeRate: BigNumber;
   note?: ENoteType | string;
-}
-
-export interface EngineOptions {
-  tezos?: TezosToolkit;
+  transactionFeePaidBy?: EFeePayer;
 }
 
 export type StepFunction = (
-  args: StepArguments,
-  options: EngineOptions
+  args: StepArguments
 ) => StepArguments | Promise<StepArguments>;
