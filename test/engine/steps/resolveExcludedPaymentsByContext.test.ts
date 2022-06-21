@@ -1,6 +1,8 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 
 import { find, startsWith } from "lodash";
+import { TezosToolkit } from "@taquito/taquito";
+
 import client from "src/api-client";
 import * as Polly from "test/helpers/polly";
 
@@ -39,6 +41,7 @@ describe("resolveExcludedPaymentsByContext", () => {
       cycleData,
       cycleReport,
       distributableRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveDelegatorRewards(
@@ -78,6 +81,7 @@ describe("resolveExcludedPaymentsByContext", () => {
       cycleData,
       cycleReport,
       distributableRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveDelegatorRewards(
@@ -116,6 +120,7 @@ describe("resolveExcludedPaymentsByContext", () => {
       cycleData,
       cycleReport,
       distributableRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveDelegatorRewards(

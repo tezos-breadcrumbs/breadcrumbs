@@ -1,6 +1,7 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import _, { get } from "lodash";
 import BigNumber from "bignumber.js";
+import { TezosToolkit } from "@taquito/taquito";
 
 import client from "src/api-client";
 import * as Polly from "test/helpers/polly";
@@ -31,9 +32,10 @@ describe("sequential run", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
-    const output = await engine.run(args, {}, [resolveBakerRewards]);
+    const output = await engine.run(args, [resolveBakerRewards]);
 
     const bakerBalance = subtract(cycleStakingBalance, cycleDelegatedBalance);
 
@@ -73,13 +75,14 @@ describe("sequential run", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleData.cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
-    const output = await engine.run(args, {}, [
+    const output = await engine.run(args, [
       resolveBakerRewards,
       resolveExcludedDelegators,
     ]);
-    const expected = await engine.run(args, {}, [resolveBakerRewards]);
+    const expected = await engine.run(args, [resolveBakerRewards]);
 
     expect(output).toStrictEqual(expected);
   });
@@ -96,14 +99,15 @@ describe("sequential run", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
-    const input = await engine.run(args, {}, [
+    const input = await engine.run(args, [
       resolveBakerRewards,
       resolveExcludedDelegators,
     ]);
 
-    const output = await engine.run(args, {}, [
+    const output = await engine.run(args, [
       resolveBakerRewards,
       resolveExcludedDelegators,
       resolveDelegatorRewards,
@@ -206,15 +210,16 @@ describe("sequential run", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
-    const input = await engine.run(args, {}, [
+    const input = await engine.run(args, [
       resolveBakerRewards,
       resolveExcludedDelegators,
       resolveDelegatorRewards,
     ]);
 
-    const output = await engine.run(args, {}, [
+    const output = await engine.run(args, [
       resolveBakerRewards,
       resolveExcludedDelegators,
       resolveDelegatorRewards,

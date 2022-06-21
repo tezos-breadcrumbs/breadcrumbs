@@ -3,18 +3,17 @@ import { ParamsWithKind } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 
 import { prepareTransaction } from "src/tezos-client";
-import { EngineOptions, StepArguments } from "src/engine/interfaces";
+import { StepArguments } from "src/engine/interfaces";
 
 export const resolveEstimateTransactionFees = async (
-  args: StepArguments,
-  { tezos }: EngineOptions
+  args: StepArguments
 ): Promise<StepArguments> => {
+  const { cycleReport, tezos } = args;
+
   if (!tezos)
     throw new Error(
       `${resolveEstimateTransactionFees.name} requires valid tezos toolkit (current value: ${tezos})!`
     );
-
-  const { cycleReport } = args;
 
   const estimates = await tezos.estimate.batch(
     map(cycleReport.delegatorPayments, prepareTransaction) as ParamsWithKind[]

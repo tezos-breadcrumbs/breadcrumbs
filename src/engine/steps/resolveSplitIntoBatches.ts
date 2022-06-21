@@ -2,23 +2,18 @@ import BigNumber from "bignumber.js";
 import { isEmpty } from "lodash";
 import { paymentAmountRequirementsFactory } from "../validate";
 
-import {
-  BasePayment,
-  EngineOptions,
-  EPaymentType,
-  StepArguments,
-} from "../interfaces";
+import { BasePayment, EPaymentType, StepArguments } from "../interfaces";
 
 export const resolveSplitIntoBatches = async (
-  args: StepArguments,
-  { tezos }: EngineOptions
+  args: StepArguments
 ): Promise<StepArguments> => {
+  const { cycleReport, tezos } = args;
+
   if (!tezos)
     throw new Error(
       `${resolveSplitIntoBatches.name} requires valid tezos toolkit (current value: ${tezos})!`
     );
 
-  const { cycleReport } = args;
   cycleReport.batches = [];
 
   const {

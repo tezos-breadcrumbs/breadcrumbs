@@ -1,4 +1,4 @@
-import { EngineOptions, StepArguments, StepFunction } from "./interfaces";
+import { StepArguments, StepFunction } from "./interfaces";
 import {
   resolveBakerRewards,
   resolveBondRewardDistribution,
@@ -29,15 +29,14 @@ const steps: StepFunction[] = [
 
 const run = async (
   args: StepArguments,
-  options: EngineOptions,
   remainingSteps: StepFunction[] = steps
 ): Promise<StepArguments> => {
   if (!remainingSteps.length) return args; /* base case */
 
-  const nextArgs = await remainingSteps[0](args, options);
+  const nextArgs = await remainingSteps[0](args);
   const nextSteps = remainingSteps.slice(1);
 
-  return await run(nextArgs, options, nextSteps);
+  return await run(nextArgs, nextSteps);
 };
 
 export default { run };

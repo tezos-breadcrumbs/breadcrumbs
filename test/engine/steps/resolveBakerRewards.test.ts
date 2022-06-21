@@ -10,6 +10,7 @@ import { generateConfig } from "test/helpers";
 import { initializeCycleReport, isOverDelegated } from "src/engine/helpers";
 import { resolveBakerRewards } from "src/engine/steps";
 import { subtract } from "src/utils/math";
+import { TezosToolkit } from "@taquito/taquito";
 
 describe("resolveBakerRewards", () => {
   Polly.start();
@@ -42,6 +43,7 @@ describe("resolveBakerRewards", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleData.cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const lockedBondRewards = bakerBalance
@@ -102,6 +104,7 @@ describe("resolveBakerRewards", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleData.cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const lockedBondRewards = bakerBalance
@@ -155,6 +158,7 @@ describe("resolveBakerRewards", () => {
       cycleData,
       cycleReport: initializeCycleReport(475),
       distributableRewards: cycleData.cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const actual = resolveBakerRewards(args);
@@ -206,6 +210,7 @@ describe("resolveBakerRewards", () => {
       cycleData,
       cycleReport: initializeCycleReport(476),
       distributableRewards: cycleData.cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const actual = resolveBakerRewards(args);

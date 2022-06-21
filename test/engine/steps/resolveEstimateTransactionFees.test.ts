@@ -43,6 +43,7 @@ describe("resolveEstimateTransactionFees", () => {
       cycleData,
       cycleReport,
       distributableRewards,
+      tezos: provider,
     };
 
     const input = resolveExcludedPaymentsByContext(
@@ -59,9 +60,7 @@ describe("resolveEstimateTransactionFees", () => {
       }))
     );
 
-    const output = await resolveEstimateTransactionFees(input, {
-      tezos: provider,
-    });
+    const output = await resolveEstimateTransactionFees(input);
 
     for (const [
       index,
