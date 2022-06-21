@@ -28,5 +28,6 @@ export const generateConfig = (
     minimum_delegator_balance: parseInt(args.minimum_delegator_balance, 0),
     fee_income_recipients: args.fee_income_recipients || {},
     bond_reward_recipients: args.bond_reward_recipients || {},
+    baker_pays_tx_fee: args.baker_pays_tx_fee || false,
   };
 };

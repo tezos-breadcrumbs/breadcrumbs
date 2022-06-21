@@ -1,4 +1,8 @@
-import { EFeePayer, StepArguments } from "src/engine/interfaces";
+import {
+  EFeePayer,
+  StepArguments,
+  DelegatorPayment,
+} from "src/engine/interfaces";
 import { add, subtract } from "src/utils/math";
 
 export const resolveSubstractTransactionFees = (
@@ -7,15 +11,15 @@ export const resolveSubstractTransactionFees = (
   const { config, cycleReport } = args;
   const { feeIncome, delegatorPayments, feesPaid } = cycleReport;
 
+  let _delegatorPayments: DelegatorPayment[] = [];
   let _feeIncome = feeIncome;
-  let _delegatorPayments = delegatorPayments;
   let _feesPaid = feesPaid;
 
   for (const payment of delegatorPayments) {
-    _feesPaid = add(_feesPaid, payment.transactionFee);
+    _feesPaid = add(_feesPaid, payment.transactionFee ?? 0);
 
     _feeIncome = config.baker_pays_tx_fee
-      ? subtract(_feeIncome, payment.transactionFee)
+      ? subtract(_feeIncome, payment.transactionFee ?? 0)
       : _feeIncome;
 
     _delegatorPayments.push({
@@ -25,7 +29,7 @@ export const resolveSubstractTransactionFees = (
         : EFeePayer.Delegator,
       amount: config.baker_pays_tx_fee
         ? payment.amount
-        : subtract(payment.amount, payment.transactionFee),
+        : subtract(payment.amount, payment.transactionFee ?? 0),
     });
   }
 
