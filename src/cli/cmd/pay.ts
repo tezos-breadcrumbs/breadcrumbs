@@ -30,15 +30,13 @@ export const pay = async (commandOptions) => {
   const cycleData = await client.getCycleData(config.baking_address, cycle);
 
   const provider = await createProvider(config);
-  const result = await engine.run(
-    {
-      config,
-      cycleReport,
-      cycleData,
-      distributableRewards: cycleData.cycleRewards,
-    },
-    { tezos: provider }
-  );
+  const result = await engine.run({
+    config,
+    cycleReport,
+    cycleData,
+    distributableRewards: cycleData.cycleRewards,
+    tezos: provider,
+  });
 
   const { batches: transactionBatches, toBeAccountedPayments } =
     result.cycleReport;
