@@ -58,7 +58,7 @@ describe("resolveEstimateTransactionFees", () => {
     );
 
     mockProvider.mockResolvedValue(
-      partialInput.cycleReport.delegatorPayments.map((_item, index) => ({
+      partialInput.cycleReport.delegatorPayments.map(() => ({
         totalCost: 1,
       }))
     );
@@ -117,7 +117,7 @@ describe("resolveEstimateTransactionFees", () => {
     );
 
     mockProvider.mockResolvedValue(
-      partialInput.cycleReport.delegatorPayments.map((_item, index) => ({
+      partialInput.cycleReport.delegatorPayments.map(() => ({
         totalCost: 1,
       }))
     );

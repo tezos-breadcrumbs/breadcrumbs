@@ -65,7 +65,7 @@ describe("resolveSplitIntoBatches", () => {
     );
 
     mockProviderEstimateBatch.mockResolvedValue(
-      partialInput.cycleReport.delegatorPayments.map((_item, index) => ({
+      partialInput.cycleReport.delegatorPayments.map(() => ({
         /* Arbitrary numbers to make sure that all transactions fit into a single batch */
         totalCost: 1,
         storageLimit: 1,
@@ -134,7 +134,7 @@ describe("resolveSplitIntoBatches", () => {
     );
 
     mockProviderEstimateBatch.mockResolvedValue(
-      partialInput.cycleReport.delegatorPayments.map((_item, index) => ({
+      partialInput.cycleReport.delegatorPayments.map(() => ({
         totalCost: 1,
         storageLimit: 2,
         gasLimit: 2,
@@ -202,7 +202,7 @@ describe("resolveSplitIntoBatches", () => {
     );
 
     mockProviderEstimateBatch.mockResolvedValue(
-      partialInput.cycleReport.delegatorPayments.map((_item, index) => ({
+      partialInput.cycleReport.delegatorPayments.map(() => ({
         totalCost: 1,
         storageLimit: 2,
         gasLimit: 2,

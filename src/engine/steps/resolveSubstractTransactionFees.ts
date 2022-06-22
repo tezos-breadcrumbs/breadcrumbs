@@ -11,7 +11,7 @@ export const resolveSubstractTransactionFees = (
   const { config, cycleReport } = args;
   const { feeIncome, delegatorPayments, feesPaid } = cycleReport;
 
-  let _delegatorPayments: DelegatorPayment[] = [];
+  const _delegatorPayments: DelegatorPayment[] = [];
   let _feeIncome = feeIncome;
   let _feesPaid = feesPaid;
 
