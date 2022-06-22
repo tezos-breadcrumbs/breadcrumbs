@@ -16,12 +16,15 @@ export const resolveExcludedPaymentsByMinimumDelegatorBalance = (
     getMinimumDelegationAmount(config).times(MUTEZ_FACTOR);
 
   const delegatorPayments = map(cycleReport.delegatorPayments, (payment) => {
-    if (payment.delegatorBalance.lt(minimumDelegatorBalance)) {
-      feeIncome = feeIncome.plus(payment.amount);
+    if (
+      payment.delegatorBalance.lt(minimumDelegatorBalance) &&
+      payment.note !== ENoteType.PaymentBelowMinimum
+    ) {
+      feeIncome = feeIncome.plus(payment.amount.toString());
       return {
         ...payment,
-        amount: new BigNumber(0),
         fee: payment.amount,
+        amount: new BigNumber(0),
         note: ENoteType.BalanceBelowMinimum,
       };
     } else {
