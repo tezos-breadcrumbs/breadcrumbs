@@ -5,10 +5,7 @@ import {
   StepArguments,
 } from "src/engine/interfaces";
 import { divide, multiply, integerize } from "src/utils/math";
-import {
-  paymentAmountRequirementsFactory,
-  paymentContextRequirementsFactory,
-} from "../validate";
+import { paymentAmountRequirementsFactory } from "../validate";
 
 export const resolveFeeIncomeDistribution = (
   args: StepArguments
