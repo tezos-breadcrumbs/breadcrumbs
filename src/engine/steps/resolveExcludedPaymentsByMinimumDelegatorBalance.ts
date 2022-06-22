@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 
 import { ENoteType, StepArguments } from "src/engine/interfaces";
-import { getMinimumDelegationAmount, getMinimumPaymentAmount } from "src/engine/helpers";
+import { getMinimumDelegationAmount } from "src/engine/helpers";
 import { add } from "src/utils/math";
 import { MUTEZ_FACTOR } from "src/utils/constants";
 
@@ -16,7 +16,7 @@ export const resolveExcludedPaymentsByMinimumDelegatorBalance = (
 
   const _delegatorPayments: typeof cycleReport.delegatorPayments = [];
   const _excludedPayments = cycleReport.excludedPayments;
-  const _creditablePayments = cycleReport.creditablePayments
+  const _creditablePayments = cycleReport.creditablePayments;
 
   let _feeIncome = cycleReport.feeIncome;
 

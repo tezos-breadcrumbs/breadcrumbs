@@ -17,11 +17,7 @@ import {
 import { globalCliOptions } from "src/cli";
 import { writeCycleReport, writePaymentReport } from "src/fs-client";
 import inquirer from "inquirer";
-import {
-  BasePayment,
-  DelegatorPayment,
-  ENoteType,
-} from "src/engine/interfaces";
+import { BasePayment, DelegatorPayment } from "src/engine/interfaces";
 import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,

@@ -113,8 +113,8 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
     } = input;
 
     let additionalFeeIncome = new BigNumber(0);
-    let expectedExcludedPayments: DelegatorPayment[] = [];
-    let expectedDelegatorPayments: DelegatorPayment[] = [];
+    const expectedExcludedPayments: DelegatorPayment[] = [];
+    const expectedDelegatorPayments: DelegatorPayment[] = [];
 
     for (let i = 0; i < inputPayments.length; i++) {
       if (
@@ -196,8 +196,8 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
       cycleReport: { delegatorPayments: inputPayments },
     } = input;
 
-    let expectedCreditablePayments: DelegatorPayment[] = [];
-    let expectedDelegatorPayments: DelegatorPayment[] = [];
+    const expectedCreditablePayments: DelegatorPayment[] = [];
+    const expectedDelegatorPayments: DelegatorPayment[] = [];
 
     for (let i = 0; i < inputPayments.length; i++) {
       if (
