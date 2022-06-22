@@ -77,7 +77,7 @@ describe("resolveFeeIncomeDistrubtion", () => {
   it("should split payments correctly if multiple fee_income_recipients are given", async () => {
     const fee_income_recipients = {
       tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: "0.4",
-      tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur: "0.6",
+      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: "0.6",
     };
     const config = generateConfig({ fee_income_recipients });
     const cycleReport = initializeCycleReport(470);

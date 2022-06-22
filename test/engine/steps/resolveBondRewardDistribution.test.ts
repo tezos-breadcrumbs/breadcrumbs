@@ -80,7 +80,7 @@ describe("resolveBondRewardDistribution", () => {
   it("should split payments correctly if multiple bond_reward_recipients are given", async () => {
     const bond_reward_recipients = {
       tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: "0.4",
-      tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur: "0.6",
+      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: "0.6",
     };
     const config = generateConfig({ bond_reward_recipients });
     const cycleReport = initializeCycleReport(470);
