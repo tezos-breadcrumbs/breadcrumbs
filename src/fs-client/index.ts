@@ -99,6 +99,7 @@ const writeCSV = async (
 const writeHJSON = async (
   path: string,
   cycle: number,
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   object: { [key: string]: any }
 ) => {
   const json = stringify(object, { space: "  " });

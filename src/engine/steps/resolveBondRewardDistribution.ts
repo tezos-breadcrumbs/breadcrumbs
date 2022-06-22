@@ -1,10 +1,11 @@
-import _ from "lodash";
+import { isEmpty, filter } from "lodash";
 import {
   BasePayment,
   EPaymentType,
   StepArguments,
 } from "src/engine/interfaces";
 import { divide, multiply, integerize } from "src/utils/math";
+import { paymentAmountRequirementsFactory } from "../validate";
 
 export const resolveBondRewardDistribution = (
   args: StepArguments
@@ -14,7 +15,7 @@ export const resolveBondRewardDistribution = (
     cycleReport: { lockedBondRewards },
   } = args;
 
-  const skip = _.isEmpty(config.bond_reward_recipients);
+  const skip = isEmpty(config.bond_reward_recipients);
 
   if (skip) {
     return args;
@@ -34,9 +35,16 @@ export const resolveBondRewardDistribution = (
 
       payments.push(payment);
     }
+
+    /* Sanity check */
+    const bondRewardPayments = filter(
+      payments,
+      paymentAmountRequirementsFactory
+    );
+
     return {
       ...args,
-      cycleReport: { ...args.cycleReport, bondRewardPayments: payments },
+      cycleReport: { ...args.cycleReport, bondRewardPayments },
     };
   }
 };

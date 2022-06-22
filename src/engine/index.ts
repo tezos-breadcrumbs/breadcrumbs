@@ -3,32 +3,40 @@ import {
   resolveBakerRewards,
   resolveBondRewardDistribution,
   resolveDelegatorRewards,
+  resolveEstimateTransactionFees,
   resolveExcludedDelegators,
   resolveExcludedPaymentsByMinimumAmount,
   resolveExcludedPaymentsByMinimumDelegatorBalance,
   resolveFeeIncomeDistribution,
+  resolveSplitIntoBatches,
+  resolveSubstractTransactionFees,
+  resolveExcludedPaymentsByContext,
 } from "./steps";
 
 const steps: StepFunction[] = [
   resolveBakerRewards,
   resolveExcludedDelegators,
   resolveDelegatorRewards,
+  resolveExcludedPaymentsByContext,
+  resolveEstimateTransactionFees,
   resolveExcludedPaymentsByMinimumAmount,
   resolveExcludedPaymentsByMinimumDelegatorBalance,
+  resolveSubstractTransactionFees,
   resolveFeeIncomeDistribution,
   resolveBondRewardDistribution,
+  resolveSplitIntoBatches,
 ];
 
-function run(
+const run = async (
   args: StepArguments,
   remainingSteps: StepFunction[] = steps
-): StepArguments {
+): Promise<StepArguments> => {
   if (!remainingSteps.length) return args; /* base case */
 
-  const nextArgs = remainingSteps[0](args);
+  const nextArgs = await remainingSteps[0](args);
   const nextSteps = remainingSteps.slice(1);
 
-  return run(nextArgs, nextSteps);
-}
+  return await run(nextArgs, nextSteps);
+};
 
 export default { run };

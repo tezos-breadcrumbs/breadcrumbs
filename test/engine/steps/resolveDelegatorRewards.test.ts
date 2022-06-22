@@ -2,6 +2,7 @@
 
 import _ from "lodash";
 import BigNumber from "bignumber.js";
+import { TezosToolkit } from "@taquito/taquito";
 
 import client from "src/api-client";
 import * as Polly from "test/helpers/polly";
@@ -32,6 +33,7 @@ describe("resolveDelegatorRewards", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveExcludedDelegators(resolveBakerRewards(args));
@@ -143,7 +145,7 @@ describe("resolveDelegatorRewards", () => {
     const delegator = "tz1TRSPwnJD6qv5LeE76uSQ1YppVEvzomFvS";
     const config = generateConfig({
       fee_exceptions: { [delegator]: "8" },
-      default_fee: "0",
+      default_fee: 0,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -154,6 +156,7 @@ describe("resolveDelegatorRewards", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveExcludedDelegators(resolveBakerRewards(args));
@@ -246,6 +249,7 @@ describe("resolveDelegatorRewards", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveExcludedDelegators(resolveBakerRewards(args));
@@ -327,7 +331,7 @@ describe("resolveDelegatorRewards", () => {
     const delegator = "tz1TRSPwnJD6qv5LeE76uSQ1YppVEvzomFvS";
     const config = generateConfig({
       overdelegation_blacklist: [delegator],
-      default_fee: "0",
+      default_fee: 0,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -338,6 +342,7 @@ describe("resolveDelegatorRewards", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveExcludedDelegators(resolveBakerRewards(args));

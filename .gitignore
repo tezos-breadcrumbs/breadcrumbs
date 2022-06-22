@@ -1,10 +1,15 @@
+# modules runtime files
 node_modules/
-config.json
-config.hjson
-.env
 yarn.lock
 
+# breadcrumbs runtime files
+.env
+config.json
+config.hjson
 reports/*
 !reports/.gitkeep
+payout_wallet_private.key
+
+# bundling
 build
 bin

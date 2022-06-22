@@ -1,6 +1,7 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 
 import BigNumber from "bignumber.js";
+import { TezosToolkit } from "@taquito/taquito";
 
 import client from "src/api-client";
 import * as Polly from "test/helpers/polly";
@@ -31,6 +32,7 @@ describe("resolveBondRewardDistribution", () => {
       cycleData,
       cycleReport,
       distributableRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveDelegatorRewards(
@@ -56,6 +58,7 @@ describe("resolveBondRewardDistribution", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleData.cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveDelegatorRewards(
@@ -77,7 +80,7 @@ describe("resolveBondRewardDistribution", () => {
   it("should split payments correctly if multiple bond_reward_recipients are given", async () => {
     const bond_reward_recipients = {
       tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: "0.4",
-      tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur: "0.6",
+      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: "0.6",
     };
     const config = generateConfig({ bond_reward_recipients });
     const cycleReport = initializeCycleReport(470);
@@ -90,6 +93,7 @@ describe("resolveBondRewardDistribution", () => {
       cycleData,
       cycleReport,
       distributableRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveDelegatorRewards(

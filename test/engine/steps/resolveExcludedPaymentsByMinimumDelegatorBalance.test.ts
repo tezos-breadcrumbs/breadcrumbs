@@ -2,6 +2,7 @@
 
 import _ from "lodash";
 import BigNumber from "bignumber.js";
+import { TezosToolkit } from "@taquito/taquito";
 
 import client from "src/api-client";
 import * as Polly from "test/helpers/polly";
@@ -23,7 +24,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
 
   it("does not exclude payments if minimum delegator balance is set to zero", async () => {
     const config = generateConfig({
-      minimum_delegator_balance: "0",
+      minimum_delegator_balance: 0,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -39,6 +40,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveExcludedPaymentsByMinimumAmount(
@@ -63,10 +65,10 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
   });
 
   it("exclude payments if the associated delegation balance is below the minimum", async () => {
-    const minimumDelegatorBalance = new BigNumber("500");
+    const minimumDelegatorBalance = 500;
 
     const config = generateConfig({
-      minimum_delegator_balance: minimumDelegatorBalance.toString(),
+      minimum_delegator_balance: minimumDelegatorBalance,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -82,6 +84,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveExcludedPaymentsByMinimumAmount(
@@ -108,11 +111,78 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
     for (let i = 0; i < inputPayments.length; i++) {
       if (
         inputPayments[i].delegatorBalance.lt(
-          minimumDelegatorBalance.times(MUTEZ_FACTOR)
+          new BigNumber(minimumDelegatorBalance).times(MUTEZ_FACTOR)
         )
       ) {
         additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
         expect(outputPayments[i].amount.eq(0));
+        expect(outputPayments[i].fee).toStrictEqual(inputPayments[i].amount);
+        expect(outputPayments[i].note).toEqual(ENoteType.BalanceBelowMinimum);
+      } else {
+        expect(outputPayments[i]).toStrictEqual(inputPayments[i]);
+      }
+    }
+
+    expect(output.cycleReport.feeIncome).toStrictEqual(
+      input.cycleReport.feeIncome.plus(additionalFeeIncome)
+    );
+  });
+
+  it("avoids double-processing by `resolveExcludedPaymentsByMinimumAmount`", async () => {
+    const minimumDelegatorBalance = 500;
+    const minimumPaymentAmount = 1;
+
+    const config = generateConfig({
+      minimum_delegator_balance: minimumDelegatorBalance,
+      minimum_payment_amount: minimumPaymentAmount,
+    });
+
+    const cycleData = await client.getCycleData(config.baking_address, 470);
+    const { cycleRewards, cycleShares } = cycleData;
+
+    const numberOfDelegators = cycleShares.length;
+
+    expect(numberOfDelegators).toEqual(9);
+    /* Sentry & Legate has 9 delegators in cycle 470 */
+
+    const args = {
+      config,
+      cycleData,
+      cycleReport: initializeCycleReport(470),
+      distributableRewards: cycleRewards,
+      tezos: {} as TezosToolkit,
+    };
+
+    const input = resolveExcludedPaymentsByMinimumAmount(
+      resolveDelegatorRewards(
+        resolveExcludedDelegators(resolveBakerRewards(args))
+      )
+    );
+
+    const output = resolveExcludedPaymentsByMinimumDelegatorBalance(input);
+
+    const {
+      cycleReport: { delegatorPayments: inputPayments },
+    } = input;
+
+    const {
+      cycleReport: { delegatorPayments: outputPayments },
+    } = output;
+
+    expect(
+      _.filter(outputPayments, (payment) => payment.amount.eq(0)).length
+    ).toBeGreaterThan(0);
+
+    let additionalFeeIncome = new BigNumber(0);
+    for (let i = 0; i < inputPayments.length; i++) {
+      if (
+        inputPayments[i].delegatorBalance.lt(
+          new BigNumber(minimumDelegatorBalance).times(MUTEZ_FACTOR)
+        ) &&
+        inputPayments[i].note !== ENoteType.PaymentBelowMinimum
+      ) {
+        additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
+        expect(outputPayments[i].amount).toStrictEqual(new BigNumber(0));
         expect(outputPayments[i].fee).toStrictEqual(inputPayments[i].amount);
         expect(outputPayments[i].note).toEqual(ENoteType.BalanceBelowMinimum);
       } else {
