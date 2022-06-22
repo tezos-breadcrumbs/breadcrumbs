@@ -41,7 +41,7 @@ export const pay = async (commandOptions) => {
   const { batches: transactionBatches, toBeAccountedPayments } =
     result.cycleReport;
 
-  // TODO: accounting - transactionBatches.toBeAccounted
+  // TODO: accounting_mode - transactionBatches.toBeAccounted
   const allPayments = transactionBatches.flatMap((x) => x);
   console.log(`Transcations to account:`);
   printPaymentsTable(toBeAccountedPayments);

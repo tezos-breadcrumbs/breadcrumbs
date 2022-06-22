@@ -10,6 +10,7 @@ export const generateConfig = (
   args: Partial<BreadcrumbsConfiguration> = {}
 ): BreadcrumbsConfiguration => {
   return {
+    accounting_mode: args.accounting_mode || false,
     baking_address: args.baking_address || DEFAULT_BAKER,
     network_configuration: Object.assign(
       {

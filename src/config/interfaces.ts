@@ -17,7 +17,7 @@ export interface BreadcrumbsConfiguration {
   redirect_payments?: { [key: string]: string };
   fee_exceptions?: { [key: string]: string };
   baker_pays_tx_fee?: boolean;
-  accounting?: boolean;
+  accounting_mode?: boolean;
   overdelegation_guard?: boolean;
   overdelegation_blacklist?: string[];
   minimum_payment_amount?: number;
