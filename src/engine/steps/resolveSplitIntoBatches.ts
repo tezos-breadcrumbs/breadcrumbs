@@ -3,6 +3,7 @@ import { isEmpty } from "lodash";
 import { paymentAmountRequirementsFactory } from "../validate";
 
 import { BasePayment, EPaymentType, StepArguments } from "../interfaces";
+import { add } from "src/utils/math";
 
 export const resolveSplitIntoBatches = async (
   args: StepArguments
@@ -13,8 +14,6 @@ export const resolveSplitIntoBatches = async (
     throw new Error(
       `${resolveSplitIntoBatches.name} requires valid tezos toolkit (current value: ${tezos})!`
     );
-
-  cycleReport.batches = [];
 
   const {
     hard_gas_limit_per_operation,
@@ -31,13 +30,15 @@ export const resolveSplitIntoBatches = async (
     gasTotal: new BigNumber(0),
   };
 
-  const { delegatorPayments, feeIncomePayments, bondRewardPayments } =
-    cycleReport;
   const batches: typeof cycleReport.batches = [];
 
-  for (const payment of delegatorPayments
+  const { delegatorPayments } = cycleReport;
+
+  const filteredDelegatorPayments = delegatorPayments
     .filter((p) => p.type !== EPaymentType.Accounted)
-    .filter(paymentAmountRequirementsFactory)) {
+    .filter(paymentAmountRequirementsFactory);
+
+  for (const payment of filteredDelegatorPayments) {
     if (
       currentBatch.storageTotal
         .plus(payment.storageLimit ?? 0)
@@ -46,7 +47,7 @@ export const resolveSplitIntoBatches = async (
         .plus(payment.gasLimit ?? 0)
         .gte(hard_gas_limit_per_operation)
     ) {
-      cycleReport.batches.push(currentBatch.payments);
+      batches.push(currentBatch.payments);
       currentBatch = {
         payments: [],
         storageTotal: new BigNumber(0),
@@ -54,23 +55,35 @@ export const resolveSplitIntoBatches = async (
       };
     }
     currentBatch.payments.push(payment);
-    currentBatch.storageTotal = currentBatch.storageTotal.plus(
+    currentBatch.storageTotal = add(
+      currentBatch.storageTotal,
       payment.storageLimit ?? 0
     );
-    currentBatch.gasTotal = currentBatch.gasTotal.plus(payment.gasLimit ?? 0);
+    currentBatch.gasTotal = add(currentBatch.gasTotal, payment.gasLimit ?? 0);
   }
 
-  if (!isEmpty(currentBatch.payments)) batches.push(currentBatch.payments); // final batch
-  if (!isEmpty(feeIncomePayments))
-    batches.push(feeIncomePayments.filter(paymentAmountRequirementsFactory));
-  if (!isEmpty(bondRewardPayments))
-    batches.push(bondRewardPayments.filter(paymentAmountRequirementsFactory));
+  /* Add last batch */
+  if (!isEmpty(currentBatch.payments)) {
+    batches.push(currentBatch.payments);
+  }
+
+  /* Process fee income and bond reward payments into separate batches */
+  const { feeIncomePayments, bondRewardPayments } = cycleReport;
+
+  if (!isEmpty(feeIncomePayments)) {
+    batches.push(feeIncomePayments);
+  }
+
+  if (!isEmpty(bondRewardPayments)) {
+    batches.push(bondRewardPayments);
+  }
 
   return {
     ...args,
     cycleReport: {
       ...cycleReport,
       batches,
+      //TODO should not be handled here.
       toBeAccountedPayments: delegatorPayments.filter(
         (p) => p.type === EPaymentType.Accounted
       ),
