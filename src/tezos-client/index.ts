@@ -4,7 +4,7 @@ import { OpKind, TezosToolkit, WalletParamsWithKind } from "@taquito/taquito";
 import { BatchWalletOperation } from "@taquito/taquito/dist/types/wallet/batch-operation";
 import { BreadcrumbsConfiguration } from "src/config/interfaces";
 import { BasePayment } from "src/engine/interfaces";
-import { getSigner } from "./signers";
+import { getSigner } from "src/tezos-client/signers";
 
 require("dotenv").config();
 
@@ -31,7 +31,6 @@ export const sendBatch = async (
   tezos: TezosToolkit,
   payments: WalletParamsWithKind[]
 ): Promise<BatchWalletOperation> => {
-  console.log("Submitting batch");
   const batch = tezos.wallet.batch(payments);
   const operation = await batch.send();
   return operation;

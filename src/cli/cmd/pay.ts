@@ -4,7 +4,11 @@ import { join } from "path";
 import client from "src/api-client";
 import engine from "src/engine";
 import { getConfig } from "src/config";
-import { printPaymentsTable } from "src/cli/print";
+import {
+  printBakerPaymentsTable,
+  printDelegatorPaymentsTable,
+  printExcludedPaymentsTable,
+} from "src/cli/print";
 import {
   createProvider,
   prepareTransaction,
@@ -13,11 +17,16 @@ import {
 import { globalCliOptions } from "src/cli";
 import { writeCycleReport, writePaymentReport } from "src/fs-client";
 import inquirer from "inquirer";
-import { BasePayment, DelegatorPayment } from "src/engine/interfaces";
+import {
+  BasePayment,
+  DelegatorPayment,
+  ENoteType,
+} from "src/engine/interfaces";
 import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
+import { flatten } from "lodash";
 
 export const pay = async (commandOptions) => {
   if (globalCliOptions.dryRun) {
@@ -38,37 +47,58 @@ export const pay = async (commandOptions) => {
     tezos: provider,
   });
 
-  const { batches: transactionBatches, toBeAccountedPayments } =
-    result.cycleReport;
+  const { batches, toBeAccountedPayments } = result.cycleReport;
 
-  // TODO: accounting_mode - transactionBatches.toBeAccounted
-  const allPayments = transactionBatches.flatMap((x) => x);
-  console.log(`Transcations to account:`);
-  printPaymentsTable(toBeAccountedPayments);
-  console.log(`Transcations to send:`);
-  printPaymentsTable(allPayments);
+  /* The last two batches are related to fee income and bond rewards */
+  const delegatorPayments = flatten(batches.slice(0, -2));
+  const bakerPayments = flatten(batches.slice(-2));
+
+  console.log("Payments excluded by minimum amount:");
+  printExcludedPaymentsTable(toBeAccountedPayments as DelegatorPayment[]);
+  console.log(""); /* Line break */
+
+  console.log("Delegator Payments:");
+  printDelegatorPaymentsTable(delegatorPayments as DelegatorPayment[]);
+  console.log(""); /* Line break */
+
+  console.log("Baker Payments:");
+  printBakerPaymentsTable(bakerPayments);
+  console.log(""); /* Line break */
+
+  if (config.accounting_mode) {
+    /* TO DO: persist toBeAccountedPayments  */
+  }
+
   if (globalCliOptions.dryRun) {
     process.exit(0);
   }
+
   if (!commandOptions.confirm) {
     const result = await inquirer.prompt({
       type: "confirm",
       name: "confirm",
-      message: "Do you really want to send above rewards?",
+      message: "Do you confirm the above rewards?",
       default: false,
     });
     if (!result.confirm) {
-      console.log(`Aborting...`);
+      console.log("Rewards not confirmed. Aborting...");
       process.exit(0);
     }
   }
 
-  console.log(`Sending rewards in ${allPayments.length} txs...`);
+  const allPayments = flatten(batches);
+
   const successfulPayments: Array<BasePayment> = [];
   const failedPayments: Array<BasePayment> = [];
-  for (const batch of transactionBatches) {
+
+  for (let i = 0; i < batches.length; i++) {
     try {
-      console.log(`Sending batch of ${batch.length} txs...`);
+      const batch = batches[i];
+      console.log(
+        `Sending batch ${i + 1}/${batches.length} containing ${
+          batches[i].length
+        } transaction(s) ...`
+      );
       const opBatch = await sendBatch(provider, batch.map(prepareTransaction));
       for (const payment of batch) {
         payment.hash = opBatch.opHash;
@@ -80,6 +110,7 @@ export const pay = async (commandOptions) => {
       successfulPayments.push(...batch);
     } catch (e: unknown) {
       console.error(e);
+      const batch = batches[i];
       for (const payment of batch) {
         (payment as DelegatorPayment).note = (e as Error).message;
       }
@@ -90,7 +121,14 @@ export const pay = async (commandOptions) => {
   if (successfulPayments.length > 0) {
     await writePaymentReport(
       cycle,
-      successfulPayments,
+      [
+        ...successfulPayments,
+        ...result.cycleReport.delegatorPayments.filter(
+          (p) =>
+            p.note === ENoteType.BalanceBelowMinimum ||
+            p.note === ENoteType.PaymentBelowMinimum
+        ),
+      ],
       join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
     );
   }

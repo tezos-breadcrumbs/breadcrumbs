@@ -30,13 +30,14 @@ export const resolveExcludedPaymentsByMinimumAmount = (
 
       _delegatorPayments.push(_payment);
 
-      if (config.accounting_mode) {
-        _toBeAccountedPayments.push({
-          ...payment,
-          transactionFee: new BigNumber(0),
-          note: ENoteType.PaymentBelowMinimum,
-        });
-      } else {
+      _toBeAccountedPayments.push({
+        ...payment,
+        transactionFee: new BigNumber(0),
+        note: ENoteType.PaymentBelowMinimum,
+      });
+
+      if (!config.accounting_mode) {
+        /* Do not increment fee income if payment will be stashed */
         _feeIncome = add(_feeIncome, _payment.fee);
       }
     } else {
