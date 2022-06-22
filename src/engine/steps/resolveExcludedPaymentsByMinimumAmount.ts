@@ -1,7 +1,8 @@
 import BigNumber from "bignumber.js";
 
-import { ENoteType, EPaymentType, StepArguments } from "src/engine/interfaces";
+import { ENoteType, StepArguments } from "src/engine/interfaces";
 import { getMinimumPaymentAmount } from "src/engine/helpers";
+import { add } from "src/utils/math";
 import { MUTEZ_FACTOR } from "src/utils/constants";
 
 export const resolveExcludedPaymentsByMinimumAmount = (
@@ -9,43 +10,37 @@ export const resolveExcludedPaymentsByMinimumAmount = (
 ): StepArguments => {
   const { config, cycleReport } = args;
 
-  let feeIncome = cycleReport.feeIncome;
-
   /* Convert minimum amount to mutez */
   const minimumPaymentAmount =
     getMinimumPaymentAmount(config).times(MUTEZ_FACTOR);
 
-  const delegatorPayments: typeof cycleReport.delegatorPayments = [];
+  const _delegatorPayments: typeof cycleReport.delegatorPayments = [];
+  const _toBeAccountedPayments: typeof cycleReport.delegatorPayments = [];
+  let _feeIncome = cycleReport.feeIncome;
+
   for (const payment of cycleReport.delegatorPayments) {
     if (payment.amount.lt(minimumPaymentAmount)) {
-      switch (config.accounting) {
-        case true:
-          delegatorPayments.push({
-            ...payment,
-            type: EPaymentType.Accounted,
-            // restore tx fee to amount if not paid by baker
-            amount: payment.amount.plus(
-              config.baker_pays_tx_fee ? 0 : payment.transactionFee ?? 0
-            ),
-            transactionFee: new BigNumber(0),
-            note: ENoteType.PaymentBelowMinimum,
-          });
-          break;
-        default:
-          feeIncome = feeIncome.plus(
-            payment.amount.plus(payment.transactionFee ?? 0)
-          );
-          delegatorPayments.push({
-            ...payment,
-            fee: payment.amount.plus(payment.transactionFee ?? 0),
-            amount: new BigNumber(0),
-            transactionFee: new BigNumber(0),
-            note: ENoteType.PaymentBelowMinimum,
-          });
-          break;
+      const _payment = {
+        ...payment,
+        note: ENoteType.PaymentBelowMinimum,
+        fee: payment.amount,
+        amount: new BigNumber(0),
+        transactionFee: new BigNumber(0),
+      };
+
+      _delegatorPayments.push(_payment);
+
+      if (config.accounting_mode) {
+        _toBeAccountedPayments.push({
+          ...payment,
+          transactionFee: new BigNumber(0),
+          note: ENoteType.PaymentBelowMinimum,
+        });
+      } else {
+        _feeIncome = add(_feeIncome, _payment.fee);
       }
     } else {
-      delegatorPayments.push({ ...payment });
+      _delegatorPayments.push(payment);
     }
   }
 
@@ -53,8 +48,9 @@ export const resolveExcludedPaymentsByMinimumAmount = (
     ...args,
     cycleReport: {
       ...cycleReport,
-      feeIncome: feeIncome,
-      delegatorPayments,
+      feeIncome: _feeIncome,
+      delegatorPayments: _delegatorPayments,
+      toBeAccountedPayments: _toBeAccountedPayments,
     },
   };
 };

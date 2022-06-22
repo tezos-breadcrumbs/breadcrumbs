@@ -27,7 +27,6 @@ export enum EPaymentType {
   Delegator = "Delegator Payment",
   FeeIncome = "Fee Income Payment",
   BondReward = "Bond Reward Payment",
-  Accounted = "Accounted",
 }
 
 export enum ENoteType {

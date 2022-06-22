@@ -1,8 +1,8 @@
 import BigNumber from "bignumber.js";
 import { isEmpty } from "lodash";
-import { paymentAmountRequirementsFactory } from "../validate";
 
-import { BasePayment, EPaymentType, StepArguments } from "../interfaces";
+import { BasePayment, StepArguments } from "src/engine/interfaces";
+import { paymentAmountRequirementsFactory } from "src/engine/validate";
 import { add } from "src/utils/math";
 
 export const resolveSplitIntoBatches = async (
@@ -34,9 +34,9 @@ export const resolveSplitIntoBatches = async (
 
   const { delegatorPayments } = cycleReport;
 
-  const filteredDelegatorPayments = delegatorPayments
-    .filter((p) => p.type !== EPaymentType.Accounted)
-    .filter(paymentAmountRequirementsFactory);
+  const filteredDelegatorPayments = delegatorPayments.filter(
+    paymentAmountRequirementsFactory
+  );
 
   for (const payment of filteredDelegatorPayments) {
     if (
@@ -83,10 +83,6 @@ export const resolveSplitIntoBatches = async (
     cycleReport: {
       ...cycleReport,
       batches,
-      //TODO should not be handled here.
-      toBeAccountedPayments: delegatorPayments.filter(
-        (p) => p.type === EPaymentType.Accounted
-      ),
     },
   };
 };
