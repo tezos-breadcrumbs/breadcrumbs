@@ -47,8 +47,7 @@ export const pay = async (commandOptions) => {
     tezos: provider,
   });
 
-  const { batches, payableExcludedPayments, nonPayableExcludedPayments } =
-    result.cycleReport;
+  const { batches, creditablePayments, excludedPayments } = result.cycleReport;
 
   /* The last two batches are related to fee income and bond rewards */
   const delegatorPayments = flatten(batches.slice(0, -2));
@@ -56,9 +55,7 @@ export const pay = async (commandOptions) => {
 
   console.log("Payments excluded by minimum amount:");
   printExcludedPaymentsTable(
-    config.accounting_mode
-      ? payableExcludedPayments
-      : nonPayableExcludedPayments
+    config.accounting_mode ? creditablePayments : excludedPayments
   );
 
   console.log(""); /* Line break */
@@ -72,7 +69,7 @@ export const pay = async (commandOptions) => {
   console.log(""); /* Line break */
 
   if (config.accounting_mode) {
-    /* TO DO: persist payableExcludedPayments  */
+    /* TO DO: persist creditablePayments  */
   }
 
   if (globalCliOptions.dryRun) {
@@ -127,7 +124,7 @@ export const pay = async (commandOptions) => {
   if (successfulPayments.length > 0) {
     await writePaymentReport(
       cycle,
-      [...successfulPayments, ...nonPayableExcludedPayments],
+      [...successfulPayments, ...excludedPayments],
       join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
     );
   }

@@ -6,8 +6,8 @@ import { BreadcrumbsConfiguration } from "src/config/interfaces";
 export interface CycleReport {
   cycle: number;
   delegatorPayments: DelegatorPayment[];
-  nonPayableExcludedPayments: DelegatorPayment[];
-  payableExcludedPayments: DelegatorPayment[];
+  excludedPayments: DelegatorPayment[];
+  creditablePayments: DelegatorPayment[];
   feeIncomePayments: BasePayment[];
   bondRewardPayments: BasePayment[];
   feeIncome: BigNumber;

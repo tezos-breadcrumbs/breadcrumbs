@@ -64,7 +64,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
       input.cycleReport.delegatorPayments
     );
 
-    expect(output.cycleReport.nonPayableExcludedPayments).toStrictEqual([]);
+    expect(output.cycleReport.excludedPayments).toStrictEqual([]);
   });
 
   it("exclude payments if they are below the specified minimum amount", async () => {
@@ -113,7 +113,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
     } = input;
 
     let additionalFeeIncome = new BigNumber(0);
-    let expectedNonPayableExcludedPayments: DelegatorPayment[] = [];
+    let expectedExcludedPayments: DelegatorPayment[] = [];
     let expectedDelegatorPayments: DelegatorPayment[] = [];
 
     for (let i = 0; i < inputPayments.length; i++) {
@@ -123,7 +123,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
         )
       ) {
         additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
-        expectedNonPayableExcludedPayments.push({
+        expectedExcludedPayments.push({
           ...inputPayments[i],
           amount: new BigNumber(0),
           transactionFee: new BigNumber(0),
@@ -136,19 +136,18 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
     }
 
     expect(output.cycleReport.delegatorPayments.length).toEqual(
-      inputPayments.length -
-        output.cycleReport.nonPayableExcludedPayments.length
+      inputPayments.length - output.cycleReport.excludedPayments.length
     );
 
     expect(output.cycleReport.delegatorPayments).toStrictEqual(
       expectedDelegatorPayments
     );
 
-    expect(output.cycleReport.nonPayableExcludedPayments).toStrictEqual(
-      expectedNonPayableExcludedPayments
+    expect(output.cycleReport.excludedPayments).toStrictEqual(
+      expectedExcludedPayments
     );
 
-    expect(output.cycleReport.payableExcludedPayments).toStrictEqual([]);
+    expect(output.cycleReport.creditablePayments).toStrictEqual([]);
   });
 
   it("correctly processes stashed payments if `accounting_mode` is true", async () => {
@@ -197,7 +196,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
       cycleReport: { delegatorPayments: inputPayments },
     } = input;
 
-    let expectedPayableExcludedPayments: DelegatorPayment[] = [];
+    let expectedCreditablePayments: DelegatorPayment[] = [];
     let expectedDelegatorPayments: DelegatorPayment[] = [];
 
     for (let i = 0; i < inputPayments.length; i++) {
@@ -206,7 +205,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
           new BigNumber(minimumPaymentAmount).times(MUTEZ_FACTOR)
         )
       ) {
-        expectedPayableExcludedPayments.push({
+        expectedCreditablePayments.push({
           ...inputPayments[i],
           transactionFee: new BigNumber(0),
           note: ENoteType.PaymentBelowMinimum,
@@ -217,17 +216,17 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
     }
 
     expect(output.cycleReport.delegatorPayments.length).toEqual(
-      inputPayments.length - output.cycleReport.payableExcludedPayments.length
+      inputPayments.length - output.cycleReport.creditablePayments.length
     );
 
     expect(output.cycleReport.delegatorPayments).toStrictEqual(
       expectedDelegatorPayments
     );
 
-    expect(output.cycleReport.nonPayableExcludedPayments).toStrictEqual([]);
+    expect(output.cycleReport.excludedPayments).toStrictEqual([]);
 
-    expect(output.cycleReport.payableExcludedPayments).toStrictEqual(
-      expectedPayableExcludedPayments
+    expect(output.cycleReport.creditablePayments).toStrictEqual(
+      expectedCreditablePayments
     );
   });
 });
