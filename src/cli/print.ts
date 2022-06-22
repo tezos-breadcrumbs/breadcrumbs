@@ -58,11 +58,18 @@ export const printExcludedPaymentsTable = (payments: DelegatorPayment[]) => {
 
   table.addColumns(columns);
 
+  const accountingMode = getConfig("accounting_mode");
+  const accountingNote = `Excluded payments ${
+    getConfig("accounting_mode") ? "will" : "will not"
+  } be paid at a later stage`;
+
   for (const payment of payments) {
     const paymentInfo: PrintableExcludedPayment = {
       recipient: shortenAddress(payment.recipient),
       delegator: shortenAddress(payment.delegator),
-      amount: `${normalizeAmount(payment.amount)} TEZ`,
+      amount: `${normalizeAmount(
+        accountingMode ? payment.amount : payment.fee
+      )} TEZ`,
       delegatorBalance: `${normalizeAmount(payment.delegatorBalance)} TEZ`,
       note: `${payment.note ?? ""} ${getConfig("minimum_payment_amount")} TEZ`,
     };
@@ -70,6 +77,7 @@ export const printExcludedPaymentsTable = (payments: DelegatorPayment[]) => {
     table.addRow(paymentInfo);
   }
   table.printTable();
+  console.log(accountingNote);
 };
 
 export const printBakerPaymentsTable = (payments: BasePayment[]) => {
