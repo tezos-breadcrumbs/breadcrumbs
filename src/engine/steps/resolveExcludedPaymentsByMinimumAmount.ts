@@ -15,30 +15,29 @@ export const resolveExcludedPaymentsByMinimumAmount = (
     getMinimumPaymentAmount(config).times(MUTEZ_FACTOR);
 
   const _delegatorPayments: typeof cycleReport.delegatorPayments = [];
-  const _toBeAccountedPayments: typeof cycleReport.delegatorPayments = [];
+  const _excludedPayments: typeof cycleReport.delegatorPayments = [];
+  const _creditablePayments: typeof cycleReport.delegatorPayments = [];
+
   let _feeIncome = cycleReport.feeIncome;
 
   for (const payment of cycleReport.delegatorPayments) {
     if (payment.amount.lt(minimumPaymentAmount)) {
-      const _payment = {
-        ...payment,
-        note: ENoteType.PaymentBelowMinimum,
-        fee: payment.amount,
-        amount: new BigNumber(0),
-        transactionFee: new BigNumber(0),
-      };
-
-      _delegatorPayments.push(_payment);
-
-      _toBeAccountedPayments.push({
-        ...payment,
-        transactionFee: new BigNumber(0),
-        note: ENoteType.PaymentBelowMinimum,
-      });
-
-      if (!config.accounting_mode) {
-        /* Do not increment fee income if payment will be stashed */
-        _feeIncome = add(_feeIncome, _payment.fee);
+      if (config.accounting_mode) {
+        _creditablePayments.push({
+          ...payment,
+          transactionFee: new BigNumber(0),
+          note: ENoteType.PaymentBelowMinimum,
+        });
+      } else {
+        /* Increment fee income if payment will not be paid later */
+        _feeIncome = add(_feeIncome, payment.amount);
+        _excludedPayments.push({
+          ...payment,
+          note: ENoteType.PaymentBelowMinimum,
+          fee: payment.amount,
+          amount: new BigNumber(0),
+          transactionFee: new BigNumber(0),
+        });
       }
     } else {
       _delegatorPayments.push(payment);
@@ -51,7 +50,8 @@ export const resolveExcludedPaymentsByMinimumAmount = (
       ...cycleReport,
       feeIncome: _feeIncome,
       delegatorPayments: _delegatorPayments,
-      toBeAccountedPayments: _toBeAccountedPayments,
+      creditablePayments: _creditablePayments,
+      excludedPayments: _excludedPayments,
     },
   };
 };

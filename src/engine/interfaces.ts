@@ -3,12 +3,19 @@ import { BigNumber } from "bignumber.js";
 import { CycleData } from "src/api-client/abstract_client";
 import { BreadcrumbsConfiguration } from "src/config/interfaces";
 
+/**
+ * @interface CycleReport
+ * @member excludedPayments is for payments excluded by minimum amount or delegator balance that WILL NOT be credited later.
+ * @member creditablePayments is for payments excluded by minimum amount or delegator balance that WILL be credited later.
+ */
+
 export interface CycleReport {
   cycle: number;
   delegatorPayments: DelegatorPayment[];
+  excludedPayments: DelegatorPayment[];
+  creditablePayments: DelegatorPayment[];
   feeIncomePayments: BasePayment[];
   bondRewardPayments: BasePayment[];
-  toBeAccountedPayments: BasePayment[];
   feeIncome: BigNumber;
   feesPaid: BigNumber;
   lockedBondRewards: BigNumber;

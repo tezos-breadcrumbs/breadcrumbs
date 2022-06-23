@@ -17,11 +17,7 @@ import {
 import { globalCliOptions } from "src/cli";
 import { writeCycleReport, writePaymentReport } from "src/fs-client";
 import inquirer from "inquirer";
-import {
-  BasePayment,
-  DelegatorPayment,
-  ENoteType,
-} from "src/engine/interfaces";
+import { BasePayment, DelegatorPayment } from "src/engine/interfaces";
 import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
@@ -47,14 +43,17 @@ export const pay = async (commandOptions) => {
     tezos: provider,
   });
 
-  const { batches, toBeAccountedPayments } = result.cycleReport;
+  const { batches, creditablePayments, excludedPayments } = result.cycleReport;
 
   /* The last two batches are related to fee income and bond rewards */
   const delegatorPayments = flatten(batches.slice(0, -2));
   const bakerPayments = flatten(batches.slice(-2));
 
   console.log("Payments excluded by minimum amount:");
-  printExcludedPaymentsTable(toBeAccountedPayments as DelegatorPayment[]);
+  printExcludedPaymentsTable(
+    config.accounting_mode ? creditablePayments : excludedPayments
+  );
+
   console.log(""); /* Line break */
 
   console.log("Delegator Payments:");
@@ -66,7 +65,7 @@ export const pay = async (commandOptions) => {
   console.log(""); /* Line break */
 
   if (config.accounting_mode) {
-    /* TO DO: persist toBeAccountedPayments  */
+    /* TO DO: persist creditablePayments  */
   }
 
   if (globalCliOptions.dryRun) {
@@ -121,14 +120,7 @@ export const pay = async (commandOptions) => {
   if (successfulPayments.length > 0) {
     await writePaymentReport(
       cycle,
-      [
-        ...successfulPayments,
-        ...result.cycleReport.delegatorPayments.filter(
-          (p) =>
-            p.note === ENoteType.BalanceBelowMinimum ||
-            p.note === ENoteType.PaymentBelowMinimum
-        ),
-      ],
+      [...successfulPayments, ...excludedPayments],
       join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
     );
   }

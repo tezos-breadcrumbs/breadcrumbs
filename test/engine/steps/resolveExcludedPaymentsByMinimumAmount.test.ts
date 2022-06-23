@@ -1,6 +1,5 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 
-import { find, filter } from "lodash";
 import BigNumber from "bignumber.js";
 import { TezosToolkit } from "@taquito/taquito";
 
@@ -59,17 +58,13 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
       resolveExcludedDelegators(resolveBakerRewards(args))
     );
 
-    const actual = resolveExcludedPaymentsByMinimumAmount(input);
+    const output = resolveExcludedPaymentsByMinimumAmount(input);
 
-    expect(actual.cycleReport.delegatorPayments).toStrictEqual(
+    expect(output.cycleReport.delegatorPayments).toStrictEqual(
       input.cycleReport.delegatorPayments
     );
 
-    expect(
-      find(actual.cycleReport.delegatorPayments, (payment) =>
-        payment.amount.eq(0)
-      )
-    ).toBeUndefined();
+    expect(output.cycleReport.excludedPayments).toStrictEqual([]);
   });
 
   it("exclude payments if they are below the specified minimum amount", async () => {
@@ -117,15 +112,10 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
       cycleReport: { delegatorPayments: inputPayments },
     } = input;
 
-    const {
-      cycleReport: { delegatorPayments: outputPayments },
-    } = output;
-
-    expect(
-      filter(outputPayments, (payment) => payment.amount.eq(0)).length
-    ).toBeGreaterThan(0);
-
     let additionalFeeIncome = new BigNumber(0);
+    const expectedExcludedPayments: DelegatorPayment[] = [];
+    const expectedDelegatorPayments: DelegatorPayment[] = [];
+
     for (let i = 0; i < inputPayments.length; i++) {
       if (
         inputPayments[i].amount.lt(
@@ -133,18 +123,31 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
         )
       ) {
         additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
-        expect(outputPayments[i].amount).toEqual(new BigNumber(0));
-        expect(outputPayments[i].transactionFee).toEqual(new BigNumber(0));
-        expect(outputPayments[i].fee).toStrictEqual(inputPayments[i].amount);
-        expect(outputPayments[i].note).toEqual(ENoteType.PaymentBelowMinimum);
+        expectedExcludedPayments.push({
+          ...inputPayments[i],
+          amount: new BigNumber(0),
+          transactionFee: new BigNumber(0),
+          note: ENoteType.PaymentBelowMinimum,
+          fee: inputPayments[i].amount,
+        });
       } else {
-        expect(outputPayments[i]).toStrictEqual(inputPayments[i]);
+        expectedDelegatorPayments.push(inputPayments[i]);
       }
     }
 
-    expect(output.cycleReport.feeIncome).toStrictEqual(
-      input.cycleReport.feeIncome.plus(additionalFeeIncome)
+    expect(output.cycleReport.delegatorPayments.length).toEqual(
+      inputPayments.length - output.cycleReport.excludedPayments.length
     );
+
+    expect(output.cycleReport.delegatorPayments).toStrictEqual(
+      expectedDelegatorPayments
+    );
+
+    expect(output.cycleReport.excludedPayments).toStrictEqual(
+      expectedExcludedPayments
+    );
+
+    expect(output.cycleReport.creditablePayments).toStrictEqual([]);
   });
 
   it("correctly processes stashed payments if `accounting_mode` is true", async () => {
@@ -193,16 +196,8 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
       cycleReport: { delegatorPayments: inputPayments },
     } = input;
 
-    const {
-      cycleReport: { delegatorPayments: outputPayments },
-    } = output;
-
-    expect(
-      filter(outputPayments, (payment) => payment.amount.eq(0)).length
-    ).toBeGreaterThan(0);
-
-    let additionalFeeIncome = new BigNumber(0);
-    const excludedPayments: DelegatorPayment[] = [];
+    const expectedCreditablePayments: DelegatorPayment[] = [];
+    const expectedDelegatorPayments: DelegatorPayment[] = [];
 
     for (let i = 0; i < inputPayments.length; i++) {
       if (
@@ -210,27 +205,28 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
           new BigNumber(minimumPaymentAmount).times(MUTEZ_FACTOR)
         )
       ) {
-        additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
-        expect(outputPayments[i].amount).toEqual(new BigNumber(0));
-        expect(outputPayments[i].transactionFee).toEqual(new BigNumber(0));
-        expect(outputPayments[i].fee).toStrictEqual(inputPayments[i].amount);
-        expect(outputPayments[i].note).toEqual(ENoteType.PaymentBelowMinimum);
-        excludedPayments.push({
+        expectedCreditablePayments.push({
           ...inputPayments[i],
           transactionFee: new BigNumber(0),
           note: ENoteType.PaymentBelowMinimum,
         });
       } else {
-        expect(outputPayments[i]).toStrictEqual(inputPayments[i]);
+        expectedDelegatorPayments.push(inputPayments[i]);
       }
     }
 
-    /* Fee income is not incremented by excluded payments */
-    expect(output.cycleReport.feeIncome).toStrictEqual(
-      input.cycleReport.feeIncome
+    expect(output.cycleReport.delegatorPayments.length).toEqual(
+      inputPayments.length - output.cycleReport.creditablePayments.length
     );
-    expect(output.cycleReport.toBeAccountedPayments).toStrictEqual(
-      excludedPayments
+
+    expect(output.cycleReport.delegatorPayments).toStrictEqual(
+      expectedDelegatorPayments
+    );
+
+    expect(output.cycleReport.excludedPayments).toStrictEqual([]);
+
+    expect(output.cycleReport.creditablePayments).toStrictEqual(
+      expectedCreditablePayments
     );
   });
 });
