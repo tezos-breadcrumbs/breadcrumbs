@@ -23,6 +23,7 @@ import {
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
 import { flatten } from "lodash";
+import { schema } from "src/config/validate";
 
 export const pay = async (commandOptions) => {
   if (globalCliOptions.dryRun) {
@@ -30,6 +31,13 @@ export const pay = async (commandOptions) => {
   }
 
   const config = getConfig();
+  try {
+    await schema.validateAsync(config);
+  } catch (e) {
+    console.log(`Configuration error: ${(e as Error).message}`);
+    process.exit(1);
+  }
+
   const cycle = commandOptions.cycle;
   const cycleReport = initializeCycleReport(cycle);
   const cycleData = await client.getCycleData(config.baking_address, cycle);
