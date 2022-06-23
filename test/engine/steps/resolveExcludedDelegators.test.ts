@@ -1,6 +1,7 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 
 import _ from "lodash";
+import { TezosToolkit } from "@taquito/taquito";
 
 import client from "src/api-client";
 import * as Polly from "test/helpers/polly";
@@ -28,6 +29,7 @@ describe("resolveExcludedDelegators", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleData.cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const input = resolveBakerRewards(args);
@@ -58,6 +60,7 @@ describe("resolveExcludedDelegators", () => {
       cycleData,
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
+      tezos: {} as TezosToolkit,
     };
 
     const actual = resolveExcludedDelegators(args);

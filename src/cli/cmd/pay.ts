@@ -1,21 +1,31 @@
 import { initializeCycleReport } from "src/engine/helpers";
 
+import { join } from "path";
 import client from "src/api-client";
 import engine from "src/engine";
 import { getConfig } from "src/config";
-import { printPaymentsTable } from "src/cli/print";
+import {
+  printBakerPaymentsTable,
+  printDelegatorPaymentsTable,
+  printExcludedPaymentsTable,
+} from "src/cli/print";
 import {
   createProvider,
   prepareTransaction,
-  submitBatch,
+  sendBatch,
 } from "src/tezos-client";
-import { arePaymentsRequirementsMet } from "src/engine/validate";
-import { cliOptions } from "src/cli";
+import { globalCliOptions } from "src/cli";
 import { writeCycleReport, writePaymentReport } from "src/fs-client";
-import { map } from "lodash";
+import inquirer from "inquirer";
+import { BasePayment, DelegatorPayment } from "src/engine/interfaces";
+import {
+  REPORTS_FAILED_PAYMENTS_DIRECTORY,
+  REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
+} from "src/utils/constants";
+import { flatten } from "lodash";
 
 export const pay = async (commandOptions) => {
-  if (cliOptions.dryRun) {
+  if (globalCliOptions.dryRun) {
     console.log(`Running in 'dry-run' mode...`);
   }
 
@@ -24,50 +34,107 @@ export const pay = async (commandOptions) => {
   const cycleReport = initializeCycleReport(cycle);
   const cycleData = await client.getCycleData(config.baking_address, cycle);
 
-  const result = engine.run({
+  const provider = await createProvider(config);
+  const result = await engine.run({
     config,
     cycleReport,
     cycleData,
     distributableRewards: cycleData.cycleRewards,
+    tezos: provider,
   });
 
-  const { delegatorPayments, feeIncomePayments, bondRewardPayments } =
-    result.cycleReport;
+  const { batches, creditablePayments, excludedPayments } = result.cycleReport;
 
-  const allPayments = [
-    ...delegatorPayments,
-    ...feeIncomePayments,
-    ...bondRewardPayments,
-  ];
+  /* The last two batches are related to fee income and bond rewards */
+  const delegatorPayments = flatten(batches.slice(0, -2));
+  const bakerPayments = flatten(batches.slice(-2));
 
-  const transactions = allPayments
-    .filter(arePaymentsRequirementsMet)
-    .map(prepareTransaction);
+  console.log("Payments excluded by minimum amount:");
+  printExcludedPaymentsTable(
+    config.accounting_mode ? creditablePayments : excludedPayments
+  );
 
-  if (cliOptions.dryRun) {
-    printPaymentsTable(allPayments);
+  console.log(""); /* Line break */
+
+  console.log("Delegator Payments:");
+  printDelegatorPaymentsTable(delegatorPayments as DelegatorPayment[]);
+  console.log(""); /* Line break */
+
+  console.log("Baker Payments:");
+  printBakerPaymentsTable(bakerPayments);
+  console.log(""); /* Line break */
+
+  if (config.accounting_mode) {
+    /* TO DO: persist creditablePayments  */
+  }
+
+  if (globalCliOptions.dryRun) {
     process.exit(0);
   }
 
-  try {
-    const provider = createProvider();
-    const opHash = await submitBatch(provider, transactions);
+  if (!commandOptions.confirm) {
+    const result = await inquirer.prompt({
+      type: "confirm",
+      name: "confirm",
+      message: "Do you confirm the above rewards?",
+      default: false,
+    });
+    if (!result.confirm) {
+      console.log("Rewards not confirmed. Aborting...");
+      process.exit(0);
+    }
+  }
 
-    const successfulPayments = map(allPayments, (p) => ({
-      ...p,
-      hash: opHash,
-    }));
+  const allPayments = flatten(batches);
+
+  const successfulPayments: Array<BasePayment> = [];
+  const failedPayments: Array<BasePayment> = [];
+
+  for (let i = 0; i < batches.length; i++) {
+    try {
+      const batch = batches[i];
+      console.log(
+        `Sending batch ${i + 1}/${batches.length} containing ${
+          batches[i].length
+        } transaction(s) ...`
+      );
+      const opBatch = await sendBatch(provider, batch.map(prepareTransaction));
+      for (const payment of batch) {
+        payment.hash = opBatch.opHash;
+      }
+      await opBatch.confirmation(2);
+      console.log(
+        `Transaction confirmed on https://ithacanet.tzkt.io/${opBatch.opHash}`
+      );
+      successfulPayments.push(...batch);
+    } catch (e: unknown) {
+      console.error(e);
+      const batch = batches[i];
+      for (const payment of batch) {
+        (payment as DelegatorPayment).note = (e as Error).message;
+      }
+      failedPayments.push(...batch);
+    }
+  }
+
+  if (successfulPayments.length > 0) {
     await writePaymentReport(
       cycle,
-      successfulPayments,
-      "reports/payments/success"
+      [...successfulPayments, ...excludedPayments],
+      join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
     );
-    await writeCycleReport(
-      result.cycleReport,
-      cycleData,
-      "reports/cycle_summary/"
-    );
-  } catch (e) {
-    await writePaymentReport(cycle, allPayments, "reports/payments/failed");
   }
+  if (failedPayments.length > 0) {
+    await writePaymentReport(
+      cycle,
+      allPayments,
+      join(globalCliOptions.workDir, REPORTS_FAILED_PAYMENTS_DIRECTORY)
+    );
+  }
+
+  await writeCycleReport(
+    result.cycleReport,
+    cycleData,
+    "reports/cycle_summary/"
+  );
 };

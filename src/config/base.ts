@@ -1,16 +1,21 @@
 import { BreadcrumbsConfiguration } from "./interfaces";
-import { program } from "commander";
 import { readFileSync } from "fs";
+import { join } from "path";
 import { parse } from "hjson";
+import { CONFIG_FILE } from "src/utils/constants";
 
 export class ConfigurationBase {
+  private workDir: string;
   private configuration?: BreadcrumbsConfiguration;
+
+  constructor(workDir: string) {
+    this.workDir = workDir;
+  }
 
   get Configuration() {
     if (this.configuration !== undefined) return this.configuration;
-    const configPath = program.opts().config;
     this.configuration = parse(
-      readFileSync(configPath).toString()
+      readFileSync(join(this.workDir, CONFIG_FILE)).toString()
     ) as BreadcrumbsConfiguration;
     return this.configuration;
   }

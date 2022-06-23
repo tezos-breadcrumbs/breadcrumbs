@@ -1,10 +1,11 @@
-import _ from "lodash";
+import { filter, isEmpty } from "lodash";
 import {
   BasePayment,
   EPaymentType,
   StepArguments,
 } from "src/engine/interfaces";
 import { divide, multiply, integerize } from "src/utils/math";
+import { paymentAmountRequirementsFactory } from "../validate";
 
 export const resolveFeeIncomeDistribution = (
   args: StepArguments
@@ -14,7 +15,7 @@ export const resolveFeeIncomeDistribution = (
     cycleReport: { feeIncome },
   } = args;
 
-  const skip = _.isEmpty(config.fee_income_recipients);
+  const skip = isEmpty(config.fee_income_recipients);
 
   if (skip) {
     return args;
@@ -34,9 +35,16 @@ export const resolveFeeIncomeDistribution = (
 
       payments.push(payment);
     }
+
+    /* Sanity check */
+    const feeIncomePayments = filter(
+      payments,
+      paymentAmountRequirementsFactory
+    );
+
     return {
       ...args,
-      cycleReport: { ...args.cycleReport, feeIncomePayments: payments },
+      cycleReport: { ...args.cycleReport, feeIncomePayments },
     };
   }
 };
