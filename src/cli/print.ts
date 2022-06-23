@@ -4,7 +4,11 @@ import { Table } from "console-table-printer";
 import { divide } from "src/utils/math";
 import { getConfig } from "src/config";
 
-import { BasePayment, DelegatorPayment } from "src/engine/interfaces";
+import {
+  BasePayment,
+  DelegatorPayment,
+  ENoteType,
+} from "src/engine/interfaces";
 import {
   PrintableBakerPayment,
   PrintableDelegatorPayment,
@@ -60,8 +64,26 @@ export const printExcludedPaymentsTable = (payments: DelegatorPayment[]) => {
 
   const accountingMode = getConfig("accounting_mode");
   const accountingNote = `Excluded payments ${
-    getConfig("accounting_mode") ? "will" : "will not"
+    accountingMode ? "will" : "will not"
   } be paid at a later stage`;
+
+  const exclusionNote = (paymentNote: ENoteType | string) => {
+    const getThreshold = () => {
+      switch (paymentNote) {
+        case ENoteType.BalanceBelowMinimum: {
+          return getConfig("minimum_delegator_balance");
+        }
+        case ENoteType.PaymentBelowMinimum: {
+          return getConfig("minimum_payment_amount");
+        }
+        default: {
+          return "";
+        }
+      }
+    };
+
+    return `${paymentNote} ${getThreshold()} TEZ`;
+  };
 
   for (const payment of payments) {
     const paymentInfo: PrintableExcludedPayment = {
@@ -71,7 +93,7 @@ export const printExcludedPaymentsTable = (payments: DelegatorPayment[]) => {
         accountingMode ? payment.amount : payment.fee
       )} TEZ`,
       delegatorBalance: `${normalizeAmount(payment.delegatorBalance)} TEZ`,
-      note: `${payment.note ?? ""} ${getConfig("minimum_payment_amount")} TEZ`,
+      note: `${exclusionNote(payment.note ?? "")}`,
     };
 
     table.addRow(paymentInfo);
@@ -105,5 +127,5 @@ const shortenAddress = (address: string) => {
 };
 
 const normalizeAmount = (input: BigNumber | undefined) => {
-  return divide(input ?? 0, MUTEZ_FACTOR).dp(2);
+  return divide(input ?? 0, MUTEZ_FACTOR).dp(3);
 };

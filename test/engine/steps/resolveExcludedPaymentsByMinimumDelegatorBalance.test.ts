@@ -58,7 +58,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
     const minimumDelegationBalance = 500;
 
     const config = generateConfig({
-      minimum_payment_amount: minimumDelegationBalance,
+      minimum_delegator_balance: minimumDelegationBalance,
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -78,14 +78,16 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
     };
 
     const input = resolveExcludedPaymentsByMinimumAmount(
-      resolveExcludedPaymentsByContext(
-        resolveDelegatorRewards(
-          resolveExcludedDelegators(resolveBakerRewards(args))
+      resolveExcludedPaymentsByMinimumAmount(
+        resolveExcludedPaymentsByContext(
+          resolveDelegatorRewards(
+            resolveExcludedDelegators(resolveBakerRewards(args))
+          )
         )
       )
     );
 
-    const output = resolveExcludedPaymentsByMinimumAmount(input);
+    const output = resolveExcludedPaymentsByMinimumDelegatorBalance(input);
 
     const {
       cycleReport: { delegatorPayments: inputPayments },
@@ -106,7 +108,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
           ...inputPayments[i],
           amount: new BigNumber(0),
           transactionFee: new BigNumber(0),
-          note: ENoteType.PaymentBelowMinimum,
+          note: ENoteType.BalanceBelowMinimum,
           fee: inputPayments[i].amount,
         });
       } else {
@@ -133,7 +135,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
     const minimumDelegationBalance = 500;
 
     const config = generateConfig({
-      minimum_payment_amount: minimumDelegationBalance,
+      minimum_delegator_balance: minimumDelegationBalance,
       accounting_mode: true,
     });
 
@@ -161,7 +163,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
       )
     );
 
-    const output = resolveExcludedPaymentsByMinimumAmount(input);
+    const output = resolveExcludedPaymentsByMinimumDelegatorBalance(input);
 
     const {
       cycleReport: { delegatorPayments: inputPayments },
@@ -180,10 +182,8 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
         additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
         expectedCreditablePayments.push({
           ...inputPayments[i],
-          amount: new BigNumber(0),
           transactionFee: new BigNumber(0),
-          note: ENoteType.PaymentBelowMinimum,
-          fee: inputPayments[i].amount,
+          note: ENoteType.BalanceBelowMinimum,
         });
       } else {
         expectedDelegatorPayments.push(inputPayments[i]);
@@ -191,7 +191,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
     }
 
     expect(output.cycleReport.delegatorPayments.length).toEqual(
-      inputPayments.length - output.cycleReport.excludedPayments.length
+      inputPayments.length - output.cycleReport.creditablePayments.length
     );
 
     expect(output.cycleReport.delegatorPayments).toStrictEqual(
@@ -206,8 +206,16 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
   });
 
   it("avoids double-processing by `resolveExcludedPaymentsByMinimumAmount` (accounting_mode: true)", async () => {
-    const minimumDelegatorBalance = 500;
-    const minimumPaymentAmount = 1;
+    const cycle = 494;
+    const minimumDelegatorBalance = 175;
+    const minimumPaymentAmount = 0.01;
+
+    /* 
+      In cycle 494, Sentry & Legate has two delegators 
+      excludable by the above minimum payment amount and 
+      an additional delegator excludable by the minimum
+      delegation amount.
+    */
 
     const config = generateConfig({
       minimum_delegator_balance: minimumDelegatorBalance,
@@ -215,13 +223,12 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
       accounting_mode: true,
     });
 
-    const cycleData = await client.getCycleData(config.baking_address, 470);
+    const cycleData = await client.getCycleData(config.baking_address, cycle);
     const { cycleRewards, cycleShares } = cycleData;
 
     const numberOfDelegators = cycleShares.length;
 
-    expect(numberOfDelegators).toEqual(9);
-    /* Sentry & Legate has 9 delegators in cycle 470 */
+    expect(numberOfDelegators).toEqual(12);
 
     const args = {
       config,
@@ -239,38 +246,55 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
       )
     );
 
-    const output = resolveExcludedPaymentsByMinimumDelegatorBalance(input);
+    /* 
+      Sanity check that two delegators have excluded from immediate 
+      payment by resolveExcludedPaymentsByMinimumAmount
+    */
 
-    const {
-      cycleReport: { delegatorPayments: inputPayments },
-    } = input;
+    expect(input.cycleReport.creditablePayments).toHaveLength(2);
 
-    let additionalFeeIncome = new BigNumber(0);
-    const expectedCreditablePayments = input.cycleReport.creditablePayments;
-    const expectedDelegatorPayments: DelegatorPayment[] = [];
+    let expectedCreditablePayments = input.cycleReport.creditablePayments;
+    let expectedDelegatorPayments: DelegatorPayment[] = [];
 
-    for (let i = 0; i < inputPayments.length; i++) {
+    for (let i = 0; i < input.cycleReport.delegatorPayments.length; i++) {
       if (
-        inputPayments[i].delegatorBalance.lt(
+        input.cycleReport.delegatorPayments[i].delegatorBalance.lt(
           new BigNumber(minimumDelegatorBalance).times(MUTEZ_FACTOR)
-        ) &&
-        inputPayments[i].note !== ENoteType.PaymentBelowMinimum
+        )
       ) {
-        additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
-        expectedCreditablePayments.push({
-          ...inputPayments[i],
-          amount: new BigNumber(0),
-          transactionFee: new BigNumber(0),
-          note: ENoteType.PaymentBelowMinimum,
-          fee: inputPayments[i].amount,
-        });
+        expectedCreditablePayments = [
+          ...expectedCreditablePayments,
+          {
+            ...input.cycleReport.delegatorPayments[i],
+            transactionFee: new BigNumber(0),
+            note: ENoteType.BalanceBelowMinimum,
+          },
+        ];
       } else {
-        expectedDelegatorPayments.push(inputPayments[i]);
+        expectedDelegatorPayments = [
+          ...expectedDelegatorPayments,
+          input.cycleReport.delegatorPayments[i],
+        ];
       }
     }
 
+    const output = resolveExcludedPaymentsByMinimumDelegatorBalance(input);
+
+    /* 
+      Sanity check that an additional delegator has been
+      excluded by resolveExcludedPaymentsByMinimumDelegatorBalance
+    */
+
+    expect(input.cycleReport.creditablePayments).toHaveLength(2);
+    expect(output.cycleReport.creditablePayments).toHaveLength(3);
+
+    /* Fee income is unchanged as `accounting_mode` is active */
     expect(output.cycleReport.feeIncome).toStrictEqual(
-      input.cycleReport.feeIncome.plus(additionalFeeIncome)
+      input.cycleReport.feeIncome
+    );
+
+    expect(output.cycleReport.delegatorPayments).toHaveLength(
+      input.cycleReport.delegatorPayments.length - 1
     );
 
     expect(output.cycleReport.delegatorPayments).toStrictEqual(
@@ -281,12 +305,24 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
       expectedCreditablePayments
     );
 
+    expect(output.cycleReport.creditablePayments).toHaveLength(
+      input.cycleReport.creditablePayments.length + 1
+    );
+
     expect(output.cycleReport.excludedPayments).toStrictEqual([]);
   });
 
   it("avoids double-processing by `resolveExcludedPaymentsByMinimumAmount` (accounting_mode: false)", async () => {
-    const minimumDelegatorBalance = 500;
-    const minimumPaymentAmount = 1;
+    const cycle = 494;
+    const minimumDelegatorBalance = 175;
+    const minimumPaymentAmount = 0.01;
+
+    /* 
+      In cycle 494, Sentry & Legate has two delegators 
+      excludable by the above minimum payment amount and 
+      an additional delegator excludable by the minimum
+      delegation amount.
+    */
 
     const config = generateConfig({
       minimum_delegator_balance: minimumDelegatorBalance,
@@ -294,13 +330,12 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
       accounting_mode: false,
     });
 
-    const cycleData = await client.getCycleData(config.baking_address, 470);
+    const cycleData = await client.getCycleData(config.baking_address, cycle);
     const { cycleRewards, cycleShares } = cycleData;
 
     const numberOfDelegators = cycleShares.length;
 
-    expect(numberOfDelegators).toEqual(9);
-    /* Sentry & Legate has 9 delegators in cycle 470 */
+    expect(numberOfDelegators).toEqual(12);
 
     const args = {
       config,
@@ -318,38 +353,60 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
       )
     );
 
-    const output = resolveExcludedPaymentsByMinimumDelegatorBalance(input);
-
-    const {
-      cycleReport: { delegatorPayments: inputPayments },
-    } = input;
+    /* 
+      Sanity check that two delegators have excluded from immediate 
+      payment by resolveExcludedPaymentsByMinimumAmount
+    */
+    expect(input.cycleReport.excludedPayments).toHaveLength(2);
 
     let additionalFeeIncome = new BigNumber(0);
-    const expectedExcludedPayments = input.cycleReport.excludedPayments;
-    const expectedDelegatorPayments: DelegatorPayment[] = [];
+    let expectedExcludedPayments = input.cycleReport.excludedPayments;
+    let expectedDelegatorPayments: DelegatorPayment[] = [];
 
-    for (let i = 0; i < inputPayments.length; i++) {
+    for (let i = 0; i < input.cycleReport.delegatorPayments.length; i++) {
       if (
-        inputPayments[i].delegatorBalance.lt(
+        input.cycleReport.delegatorPayments[i].delegatorBalance.lt(
           new BigNumber(minimumDelegatorBalance).times(MUTEZ_FACTOR)
-        ) &&
-        inputPayments[i].note !== ENoteType.PaymentBelowMinimum
+        )
       ) {
-        additionalFeeIncome = additionalFeeIncome.plus(inputPayments[i].amount);
-        expectedExcludedPayments.push({
-          ...inputPayments[i],
-          amount: new BigNumber(0),
-          transactionFee: new BigNumber(0),
-          note: ENoteType.PaymentBelowMinimum,
-          fee: inputPayments[i].amount,
-        });
+        additionalFeeIncome = additionalFeeIncome.plus(
+          input.cycleReport.delegatorPayments[i].amount
+        );
+
+        expectedExcludedPayments = [
+          ...expectedExcludedPayments,
+          {
+            ...input.cycleReport.delegatorPayments[i],
+            amount: new BigNumber(0),
+            fee: input.cycleReport.delegatorPayments[i].amount,
+            transactionFee: new BigNumber(0),
+            note: ENoteType.BalanceBelowMinimum,
+          },
+        ];
       } else {
-        expectedDelegatorPayments.push(inputPayments[i]);
+        expectedDelegatorPayments = [
+          ...expectedDelegatorPayments,
+          input.cycleReport.delegatorPayments[i],
+        ];
       }
     }
 
+    const output = resolveExcludedPaymentsByMinimumDelegatorBalance(input);
+
+    /* 
+      Sanity check that an additional delegator has been
+      excluded by resolveExcludedPaymentsByMinimumDelegatorBalance
+    */
+    expect(input.cycleReport.excludedPayments).toHaveLength(2);
+    expect(output.cycleReport.excludedPayments).toHaveLength(3);
+
+    /* Fee income is unchanged as `accounting_mode` is active */
     expect(output.cycleReport.feeIncome).toStrictEqual(
       input.cycleReport.feeIncome.plus(additionalFeeIncome)
+    );
+
+    expect(output.cycleReport.delegatorPayments).toHaveLength(
+      input.cycleReport.delegatorPayments.length - 1
     );
 
     expect(output.cycleReport.delegatorPayments).toStrictEqual(
@@ -358,6 +415,10 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
 
     expect(output.cycleReport.excludedPayments).toStrictEqual(
       expectedExcludedPayments
+    );
+
+    expect(output.cycleReport.excludedPayments).toHaveLength(
+      input.cycleReport.excludedPayments.length + 1
     );
 
     expect(output.cycleReport.creditablePayments).toStrictEqual([]);

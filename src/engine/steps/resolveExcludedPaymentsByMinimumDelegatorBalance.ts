@@ -15,8 +15,8 @@ export const resolveExcludedPaymentsByMinimumDelegatorBalance = (
     getMinimumDelegationAmount(config).times(MUTEZ_FACTOR);
 
   const _delegatorPayments: typeof cycleReport.delegatorPayments = [];
-  const _excludedPayments = cycleReport.excludedPayments;
-  const _creditablePayments = cycleReport.creditablePayments;
+  const _excludedPayments: typeof cycleReport.delegatorPayments = [];
+  const _creditablePayments: typeof cycleReport.delegatorPayments = [];
 
   let _feeIncome = cycleReport.feeIncome;
 
@@ -26,14 +26,14 @@ export const resolveExcludedPaymentsByMinimumDelegatorBalance = (
         _creditablePayments.push({
           ...payment,
           transactionFee: new BigNumber(0),
-          note: ENoteType.PaymentBelowMinimum,
+          note: ENoteType.BalanceBelowMinimum,
         });
       } else {
         /* Increment fee income if payment will not be paid later */
         _feeIncome = add(_feeIncome, payment.amount);
         _excludedPayments.push({
           ...payment,
-          note: ENoteType.PaymentBelowMinimum,
+          note: ENoteType.BalanceBelowMinimum,
           fee: payment.amount,
           amount: new BigNumber(0),
           transactionFee: new BigNumber(0),
@@ -50,8 +50,11 @@ export const resolveExcludedPaymentsByMinimumDelegatorBalance = (
       ...cycleReport,
       feeIncome: _feeIncome,
       delegatorPayments: _delegatorPayments,
-      creditablePayments: _creditablePayments,
-      excludedPayments: _excludedPayments,
+      creditablePayments: [
+        ...cycleReport.creditablePayments,
+        ..._creditablePayments,
+      ],
+      excludedPayments: [...cycleReport.excludedPayments, ..._excludedPayments],
     },
   };
 };
