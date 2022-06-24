@@ -25,7 +25,6 @@ const validDistributionShares = Joi.custom((i) => {
   const result = Joi.object()
     .pattern(validAddress, validPercentage)
     .validate(i);
-  console.log(result);
   if (result.error) {
     throw Error(result.error.message);
   } else {
