@@ -44,7 +44,7 @@ const validRpcUrl = Joi.string().uri({ scheme: ["https"] });
 export const schema = Joi.object({
   baking_address: validPKH,
   default_fee: validPercentage.required(),
-  payout_wallet_mode: validPayoutWalletMode,
+  payout_wallet_mode: validPayoutWalletMode.required(),
   delegator_overrides: validDelegatorOverrides,
   delegator_requirements: {
     minimum_balance: Joi.number().positive(),
