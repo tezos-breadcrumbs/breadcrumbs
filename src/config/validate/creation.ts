@@ -1,6 +1,7 @@
 import { InMemorySigner } from "@taquito/signer";
 import Joi from "joi";
 import { isPKH } from "src/config/validate/helpers";
+import { EPayoutWalletMode } from "../interfaces";
 
 type inquirerValidator = (any) => boolean | string;
 
@@ -24,4 +25,9 @@ export const validPrivateKey = async (input) => {
 
 export const filterRpcUrl = (input) => {
   return input.split("|")[1];
+};
+
+export const filterWalletMode = (input) => {
+  if (input === "Ledger") return EPayoutWalletMode.Ledger;
+  else return EPayoutWalletMode.PrivateKey;
 };

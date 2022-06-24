@@ -2,9 +2,11 @@
 import inquirer from "inquirer";
 import fs from "fs";
 import { stringify } from "hjson";
+import { EPayoutWalletMode } from "./interfaces";
 
 const {
   filterRpcUrl,
+  filterWalletMode,
   validBakingAddress,
   validPercentage,
   validPrivateKey,
@@ -35,10 +37,19 @@ const {
       ],
       filter: filterRpcUrl,
     },
+    {
+      type: "list",
+      name: "payout_wallet_mode",
+      message: "Please select the type of wallet you will use for payouts",
+      choices: ["Private Key Stored Locally", "Ledger"],
+      filter: filterWalletMode,
+    },
 
     {
       type: "input",
       name: "private_key",
+      when: (answers) =>
+        answers.payout_wallet_mode === EPayoutWalletMode.PrivateKey,
       message:
         "Please enter your private key. It will be persisted locally in `payout_wallet_private.key` file",
       validate: async (input) => validPrivateKey(input),
@@ -52,6 +63,7 @@ const {
     const config = {
       baking_address: answers.baking_address,
       default_fee: Number(answers.default_fee),
+      payout_wallet_mode: answers.payout_wallet_mode,
       network_configuration: {
         rpc_url: answers.rpc_url,
       },
@@ -66,12 +78,14 @@ const {
       }
     });
 
-    fs.writeFile("./payout_wallet_private.key", privateKey, (err) => {
-      if (!err) {
-        console.log(
-          "Successfully created private key file at payout_wallet_private.key"
-        );
-      }
-    });
+    if (answers.payout_wallet_mode === EPayoutWalletMode.PrivateKey) {
+      fs.writeFile("./payout_wallet_private.key", privateKey, (err) => {
+        if (!err) {
+          console.log(
+            "Successfully created private key file at payout_wallet_private.key"
+          );
+        }
+      });
+    }
   });
 })();

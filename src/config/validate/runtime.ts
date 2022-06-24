@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { values, sum } from "lodash";
+import { EPayoutWalletMode } from "../interfaces";
 import { isAddress, isPKH } from "./helpers";
 
 const validPKH = Joi.custom((i) => {
@@ -13,6 +14,11 @@ const validAddress = Joi.custom((i) => {
 });
 
 const validPercentage = Joi.number().min(0).max(100);
+
+const validPayoutWalletMode = Joi.string().valid(
+  EPayoutWalletMode.Ledger,
+  EPayoutWalletMode.PrivateKey
+);
 
 const validOverdelegationExcludedAddresses = Joi.array().items(validAddress);
 
@@ -38,6 +44,7 @@ const validRpcUrl = Joi.string().uri({ scheme: ["https"] });
 export const schema = Joi.object({
   baking_address: validPKH,
   default_fee: validPercentage.required(),
+  payout_wallet_mode: validPayoutWalletMode,
   delegator_overrides: validDelegatorOverrides,
   delegator_requirements: {
     minimum_balance: Joi.number().positive(),
