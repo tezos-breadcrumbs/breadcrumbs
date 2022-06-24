@@ -1,13 +1,6 @@
 import Joi from "joi";
-import {
-  validateAddress,
-  validateKeyHash,
-  ValidationResult,
-} from "@taquito/utils";
 import { values, sum } from "lodash";
-
-const isPKH = (i) => validateKeyHash(i) === ValidationResult.VALID;
-const isAddress = (i) => validateAddress(i) === ValidationResult.VALID;
+import { isAddress, isPKH } from "./helpers";
 
 const validPKH = Joi.custom((i) => {
   if (isPKH(i)) return i;

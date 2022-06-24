@@ -3,64 +3,75 @@ import inquirer from "inquirer";
 import fs from "fs";
 import { stringify } from "hjson";
 
-const advancedParams = {
-  redirect_payments: {},
-  fee_exceptions: {},
-  overdelegation_blacklist: [],
-  minimum_payment_amount: [],
-  fee_income_recipients: [],
-  bond_reward_recipients: {},
-};
-
-const { filterNumber } = require("./filters");
-
 const {
-  validAddress,
+  filterRpcUrl,
+  validBakingAddress,
   validPercentage,
-  validNumber,
-} = require("./validators.ts");
+  validPrivateKey,
+} = require("./validate/creation");
 
-console.log("Welcome to the breadcrumbs configuration helper.");
+(async () => {
+  const questions = [
+    {
+      type: "input",
+      name: "baking_address",
+      message: "Please enter your baking address:",
+      validate: validBakingAddress,
+    },
+    {
+      type: "input",
+      name: "default_fee",
+      message: "Please enter your default service fee:",
+      validate: validPercentage,
+    },
+    {
+      type: "list",
+      name: "rpc_url",
+      message:
+        "Please select a Tezos RPC URL. You can customize it later by editing the configuration file",
+      choices: [
+        "Mainnet|https://mainnet-tezos.giganode.io/",
+        "Testnet|https://testnet-tezos.giganode.io/",
+      ],
+      filter: filterRpcUrl,
+    },
 
-const questions = [
-  {
-    type: "input",
-    name: "baking_address",
-    message: "Please enter your baking address:",
-    validate: validAddress,
-  },
-  {
-    type: "input",
-    name: "default_fee",
-    message: "Please enter your default service fee:",
-    validate: validPercentage,
-  },
+    {
+      type: "input",
+      name: "private_key",
+      message:
+        "Please enter your private key. It will be persisted locally in `payout_wallet_private.key` file",
+      validate: async (input) => validPrivateKey(input),
+    },
+  ];
 
-  {
-    type: "list",
-    name: "overdelegation_guard",
-    message: "Do you want to activate protection against overdelegation?",
-    choices: ["YES", "NO"],
-    filter: (value) => value === "YES",
-  },
-  {
-    type: "input",
-    name: "minimum_delegator_balance",
-    message:
-      "The minimum delegation amount to receive rewards in the given cycle",
-    validate: validNumber,
-    filter: filterNumber,
-    default: "0",
-  },
-];
+  console.log("Welcome to the breadcrumbs configuration helper.");
 
-inquirer.prompt(questions).then((answers) => {
-  const json = stringify({ ...answers, ...advancedParams }, { space: "  " });
-  fs.writeFile("./config.hjson", json, (err) => {
-    if (!err) {
-      console.log(
-        "Successfully created configuration file `config.hjson`. Please edit directly for more advanced configuration"
-      );
-    }
+  inquirer.prompt(questions).then((answers) => {
+    const privateKey = answers.private_key;
+    const config = {
+      baking_address: answers.baking_address,
+      default_fee: Number(answers.default_fee),
+      network_configuration: {
+        rpc_url: answers.rpc_url,
+      },
+    };
+
+    const json = stringify(config, { space: "  " });
+    fs.writeFile("./config.hjson", json, (err) => {
+      if (!err) {
+        console.log(
+          "Successfully created configuration file `config.hjson`. Please edit directly for more advanced configuration"
+        );
+      }
+    });
+
+    fs.writeFile("./payout_wallet_private.key", privateKey, (err) => {
+      if (!err) {
+        console.log(
+          "Successfully created private key file at payout_wallet_private.key"
+        );
+      }
+    });
   });
-});
+})();

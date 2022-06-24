@@ -23,7 +23,7 @@ import {
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
 import { flatten } from "lodash";
-import { schema } from "src/config/validate";
+import { schema } from "src/config/validate/runtime";
 
 export const pay = async (commandOptions) => {
   if (globalCliOptions.dryRun) {
