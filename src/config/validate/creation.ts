@@ -29,5 +29,5 @@ export const filterRpcUrl = (input) => {
 
 export const filterWalletMode = (input) => {
   if (input === "Ledger") return EPayoutWalletMode.Ledger;
-  else return EPayoutWalletMode.PrivateKey;
+  else return EPayoutWalletMode.LocalPrivateKey;
 };

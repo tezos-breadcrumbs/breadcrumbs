@@ -1,5 +1,5 @@
 export enum EPayoutWalletMode {
-  PrivateKey = "private-key",
+  LocalPrivateKey = "local-private-key",
   Ledger = "ledger",
 }
 

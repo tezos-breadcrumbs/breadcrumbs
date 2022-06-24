@@ -17,7 +17,7 @@ const validPercentage = Joi.number().min(0).max(100);
 
 const validPayoutWalletMode = Joi.string().valid(
   EPayoutWalletMode.Ledger,
-  EPayoutWalletMode.PrivateKey
+  EPayoutWalletMode.LocalPrivateKey
 );
 
 const validOverdelegationExcludedAddresses = Joi.array().items(validAddress);

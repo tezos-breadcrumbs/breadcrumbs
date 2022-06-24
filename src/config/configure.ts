@@ -49,7 +49,7 @@ const {
       type: "input",
       name: "private_key",
       when: (answers) =>
-        answers.payout_wallet_mode === EPayoutWalletMode.PrivateKey,
+        answers.payout_wallet_mode === EPayoutWalletMode.LocalPrivateKey,
       message:
         "Please enter your private key. It will be persisted locally in `payout_wallet_private.key` file",
       validate: async (input) => validPrivateKey(input),
@@ -78,7 +78,7 @@ const {
       }
     });
 
-    if (answers.payout_wallet_mode === EPayoutWalletMode.PrivateKey) {
+    if (answers.payout_wallet_mode === EPayoutWalletMode.LocalPrivateKey) {
       fs.writeFile("./payout_wallet_private.key", privateKey, (err) => {
         if (!err) {
           console.log(
