@@ -65,7 +65,7 @@ describe("sequential run", () => {
   it("correctly runs steps in a sequence (two steps)", async () => {
     const excludedAddresses = [];
     const config = generateConfig({
-      overdelegation_blacklist: excludedAddresses,
+      overdelegation: { excluded_addresses: excludedAddresses },
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -158,20 +158,14 @@ describe("sequential run", () => {
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
       expect(payment.recipient).toEqual(
-        get(
-          input.config.redirect_payments,
-          payment.delegator,
+        config.delegator_overrides?.[payment.delegator]?.recipient ??
           payment.delegator
-        )
       );
 
       expect(payment.feeRate).toStrictEqual(
         new BigNumber(
-          get(
-            input.config.fee_exceptions,
-            payment.delegator,
-            input.config.default_fee
-          )
+          config.delegator_overrides?.[payment.delegator]?.fee ??
+            config.default_fee
         ).div(100)
       );
 
@@ -181,11 +175,8 @@ describe("sequential run", () => {
         .times(
           new BigNumber(100)
             .minus(
-              get(
-                input.config.fee_exceptions,
-                payment.delegator,
-                input.config.default_fee
-              )
+              config.delegator_overrides?.[payment.delegator]?.fee ??
+                config.default_fee
             )
             .dividedBy(100)
         )
