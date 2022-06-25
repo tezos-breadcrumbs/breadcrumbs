@@ -10,22 +10,22 @@
       "tz1...xyz": 60,
       "tz2...xyz": 40
     },
-    "delegator_overrides": {
-      "tz1...xyz": {
-        "fee": 8
-      },
-      "tz2..xyz": {
-        "recipient": "tz3...xyz"
-      }
-    },
     "fee_income": {
       "tz1...xyz": 60,
       "tz2...xyz": 40
     }
   },
+  "delegator_overrides": {
+    "tz1...xyz": {
+      "fee": 8
+    },
+    "tz2..xyz": {
+      "recipient": "tz3...xyz"
+    }
+  },
   "network_configuration": {
     "rpc_url": "https://mainnet-tezos.giganode.io/",
-    "suppress_KT_paymets": "true | false"
+    "suppress_KT_payments": "true | false"
   },
   "overdelegation": {
     "excluded_address": [
