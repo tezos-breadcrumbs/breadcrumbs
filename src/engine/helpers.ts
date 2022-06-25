@@ -1,6 +1,5 @@
 import { BigNumber } from "bignumber.js";
 import { CycleReport } from "./interfaces";
-import { get } from "lodash";
 import { BreadcrumbsConfiguration } from "src/config/interfaces";
 
 export const getApplicableFee = (
@@ -8,7 +7,7 @@ export const getApplicableFee = (
   delegator: string
 ) => {
   return new BigNumber(
-    get(config.fee_exceptions, delegator, config.default_fee)
+    config.delegator_overrides?.[delegator]?.fee ?? config.default_fee
   ).div(100);
 };
 
@@ -16,7 +15,7 @@ export const getRedirectAddress = (
   config: BreadcrumbsConfiguration,
   delegator: string
 ) => {
-  return get(config.redirect_payments, delegator, delegator);
+  return config.delegator_overrides?.[delegator]?.recipient ?? delegator;
 };
 
 export const isOverDelegated = (
@@ -50,11 +49,11 @@ export const initializeCycleReport = (cycle): CycleReport => {
 };
 
 export const getMinimumPaymentAmount = (config: BreadcrumbsConfiguration) => {
-  return new BigNumber(config.minimum_payment_amount ?? 0);
+  return new BigNumber(config.payment_requirements?.minimum_amount ?? 0);
 };
 
 export const getMinimumDelegationAmount = (
   config: BreadcrumbsConfiguration
 ) => {
-  return new BigNumber(config.minimum_delegator_balance ?? 0);
+  return new BigNumber(config.delegator_requirements?.minimum_balance ?? 0);
 };
