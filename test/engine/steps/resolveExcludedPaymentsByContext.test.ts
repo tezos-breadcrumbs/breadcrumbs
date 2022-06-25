@@ -25,10 +25,10 @@ describe("resolveExcludedPaymentsByContext", () => {
 
     const config = generateConfig({
       network_configuration: {
-        rpc: "https://ithacanet.ecadinfra.com",
-        suppress_smartcontract_payments: false,
+        rpc_url: "https://ithacanet.ecadinfra.com",
+        suppress_KT_payments: false,
       },
-      redirect_payments: { [DELEGATOR]: BAKER },
+      delegator_overrides: { [DELEGATOR]: { recipient: BAKER } },
     });
 
     const cycleReport = initializeCycleReport(470);
@@ -66,8 +66,8 @@ describe("resolveExcludedPaymentsByContext", () => {
   it("excludes payments to KT addresses if this is configured", async () => {
     const config = generateConfig({
       network_configuration: {
-        rpc: "https://ithacanet.ecadinfra.com",
-        suppress_smartcontract_payments: true,
+        rpc_url: "https://ithacanet.ecadinfra.com",
+        suppress_KT_payments: true,
       },
     });
 
@@ -105,8 +105,8 @@ describe("resolveExcludedPaymentsByContext", () => {
   it("does not exclude payments to KT addresses if this is not configured", async () => {
     const config = generateConfig({
       network_configuration: {
-        rpc: "https://ithacanet.ecadinfra.com",
-        suppress_smartcontract_payments: false,
+        rpc_url: "https://ithacanet.ecadinfra.com",
+        suppress_KT_payments: false,
       },
     });
 
