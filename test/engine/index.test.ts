@@ -16,6 +16,7 @@ import {
   resolveExcludedDelegators,
   resolveExcludedPaymentsByMinimumAmount,
 } from "src/engine/steps";
+import { each, find, map } from "lodash";
 
 describe("sequential run", () => {
   Polly.start();
@@ -113,7 +114,7 @@ describe("sequential run", () => {
     ]);
 
     const delegatorShareOfRewards = sum(
-      ..._.map(input.cycleData.cycleShares, (share) =>
+      ...map(input.cycleData.cycleShares, (share) =>
         input.distributableRewards.times(
           share.balance.div(cycleDelegatedBalance)
         )
@@ -144,8 +145,8 @@ describe("sequential run", () => {
         .plus(ROUNDING_ADJUSTMENT_2)
     );
 
-    _.each(output.cycleReport.delegatorPayments, (payment) => {
-      const share = _.find(
+    each(output.cycleReport.delegatorPayments, (payment) => {
+      const share = find(
         output.cycleData.cycleShares,
         (share) => share.address === payment.delegator
       );
