@@ -22,10 +22,8 @@ import { DelegatorPayment, ENoteType } from "src/engine/interfaces";
 describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
   Polly.start();
 
-  it("does not exclude payments if minimum delegator balance is set to zero", async () => {
-    const config = generateConfig({
-      minimum_delegator_balance: 0,
-    });
+  it("does not exclude payments if minimum delegator balance is not set", async () => {
+    const config = generateConfig();
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
     const { cycleRewards, cycleShares } = cycleData;
@@ -58,7 +56,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
     const minimumDelegationBalance = 500;
 
     const config = generateConfig({
-      minimum_delegator_balance: minimumDelegationBalance,
+      delegator_requirements: { minimum_balance: minimumDelegationBalance },
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -135,7 +133,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
     const minimumDelegationBalance = 500;
 
     const config = generateConfig({
-      minimum_delegator_balance: minimumDelegationBalance,
+      delegator_requirements: { minimum_balance: minimumDelegationBalance },
       accounting_mode: true,
     });
 
@@ -218,8 +216,8 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
     */
 
     const config = generateConfig({
-      minimum_delegator_balance: minimumDelegatorBalance,
-      minimum_payment_amount: minimumPaymentAmount,
+      delegator_requirements: { minimum_balance: minimumDelegatorBalance },
+      payment_requirements: { minimum_amount: minimumPaymentAmount },
       accounting_mode: true,
     });
 
@@ -325,8 +323,8 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
     */
 
     const config = generateConfig({
-      minimum_delegator_balance: minimumDelegatorBalance,
-      minimum_payment_amount: minimumPaymentAmount,
+      delegator_requirements: { minimum_balance: minimumDelegatorBalance },
+      payment_requirements: { minimum_amount: minimumPaymentAmount },
       accounting_mode: false,
     });
 
