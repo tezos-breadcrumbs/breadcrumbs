@@ -15,8 +15,8 @@ import { TezosToolkit } from "@taquito/taquito";
 describe("resolveBakerRewards", () => {
   Polly.start();
 
-  test("allocates to proportional rewards to baker if not overdelegated", async () => {
-    const config = generateConfig({ overdelegation_guard: true });
+  test("allocates proportional rewards to baker if not overdelegated and overdelegation guard is true", async () => {
+    const config = generateConfig({ overdelegation: { guard: true } });
     const cycleData = await client.getCycleData(config.baking_address, 470);
     const {
       cycleShares,
@@ -71,10 +71,10 @@ describe("resolveBakerRewards", () => {
     ).toStrictEqual(actual.cycleData.cycleRewards);
   });
 
-  test("allocates proportional rewards to baker if overdelegated and `overdelegation_guard` is false", async () => {
+  test("allocates proportional rewards to baker if overdelegated and `overdelegation guard` is false", async () => {
     const config = generateConfig({
       baking_address: "tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof" /* Tezos Rio */,
-      overdelegation_guard: false,
+      overdelegation: { guard: false },
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 475);
@@ -132,10 +132,10 @@ describe("resolveBakerRewards", () => {
     ).toStrictEqual(actual.cycleData.cycleRewards);
   });
 
-  test("allocates 10% of rewards to baker if overdelegated and `overdelegation_guard` is true  (frozen deposit limit)", async () => {
+  test("allocates 10% of rewards to baker if overdelegated and `overdelegation guard` is true  (frozen deposit limit)", async () => {
     const config = generateConfig({
       baking_address: "tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof" /* Tezos Rio */,
-      overdelegation_guard: true,
+      overdelegation: { guard: true },
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 475);
@@ -183,11 +183,11 @@ describe("resolveBakerRewards", () => {
     expect(bakerIncludedInShares).toBe(false);
   });
 
-  test("allocates 10% of rewards to baker if overdelegated and `overdelegation_guard` is true  (actual stake)", async () => {
+  test("allocates 10% of rewards to baker if overdelegated and `overdelegation guard` is true  (actual stake)", async () => {
     const config = generateConfig({
       baking_address:
         "tz1axcnVN9tZnCe4sQQhC6f3tfSEXdjPaXPY" /* Devil's Delegate */,
-      overdelegation_guard: true,
+      overdelegation: { guard: true },
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 476);
