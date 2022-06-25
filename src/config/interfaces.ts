@@ -24,10 +24,10 @@ interface NetworkConfiguration {
 }
 
 interface IncomeRecipientsConfiguration {
-  bond_rewards: {
+  bond_rewards?: {
     [key: string]: number;
   };
-  fee_income: {
+  fee_income?: {
     [key: string]: number;
   };
 }
@@ -48,4 +48,7 @@ export interface BreadcrumbsConfiguration {
   income_recipients?: IncomeRecipientsConfiguration;
   overdelegation?: OverdelegationConfiguration;
   payment_requirements?: PaymentRequirements;
+
+  /* Experimental */
+  accounting_mode?: boolean;
 }
