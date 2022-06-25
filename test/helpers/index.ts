@@ -12,6 +12,7 @@ export const generateConfig = (
   return {
     baking_address: args.baking_address || DEFAULT_BAKER,
     default_fee: parseInt(args.default_fee, 5),
+    accounting_mode: args.accounting_mode ?? false,
     payout_wallet_mode:
       args.payout_wallet_mode ?? EPayoutWalletMode.LocalPrivateKey,
     network_configuration: {

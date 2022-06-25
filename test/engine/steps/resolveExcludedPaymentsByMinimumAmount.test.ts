@@ -33,10 +33,8 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
     jest.resetAllMocks();
   });
 
-  it("does not exclude payments if minimum payment amount is set at zero", async () => {
-    const config = generateConfig({
-      minimum_payment_amount: 0,
-    });
+  it("does not exclude payments if minimum payment amount is not set", async () => {
+    const config = generateConfig();
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
     const { cycleRewards, cycleShares } = cycleData;
@@ -71,7 +69,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
     const minimumPaymentAmount = 2;
 
     const config = generateConfig({
-      minimum_payment_amount: minimumPaymentAmount,
+      payment_requirements: { minimum_amount: minimumPaymentAmount },
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -154,7 +152,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
     const minimumPaymentAmount = 2;
 
     const config = generateConfig({
-      minimum_payment_amount: minimumPaymentAmount,
+      payment_requirements: { minimum_amount: minimumPaymentAmount },
       accounting_mode: true,
     });
 
