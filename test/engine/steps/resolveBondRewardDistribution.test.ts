@@ -118,8 +118,8 @@ describe("resolveBondRewardDistribution", () => {
 
     let paymentSum = new BigNumber(0);
     for (const payment of bondRewardPayments) {
-      const share = config.income_recipients?.bond_rewards?.[payment.recipient];
-      const amount = new BigNumber(share ?? 0)
+      const share = bondRewardRecipients[payment.recipient];
+      const amount = new BigNumber(share)
         .times(input.cycleReport.lockedBondRewards)
         .dp(0, BigNumber.ROUND_DOWN);
 

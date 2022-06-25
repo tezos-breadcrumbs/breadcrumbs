@@ -15,14 +15,17 @@ export const resolveFeeIncomeDistribution = (
     cycleReport: { feeIncome },
   } = args;
 
-  const skip = isEmpty(config.fee_income_recipients);
+  const skip = isEmpty(config.income_recipients?.fee_income);
 
   if (skip) {
     return args;
   } else {
     const payments: BasePayment[] = [];
-    for (const recipient in config.fee_income_recipients) {
-      const share = divide(config.fee_income_recipients[recipient], 1);
+    for (const recipient in config.income_recipients?.fee_income) {
+      const share = divide(
+        config.income_recipients?.fee_income[recipient] ?? 0,
+        1
+      );
       const payable = integerize(multiply(share, feeIncome));
 
       const payment = {
