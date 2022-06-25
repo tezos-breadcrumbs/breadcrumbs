@@ -21,7 +21,11 @@ describe("resolveBondRewardDistribution", () => {
   Polly.start();
 
   it("should not add any payments if no bond_reward_recipients are given", async () => {
-    const config = generateConfig({ bond_reward_recipients: {} });
+    const config = generateConfig({
+      income_recipients: {
+        bond_rewards: {},
+      },
+    });
     const cycleReport = initializeCycleReport(470);
     const cycleData = await client.getCycleData(config.baking_address, 470);
 
@@ -48,7 +52,9 @@ describe("resolveBondRewardDistribution", () => {
   it("should create a payment equivalent to bond-associated rewards if one bond_reward_recipients is given", async () => {
     const recipientAddress = "tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof";
     const config = generateConfig({
-      bond_reward_recipients: { [recipientAddress]: "1" },
+      income_recipients: {
+        bond_rewards: { [recipientAddress]: 1 },
+      },
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -78,11 +84,15 @@ describe("resolveBondRewardDistribution", () => {
   });
 
   it("should split payments correctly if multiple bond_reward_recipients are given", async () => {
-    const bond_reward_recipients = {
-      tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: "0.4",
-      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: "0.6",
+    const bondRewardRecipients = {
+      tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: 0.4,
+      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: 0.6,
     };
-    const config = generateConfig({ bond_reward_recipients });
+    const config = generateConfig({
+      income_recipients: {
+        bond_rewards: { ...bondRewardRecipients },
+      },
+    });
     const cycleReport = initializeCycleReport(470);
     const cycleData = await client.getCycleData(config.baking_address, 470);
 
@@ -108,7 +118,8 @@ describe("resolveBondRewardDistribution", () => {
 
     let paymentSum = new BigNumber(0);
     for (const payment of bondRewardPayments) {
-      const amount = new BigNumber(bond_reward_recipients[payment.recipient])
+      const share = config.income_recipients?.bond_rewards?.[payment.recipient];
+      const amount = new BigNumber(share ?? 0)
         .times(input.cycleReport.lockedBondRewards)
         .dp(0, BigNumber.ROUND_DOWN);
 
