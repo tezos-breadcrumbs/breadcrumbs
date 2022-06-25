@@ -36,7 +36,9 @@ describe("resolveEstimateTransactionFees", () => {
   });
 
   it("correctly handles transaction fees if baker is the payer", async () => {
-    const config = generateConfig({ baker_pays_tx_fee: true });
+    const config = generateConfig({
+      payment_requirements: { baker_pays_transaction_fee: true },
+    });
 
     const cycleReport = initializeCycleReport(470);
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -95,7 +97,9 @@ describe("resolveEstimateTransactionFees", () => {
   });
 
   it("correctly handles transaction fees if delegator is the payer", async () => {
-    const config = generateConfig({ baker_pays_tx_fee: false });
+    const config = generateConfig({
+      payment_requirements: { baker_pays_transaction_fee: false },
+    });
 
     const cycleReport = initializeCycleReport(470);
     const cycleData = await client.getCycleData(config.baking_address, 470);
