@@ -15,7 +15,6 @@ import {
   resolveDelegatorRewards,
   resolveExcludedDelegators,
 } from "src/engine/steps";
-import { get } from "lodash";
 import { EPaymentType } from "src/engine/interfaces";
 
 describe("resolveDelegatorRewards", () => {

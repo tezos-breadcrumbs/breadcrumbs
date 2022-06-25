@@ -16,7 +16,7 @@ export const validPercentage: inquirerValidator = (input) => {
 
 export const validPrivateKey = async (input) => {
   try {
-    const _signer = await InMemorySigner.fromSecretKey(input);
+    await InMemorySigner.fromSecretKey(input);
     return true;
   } catch {
     return "Invalid private key provided";

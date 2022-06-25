@@ -1,5 +1,4 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
-import _, { get } from "lodash";
 import BigNumber from "bignumber.js";
 import { TezosToolkit } from "@taquito/taquito";
 
