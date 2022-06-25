@@ -9,7 +9,7 @@ const paymentContextRequirements = (
   return [
     (p: BasePayment) => p.recipient !== config.baking_address, // in case rewards are redirected to baker himself
     (p: BasePayment) =>
-      config.network_configuration?.suppress_smartcontract_payments
+      config.network_configuration?.suppress_KT_payments
         ? !p.recipient.startsWith("KT")
         : true,
   ];

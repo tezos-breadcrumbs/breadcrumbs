@@ -1,27 +1,54 @@
-export enum EPayoutWalletMode {
-  PrivateKey = "private-key",
-  Ledger = "ledger",
+interface PaymentRequirements {
+  baker_pays_transaction_fee?: boolean;
+  minimum_amount?: number;
+}
+interface OverdelegationConfiguration {
+  guard?: boolean;
+  excluded_addresses?: string[];
 }
 
-export interface BreadcrumbsNetworkConfiguration {
-  rpc: string;
-  suppress_smartcontract_payments?: boolean;
-  explorer_addr_format?: "https://ithacanet.tzkt.io/<ophash>";
+interface DelegatorRequirements {
+  minimum_balance?: number;
+}
+
+interface DelegatorOverrides {
+  [key: string]: {
+    fee?: number;
+    recipient?: string;
+  };
+}
+
+interface NetworkConfiguration {
+  rpc_url: string;
+  suppress_KT_payments?: boolean;
+}
+
+interface IncomeRecipientsConfiguration {
+  bond_rewards?: {
+    [key: string]: number;
+  };
+  fee_income?: {
+    [key: string]: number;
+  };
+}
+
+export enum EPayoutWalletMode {
+  LocalPrivateKey = "local-private-key",
+  Ledger = "ledger",
 }
 
 export interface BreadcrumbsConfiguration {
   baking_address: string;
-  network_configuration?: BreadcrumbsNetworkConfiguration;
   default_fee: number;
-  payout_wallet_mode?: EPayoutWalletMode;
-  redirect_payments?: { [key: string]: string };
-  fee_exceptions?: { [key: string]: string };
-  baker_pays_tx_fee?: boolean;
+  payout_wallet_mode: EPayoutWalletMode;
+  network_configuration: NetworkConfiguration;
+
+  delegator_overrides?: DelegatorOverrides;
+  delegator_requirements?: DelegatorRequirements;
+  income_recipients?: IncomeRecipientsConfiguration;
+  overdelegation?: OverdelegationConfiguration;
+  payment_requirements?: PaymentRequirements;
+
+  /* Experimental */
   accounting_mode?: boolean;
-  overdelegation_guard?: boolean;
-  overdelegation_blacklist?: string[];
-  minimum_payment_amount?: number;
-  minimum_delegator_balance?: number;
-  fee_income_recipients?: { [key: string]: string };
-  bond_reward_recipients?: { [key: string]: string };
 }

@@ -21,7 +21,10 @@ describe("resolveFeeIncomeDistrubtion", () => {
   Polly.start();
 
   it("should not add any payments if no fee_income_recipients are given", async () => {
-    const config = generateConfig({ fee_income_recipients: {} });
+    const config = generateConfig({
+      income_recipients: { fee_income: {} },
+    });
+
     const cycleReport = initializeCycleReport(470);
     const cycleData = await client.getCycleData(config.baking_address, 470);
 
@@ -47,9 +50,10 @@ describe("resolveFeeIncomeDistrubtion", () => {
   it("should create a payment equivalent to fee income if one fee_income_recipient is given", async () => {
     const recipientAddress = "tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof";
     const config = generateConfig({
-      fee_income_recipients: { [recipientAddress]: "1" },
+      income_recipients: {
+        fee_income: { [recipientAddress]: 1 },
+      },
     });
-
     const cycleData = await client.getCycleData(config.baking_address, 470);
 
     const args = {
@@ -75,11 +79,15 @@ describe("resolveFeeIncomeDistrubtion", () => {
   });
 
   it("should split payments correctly if multiple fee_income_recipients are given", async () => {
-    const fee_income_recipients = {
-      tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: "0.4",
-      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: "0.6",
+    const feeIncomeRecpients = {
+      tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: 0.4,
+      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: 0.6,
     };
-    const config = generateConfig({ fee_income_recipients });
+    const config = generateConfig({
+      income_recipients: {
+        fee_income: { ...feeIncomeRecpients },
+      },
+    });
     const cycleReport = initializeCycleReport(470);
     const cycleData = await client.getCycleData(config.baking_address, 470);
 
@@ -104,7 +112,9 @@ describe("resolveFeeIncomeDistrubtion", () => {
     expect(feeIncomePayments).toHaveLength(2);
 
     for (const payment of feeIncomePayments) {
-      const amount = new BigNumber(fee_income_recipients[payment.recipient])
+      const share = feeIncomeRecpients[payment.recipient];
+
+      const amount = new BigNumber(share)
         .times(input.cycleReport.feeIncome)
         .dp(0, BigNumber.ROUND_DOWN);
 

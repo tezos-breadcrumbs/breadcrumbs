@@ -15,7 +15,6 @@ import {
   resolveDelegatorRewards,
   resolveExcludedDelegators,
 } from "src/engine/steps";
-import { get } from "lodash";
 import { EPaymentType } from "src/engine/interfaces";
 
 describe("resolveDelegatorRewards", () => {
@@ -84,20 +83,14 @@ describe("resolveDelegatorRewards", () => {
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
       expect(payment.recipient).toEqual(
-        get(
-          input.config.redirect_payments,
-          payment.delegator,
+        config.delegator_overrides?.[payment.delegator]?.recipient ??
           payment.delegator
-        )
       );
 
       expect(payment.feeRate).toStrictEqual(
         new BigNumber(
-          get(
-            input.config.fee_exceptions,
-            payment.delegator,
-            input.config.default_fee
-          )
+          config.delegator_overrides?.[payment.delegator]?.fee ??
+            config.default_fee
         ).div(100)
       );
 
@@ -107,11 +100,8 @@ describe("resolveDelegatorRewards", () => {
         .times(
           new BigNumber(100)
             .minus(
-              get(
-                input.config.fee_exceptions,
-                payment.delegator,
-                input.config.default_fee
-              )
+              config.delegator_overrides?.[payment.delegator]?.fee ??
+                config.default_fee
             )
             .dividedBy(100)
         )
@@ -124,11 +114,8 @@ describe("resolveDelegatorRewards", () => {
         .times(input.distributableRewards)
         .times(
           new BigNumber(
-            get(
-              input.config.fee_exceptions,
-              payment.delegator,
-              input.config.default_fee
-            )
+            config.delegator_overrides?.[payment.delegator]?.fee ??
+              config.default_fee
           ).dividedBy(100)
         )
         .dp(0, BigNumber.ROUND_DOWN);
@@ -144,7 +131,7 @@ describe("resolveDelegatorRewards", () => {
   it("allocates payments to delegators correctly (scenario: fee exception)", async () => {
     const delegator = "tz1TRSPwnJD6qv5LeE76uSQ1YppVEvzomFvS";
     const config = generateConfig({
-      fee_exceptions: { [delegator]: "8" },
+      delegator_overrides: { [delegator]: { fee: 8 } },
       default_fee: 0,
     });
 
@@ -175,18 +162,13 @@ describe("resolveDelegatorRewards", () => {
       expect(payment.delegatorBalance).toEqual(share?.balance);
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
-      const paymentAddress = get(
-        input.config.redirect_payments,
-        payment.delegator,
-        payment.delegator
-      );
+      const paymentAddress =
+        config.delegator_overrides?.[payment.delegator]?.recipient ??
+        payment.delegator;
 
       const feeRate = new BigNumber(
-        get(
-          input.config.fee_exceptions,
-          payment.delegator,
-          input.config.default_fee
-        )
+        config.delegator_overrides?.[payment.delegator]?.fee ??
+          config.default_fee
       ).div(100);
 
       const amount = share?.balance
@@ -195,11 +177,8 @@ describe("resolveDelegatorRewards", () => {
         .times(
           new BigNumber(100)
             .minus(
-              get(
-                input.config.fee_exceptions,
-                payment.delegator,
-                input.config.default_fee
-              )
+              config.delegator_overrides?.[payment.delegator]?.fee ??
+                config.default_fee
             )
             .dividedBy(100)
         )
@@ -210,11 +189,8 @@ describe("resolveDelegatorRewards", () => {
         .times(input.distributableRewards)
         .times(
           new BigNumber(
-            get(
-              input.config.fee_exceptions,
-              payment.delegator,
-              input.config.default_fee
-            )
+            config.delegator_overrides?.[payment.delegator]?.fee ??
+              config.default_fee
           ).dividedBy(100)
         )
         .dp(0, BigNumber.ROUND_DOWN);
@@ -238,7 +214,7 @@ describe("resolveDelegatorRewards", () => {
     const delegator = "tz1TRSPwnJD6qv5LeE76uSQ1YppVEvzomFvS";
     const redirect = "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur";
     const config = generateConfig({
-      redirect_payments: { [delegator]: redirect },
+      delegator_overrides: { [delegator]: { recipient: redirect } },
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -268,18 +244,13 @@ describe("resolveDelegatorRewards", () => {
       expect(payment.delegatorBalance).toEqual(share?.balance);
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
-      const paymentAddress = get(
-        input.config.redirect_payments,
-        payment.delegator,
-        payment.delegator
-      );
+      const paymentAddress =
+        config.delegator_overrides?.[payment.delegator]?.recipient ??
+        payment.delegator;
 
       const feeRate = new BigNumber(
-        get(
-          input.config.fee_exceptions,
-          payment.delegator,
-          input.config.default_fee
-        )
+        config.delegator_overrides?.[payment.delegator]?.fee ??
+          config.default_fee
       ).div(100);
 
       const amount = share?.balance
@@ -288,11 +259,8 @@ describe("resolveDelegatorRewards", () => {
         .times(
           new BigNumber(100)
             .minus(
-              get(
-                input.config.fee_exceptions,
-                payment.delegator,
-                input.config.default_fee
-              )
+              config.delegator_overrides?.[payment.delegator]?.fee ??
+                config.default_fee
             )
             .dividedBy(100)
         )
@@ -303,11 +271,8 @@ describe("resolveDelegatorRewards", () => {
         .times(input.distributableRewards)
         .times(
           new BigNumber(
-            get(
-              input.config.fee_exceptions,
-              payment.delegator,
-              input.config.default_fee
-            )
+            config.delegator_overrides?.[payment.delegator]?.fee ??
+              config.default_fee
           ).dividedBy(100)
         )
         .dp(0, BigNumber.ROUND_DOWN);
@@ -330,7 +295,7 @@ describe("resolveDelegatorRewards", () => {
   it("allocates payments to delegators correctly (scenario: overdelegation_blacklist)", async () => {
     const delegator = "tz1TRSPwnJD6qv5LeE76uSQ1YppVEvzomFvS";
     const config = generateConfig({
-      overdelegation_blacklist: [delegator],
+      overdelegation: { excluded_addresses: [delegator] },
       default_fee: 0,
     });
 
@@ -374,18 +339,13 @@ describe("resolveDelegatorRewards", () => {
       expect(payment.delegatorBalance).toEqual(share?.balance);
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
-      const paymentAddress = get(
-        input.config.redirect_payments,
-        payment.delegator,
-        payment.delegator
-      );
+      const paymentAddress =
+        config.delegator_overrides?.[payment.delegator]?.recipient ??
+        payment.delegator;
 
       const feeRate = new BigNumber(
-        get(
-          input.config.fee_exceptions,
-          payment.delegator,
-          input.config.default_fee
-        )
+        config.delegator_overrides?.[payment.delegator]?.fee ??
+          config.default_fee
       ).div(100);
 
       const amount = share?.balance
@@ -395,11 +355,8 @@ describe("resolveDelegatorRewards", () => {
         .times(
           new BigNumber(100)
             .minus(
-              get(
-                input.config.fee_exceptions,
-                payment.delegator,
-                input.config.default_fee
-              )
+              config.delegator_overrides?.[payment.delegator]?.fee ??
+                config.default_fee
             )
             .dividedBy(100)
         );
@@ -409,11 +366,8 @@ describe("resolveDelegatorRewards", () => {
         .times(input.distributableRewards)
         .times(
           new BigNumber(
-            get(
-              input.config.fee_exceptions,
-              payment.delegator,
-              input.config.default_fee
-            )
+            config.delegator_overrides?.[payment.delegator]?.fee ??
+              config.default_fee
           ).dividedBy(100)
         )
         .dp(0, BigNumber.ROUND_DOWN);

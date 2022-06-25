@@ -1,5 +1,4 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
-import _, { get } from "lodash";
 import BigNumber from "bignumber.js";
 import { TezosToolkit } from "@taquito/taquito";
 
@@ -17,6 +16,7 @@ import {
   resolveExcludedDelegators,
   resolveExcludedPaymentsByMinimumAmount,
 } from "src/engine/steps";
+import { each, find, map } from "lodash";
 
 describe("sequential run", () => {
   Polly.start();
@@ -65,7 +65,7 @@ describe("sequential run", () => {
   it("correctly runs steps in a sequence (two steps)", async () => {
     const excludedAddresses = [];
     const config = generateConfig({
-      overdelegation_blacklist: excludedAddresses,
+      overdelegation: { excluded_addresses: excludedAddresses },
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -114,7 +114,7 @@ describe("sequential run", () => {
     ]);
 
     const delegatorShareOfRewards = sum(
-      ..._.map(input.cycleData.cycleShares, (share) =>
+      ...map(input.cycleData.cycleShares, (share) =>
         input.distributableRewards.times(
           share.balance.div(cycleDelegatedBalance)
         )
@@ -145,8 +145,8 @@ describe("sequential run", () => {
         .plus(ROUNDING_ADJUSTMENT_2)
     );
 
-    _.each(output.cycleReport.delegatorPayments, (payment) => {
-      const share = _.find(
+    each(output.cycleReport.delegatorPayments, (payment) => {
+      const share = find(
         output.cycleData.cycleShares,
         (share) => share.address === payment.delegator
       );
@@ -158,20 +158,14 @@ describe("sequential run", () => {
       expect(payment.bakerCycleRewards).toEqual(cycleRewards);
 
       expect(payment.recipient).toEqual(
-        get(
-          input.config.redirect_payments,
-          payment.delegator,
+        config.delegator_overrides?.[payment.delegator]?.recipient ??
           payment.delegator
-        )
       );
 
       expect(payment.feeRate).toStrictEqual(
         new BigNumber(
-          get(
-            input.config.fee_exceptions,
-            payment.delegator,
-            input.config.default_fee
-          )
+          config.delegator_overrides?.[payment.delegator]?.fee ??
+            config.default_fee
         ).div(100)
       );
 
@@ -181,11 +175,8 @@ describe("sequential run", () => {
         .times(
           new BigNumber(100)
             .minus(
-              get(
-                input.config.fee_exceptions,
-                payment.delegator,
-                input.config.default_fee
-              )
+              config.delegator_overrides?.[payment.delegator]?.fee ??
+                config.default_fee
             )
             .dividedBy(100)
         )

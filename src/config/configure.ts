@@ -1,111 +1,91 @@
 /* eslint @typescript-eslint/no-var-requires: "off" */
-const inquirer = require("inquirer");
-const fs = require("fs");
+import inquirer from "inquirer";
+import fs from "fs";
 import { stringify } from "hjson";
+import { EPayoutWalletMode } from "./interfaces";
 
 const {
-  filterRedirects,
-  filterOverDelegationBlacklist,
-  filterNumber,
-  filterDistributionShares,
-} = require("./filters");
-
-const {
-  validAddress,
+  filterRpcUrl,
+  filterWalletMode,
+  validBakingAddress,
   validPercentage,
-  validRedirect,
-  validFeeExceptions,
-  validAddressList,
-  validNumber,
-  validDistributionShares,
-} = require("./validators.ts");
+  validPrivateKey,
+} = require("./validate/creation");
 
-console.log("Welcome to breadcrumbs.");
+(async () => {
+  const questions = [
+    {
+      type: "input",
+      name: "baking_address",
+      message: "Please enter your baking address:",
+      validate: validBakingAddress,
+    },
+    {
+      type: "input",
+      name: "default_fee",
+      message: "Please enter your default service fee:",
+      validate: validPercentage,
+    },
+    {
+      type: "list",
+      name: "rpc_url",
+      message:
+        "Please select a Tezos RPC URL. You can customize it later by editing the configuration file",
+      choices: [
+        "Mainnet|https://mainnet-tezos.giganode.io/",
+        "Testnet|https://testnet-tezos.giganode.io/",
+      ],
+      filter: filterRpcUrl,
+    },
+    {
+      type: "list",
+      name: "payout_wallet_mode",
+      message: "Please select the type of wallet you will use for payouts",
+      choices: ["Private Key Stored Locally", "Ledger"],
+      filter: filterWalletMode,
+    },
 
-const questions = [
-  {
-    type: "input",
-    name: "baking_address",
-    message: "Please enter your baking address:",
-    validate: validAddress,
-  },
-  {
-    type: "input",
-    name: "default_fee",
-    message: "Please enter your default service fee:",
-    validate: validPercentage,
-  },
-  {
-    type: "input",
-    name: "redirect_payments",
-    message: "Specify rules to redirect payments:",
-    validate: validRedirect,
-    filter: filterRedirects,
-  },
-  {
-    type: "input",
-    name: "fee_exceptions",
-    message: "Specify delegators subject to alternative fees:",
-    validate: validFeeExceptions,
-    filter: filterRedirects,
-  },
-  {
-    type: "list",
-    name: "overdelegation_guard",
-    message: "Do you want to activate protection against overdelegation?",
-    choices: ["YES", "NO"],
-    filter: (value) => value === "YES",
-  },
-  {
-    type: "input",
-    name: "overdelegation_blacklist",
-    message:
-      "Please list public keys whose reward share will be redistributed to the delegator pool",
-    filter: filterOverDelegationBlacklist,
-    validate: validAddressList,
-  },
-  {
-    type: "input",
-    name: "minimum_delegator_balance",
-    message:
-      "The minimum delegation amount for rewards distribution in a given cycle",
-    validate: validNumber,
-    filter: filterNumber,
-    default: "0",
-  },
-  {
-    type: "input",
-    name: "minimum_payment_amount",
-    message:
-      "The minimum amount in XTZ payable to a delegator in a given cycle",
-    validate: validNumber,
-    filter: filterNumber,
-    default: "0",
-  },
+    {
+      type: "input",
+      name: "private_key",
+      when: (answers) =>
+        answers.payout_wallet_mode === EPayoutWalletMode.LocalPrivateKey,
+      message:
+        "Please enter your private key. It will be persisted locally in `payout_wallet_private.key` file",
+      validate: async (input) => validPrivateKey(input),
+    },
+  ];
 
-  {
-    type: "input",
-    name: "fee_income_recipients",
-    message: "The address that receives fee income",
-    validate: validDistributionShares,
-    filter: filterDistributionShares,
-  },
+  console.log("Welcome to the breadcrumbs configuration helper.");
 
-  {
-    type: "input",
-    name: "bond_reward_recipients",
-    message:
-      "The address that received baking rewards attributable to the baker's bond",
-    validate: validDistributionShares,
-    filter: filterDistributionShares,
-  },
-];
+  inquirer.prompt(questions).then((answers) => {
+    const privateKey = answers.private_key;
+    const config = {
+      baking_address: answers.baking_address,
+      default_fee: Number(answers.default_fee),
+      payout_wallet_mode: answers.payout_wallet_mode,
+      network_configuration: {
+        rpc_url: answers.rpc_url,
+      },
+    };
 
-inquirer.prompt(questions).then((answers) => {
-  const json = stringify(answers, { space: "  " });
-  fs.writeFile("./config.hjson", json, (err) => {
-    if (!err) {
-      console.log("Successfully created configuration file.");
+    const json = stringify(config, { space: "  " });
+    fs.writeFile("./config.hjson", json, (err) => {
+      if (!err) {
+        console.log(
+          "Successfully created configuration file `config.hjson`. Please edit directly for more advanced configuration"
+        );
+      }
+    });
+
+    if (answers.payout_wallet_mode === EPayoutWalletMode.LocalPrivateKey) {
+      fs.writeFile("./payout_wallet_private.key", privateKey, (err) => {
+        if (!err) {
+          console.log(
+            "Successfully created private key file at payout_wallet_private.key"
+          );
+        }
+      });
     }
   });
-});
+})();

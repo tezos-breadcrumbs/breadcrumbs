@@ -15,14 +15,17 @@ export const resolveBondRewardDistribution = (
     cycleReport: { lockedBondRewards },
   } = args;
 
-  const skip = isEmpty(config.bond_reward_recipients);
+  const skip = isEmpty(config.income_recipients?.bond_rewards);
 
   if (skip) {
     return args;
   } else {
     const payments: BasePayment[] = [];
-    for (const recipient in config.bond_reward_recipients) {
-      const share = divide(config.bond_reward_recipients[recipient], 1);
+    for (const recipient in config.income_recipients?.bond_rewards) {
+      const share = divide(
+        config.income_recipients?.bond_rewards[recipient] ?? 0,
+        1
+      );
       const payable = integerize(multiply(share, lockedBondRewards));
 
       const payment = {

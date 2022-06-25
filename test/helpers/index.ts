@@ -1,8 +1,8 @@
 import {
   BreadcrumbsConfiguration,
-  BreadcrumbsNetworkConfiguration,
+  EPayoutWalletMode,
 } from "src/config/interfaces";
-import { parseInt, parseFloat } from "src/utils/parse";
+import { parseInt } from "src/utils/parse";
 
 const DEFAULT_BAKER = "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur";
 
@@ -10,25 +10,32 @@ export const generateConfig = (
   args: Partial<BreadcrumbsConfiguration> = {}
 ): BreadcrumbsConfiguration => {
   return {
-    accounting_mode: args.accounting_mode || false,
     baking_address: args.baking_address || DEFAULT_BAKER,
-    network_configuration: Object.assign(
-      {
-        rpc: "https://ithacanet.ecadinfra.com",
-        suppress_smartcontract_payments: true,
-        explorer_addr_format: "https://ithacanet.tzkt.io/<ophash>",
-      } as BreadcrumbsNetworkConfiguration,
-      args.network_configuration
-    ),
     default_fee: parseInt(args.default_fee, 5),
-    redirect_payments: args.redirect_payments || {},
-    fee_exceptions: args.fee_exceptions || {},
-    overdelegation_guard: args.overdelegation_guard || false,
-    overdelegation_blacklist: args.overdelegation_blacklist || [],
-    minimum_payment_amount: parseFloat(args.minimum_payment_amount, 0),
-    minimum_delegator_balance: parseInt(args.minimum_delegator_balance, 0),
-    fee_income_recipients: args.fee_income_recipients || {},
-    bond_reward_recipients: args.bond_reward_recipients || {},
-    baker_pays_tx_fee: args.baker_pays_tx_fee || false,
+    accounting_mode: args.accounting_mode ?? false,
+    payout_wallet_mode:
+      args.payout_wallet_mode ?? EPayoutWalletMode.LocalPrivateKey,
+    network_configuration: {
+      rpc_url: "https://ithacanet.ecadinfra.com",
+      suppress_KT_payments:
+        args.network_configuration?.suppress_KT_payments ?? false,
+    },
+    delegator_requirements: {
+      minimum_balance: args.delegator_requirements?.minimum_balance ?? 0,
+    },
+    delegator_overrides: args.delegator_overrides,
+    income_recipients: {
+      fee_income: args.income_recipients?.fee_income ?? {},
+      bond_rewards: args.income_recipients?.bond_rewards ?? {},
+    },
+    overdelegation: {
+      guard: args.overdelegation?.guard ?? false,
+      excluded_addresses: args.overdelegation?.excluded_addresses ?? [],
+    },
+    payment_requirements: {
+      minimum_amount: args.payment_requirements?.minimum_amount ?? 0,
+      baker_pays_transaction_fee:
+        args.payment_requirements?.baker_pays_transaction_fee ?? false,
+    },
   };
 };

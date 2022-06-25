@@ -17,9 +17,8 @@ describe("resolveExcludedDelegators", () => {
   Polly.start();
 
   it("does not alter the input object if there are no excluded addresses", async () => {
-    const excludedAddresses = [];
     const config = generateConfig({
-      overdelegation_blacklist: excludedAddresses,
+      overdelegation: { excluded_addresses: [] },
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -44,7 +43,7 @@ describe("resolveExcludedDelegators", () => {
       "tz1M1dgUJooWnzYhb8MnWin6MkQrPA55TTCr",
     ];
     const config = generateConfig({
-      overdelegation_blacklist: excludedAddresses,
+      overdelegation: { excluded_addresses: excludedAddresses },
     });
 
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -80,7 +79,7 @@ describe("resolveExcludedDelegators", () => {
       cycleData: {
         ...args.cycleData,
         cycleShares: _.reject(args.cycleData.cycleShares, (share) =>
-          _.includes(config.overdelegation_blacklist, share.address)
+          _.includes(config.overdelegation?.excluded_addresses, share.address)
         ),
       },
     });

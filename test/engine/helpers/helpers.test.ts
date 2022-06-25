@@ -14,19 +14,27 @@ const BASE_CONFIG: BreadcrumbsConfiguration = generateConfig();
 
 describe("getApplicableFee", () => {
   test("returns default fee if no exception is specified", () => {
-    const actual = getApplicableFee(BASE_CONFIG, TEST_DELEGATOR);
-    const expected = new BigNumber("0.05");
-    expect(actual).toStrictEqual(expected);
+    const config = generateConfig();
+    const result = getApplicableFee(config, TEST_DELEGATOR);
+
+    const expected = new BigNumber(config.default_fee).div(100);
+    expect(result).toStrictEqual(expected);
   });
 
   test("returns alternative fee if  exception is specified", () => {
-    const config: BreadcrumbsConfiguration = {
-      ...BASE_CONFIG,
-      fee_exceptions: { [TEST_DELEGATOR]: "8" },
-    };
-    const actual = getApplicableFee(config, TEST_DELEGATOR);
-    const expected = new BigNumber("0.08");
-    expect(actual).toStrictEqual(expected);
+    const config = generateConfig({
+      delegator_overrides: {
+        [TEST_DELEGATOR]: {
+          fee: 8,
+        },
+      },
+    });
+    const result = getApplicableFee(config, TEST_DELEGATOR);
+    const expected = new BigNumber(
+      config.delegator_overrides?.[TEST_DELEGATOR]?.fee ?? 0
+    ).div(100);
+
+    expect(result).toStrictEqual(expected);
   });
 });
 
@@ -39,13 +47,16 @@ describe("getRedirectAddress", () => {
 
   test("returns redirect address if it is specified", () => {
     const redirectAddress = "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur";
-    const updatedConfig: BreadcrumbsConfiguration = {
-      ...BASE_CONFIG,
-      redirect_payments: { [TEST_DELEGATOR]: redirectAddress },
-    };
-    const actual = getRedirectAddress(updatedConfig, TEST_DELEGATOR);
+    const config = generateConfig({
+      delegator_overrides: {
+        [TEST_DELEGATOR]: {
+          recipient: redirectAddress,
+        },
+      },
+    });
+    const result = getRedirectAddress(config, TEST_DELEGATOR);
     const expected = redirectAddress;
-    expect(actual).toStrictEqual(expected);
+    expect(result).toStrictEqual(expected);
   });
 });
 
@@ -91,13 +102,21 @@ describe("isOverDelegated", () => {
   });
 
   describe("getMinimumPaymentAmount", () => {
-    const minimumPaymentAmount = 1;
-    const config: BreadcrumbsConfiguration = {
-      ...BASE_CONFIG,
-      minimum_payment_amount: minimumPaymentAmount,
-    };
+    it("returns the minimum payment amount if it is defined", () => {
+      const minimumPaymentAmount = 1;
+      const config = generateConfig({
+        payment_requirements: {
+          minimum_amount: minimumPaymentAmount,
+        },
+      });
+      const result = getMinimumPaymentAmount(config);
+      expect(result).toStrictEqual(new BigNumber(minimumPaymentAmount));
+    });
 
-    const result = getMinimumPaymentAmount(config);
-    expect(result).toStrictEqual(new BigNumber(minimumPaymentAmount));
+    it("returns zero if minimum amount is not defined", () => {
+      const config = generateConfig({});
+      const result = getMinimumPaymentAmount(config);
+      expect(result).toStrictEqual(new BigNumber(0));
+    });
   });
 });

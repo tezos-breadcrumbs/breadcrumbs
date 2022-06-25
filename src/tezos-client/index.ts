@@ -9,7 +9,7 @@ import { getSigner } from "src/tezos-client/signers";
 require("dotenv").config();
 
 export const createProvider = async (config: BreadcrumbsConfiguration) => {
-  const RPC_URL = config.network_configuration?.rpc;
+  const RPC_URL = config.network_configuration?.rpc_url;
   if (RPC_URL === undefined) throw Error("No RPC URL given");
   const tezos = new TezosToolkit(RPC_URL);
   tezos.setProvider({ signer: await getSigner(config) });

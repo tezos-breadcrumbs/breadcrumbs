@@ -8,7 +8,7 @@ export const resolveExcludedDelegators = (
   const { cycleShares } = cycleData;
 
   const updatedCycleShares = _.reject(cycleShares, (share) =>
-    _.includes(config.overdelegation_blacklist, share.address)
+    _.includes(config.overdelegation?.excluded_addresses ?? [], share.address)
   );
 
   return {

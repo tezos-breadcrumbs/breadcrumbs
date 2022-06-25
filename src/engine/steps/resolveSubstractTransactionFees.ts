@@ -15,19 +15,22 @@ export const resolveSubstractTransactionFees = (
   let _feeIncome = feeIncome;
   let _feesPaid = feesPaid;
 
+  const bakerPaysTransactionFee =
+    config.payment_requirements?.baker_pays_transaction_fee;
+
   for (const payment of delegatorPayments) {
     _feesPaid = add(_feesPaid, payment.transactionFee ?? 0);
 
-    _feeIncome = config.baker_pays_tx_fee
+    _feeIncome = bakerPaysTransactionFee
       ? subtract(_feeIncome, payment.transactionFee ?? 0)
       : _feeIncome;
 
     _delegatorPayments.push({
       ...payment,
-      transactionFeePaidBy: config.baker_pays_tx_fee
+      transactionFeePaidBy: bakerPaysTransactionFee
         ? EFeePayer.Baker
         : EFeePayer.Delegator,
-      amount: config.baker_pays_tx_fee
+      amount: bakerPaysTransactionFee
         ? payment.amount
         : subtract(payment.amount, payment.transactionFee ?? 0),
     });

@@ -41,8 +41,14 @@ describe("resolveSplitIntoBatches", () => {
   it("produces separate batches for delegator, fee income and bond reward payments at a minimum", async () => {
     const recipientAddress = "tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof";
     const config = generateConfig({
-      fee_income_recipients: { [recipientAddress]: "1" },
-      bond_reward_recipients: { [recipientAddress]: "1" },
+      income_recipients: {
+        fee_income: {
+          [recipientAddress]: 1,
+        },
+        bond_rewards: {
+          [recipientAddress]: 1,
+        },
+      },
     });
 
     const cycleReport = initializeCycleReport(470);
@@ -110,8 +116,14 @@ describe("resolveSplitIntoBatches", () => {
   it("adds delegator payments to a given batch up to the hard gas limit", async () => {
     const recipientAddress = "tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof";
     const config = generateConfig({
-      fee_income_recipients: { [recipientAddress]: "1" },
-      bond_reward_recipients: { [recipientAddress]: "1" },
+      income_recipients: {
+        fee_income: {
+          [recipientAddress]: 1,
+        },
+        bond_rewards: {
+          [recipientAddress]: 1,
+        },
+      },
     });
 
     const cycleReport = initializeCycleReport(470);
@@ -168,8 +180,8 @@ describe("resolveSplitIntoBatches", () => {
 
     expect(batches.length).toEqual(delegatorPayments.length + 2);
 
-    expect(batches[7][0].recipient).toEqual(recipientAddress);
-    expect(batches[8][0].recipient).toEqual(recipientAddress);
+    expect(batches[batches.length - 1][0].recipient).toEqual(recipientAddress);
+    expect(batches[batches.length - 2][0].recipient).toEqual(recipientAddress);
 
     for (let i = 0; i < batches.length - 2; i++) {
       expect(batches[i][0]).toStrictEqual(delegatorPayments[i]);
@@ -178,8 +190,14 @@ describe("resolveSplitIntoBatches", () => {
   it("adds delegator payments to a given batch up to the hard storage limit", async () => {
     const recipientAddress = "tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof";
     const config = generateConfig({
-      fee_income_recipients: { [recipientAddress]: "1" },
-      bond_reward_recipients: { [recipientAddress]: "1" },
+      income_recipients: {
+        fee_income: {
+          [recipientAddress]: 1,
+        },
+        bond_rewards: {
+          [recipientAddress]: 1,
+        },
+      },
     });
 
     const cycleReport = initializeCycleReport(470);
@@ -235,9 +253,8 @@ describe("resolveSplitIntoBatches", () => {
     } = output;
 
     expect(batches.length).toEqual(delegatorPayments.length + 2);
-
-    expect(batches[7][0].recipient).toEqual(recipientAddress);
-    expect(batches[8][0].recipient).toEqual(recipientAddress);
+    expect(batches[batches.length - 1][0].recipient).toEqual(recipientAddress);
+    expect(batches[batches.length - 2][0].recipient).toEqual(recipientAddress);
 
     for (let i = 0; i < batches.length - 2; i++) {
       expect(batches[i][0]).toStrictEqual(delegatorPayments[i]);
