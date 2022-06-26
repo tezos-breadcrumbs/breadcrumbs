@@ -31,7 +31,9 @@ export const printDelegatorPaymentsTable = (payments: DelegatorPayment[]) => {
   table.addColumns(columns);
 
   const feeNote = `* Transaction fees paid by ${
-    getConfig("baker_pays_tx_fee") ? "the baker" : "delegators"
+    getConfig().payment_requirements?.baker_pays_transaction_fee
+      ? "the baker"
+      : "delegators"
   }`;
 
   for (const payment of payments) {
@@ -71,10 +73,10 @@ export const printExcludedPaymentsTable = (payments: DelegatorPayment[]) => {
     const getThreshold = () => {
       switch (paymentNote) {
         case ENoteType.BalanceBelowMinimum: {
-          return getConfig("minimum_delegator_balance");
+          return getConfig().delegator_requirements?.minimum_balance;
         }
         case ENoteType.PaymentBelowMinimum: {
-          return getConfig("minimum_payment_amount");
+          return getConfig().payment_requirements?.minimum_amount;
         }
         default: {
           return "";
