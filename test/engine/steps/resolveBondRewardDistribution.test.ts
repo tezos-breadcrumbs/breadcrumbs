@@ -53,7 +53,7 @@ describe("resolveBondRewardDistribution", () => {
     const recipientAddress = "tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof";
     const config = generateConfig({
       income_recipients: {
-        bond_rewards: { [recipientAddress]: 1 },
+        bond_rewards: { [recipientAddress]: 100 },
       },
     });
 
@@ -85,8 +85,8 @@ describe("resolveBondRewardDistribution", () => {
 
   it("should split payments correctly if multiple bond_reward_recipients are given", async () => {
     const bondRewardRecipients = {
-      tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: 0.4,
-      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: 0.6,
+      tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: 40,
+      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: 60,
     };
     const config = generateConfig({
       income_recipients: {
@@ -118,7 +118,7 @@ describe("resolveBondRewardDistribution", () => {
 
     let paymentSum = new BigNumber(0);
     for (const payment of bondRewardPayments) {
-      const share = bondRewardRecipients[payment.recipient];
+      const share = bondRewardRecipients[payment.recipient] / 100;
       const amount = new BigNumber(share)
         .times(input.cycleReport.lockedBondRewards)
         .dp(0, BigNumber.ROUND_DOWN);
