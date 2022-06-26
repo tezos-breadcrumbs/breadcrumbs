@@ -24,7 +24,7 @@ export const resolveBondRewardDistribution = (
     for (const recipient in config.income_recipients?.bond_rewards) {
       const share = divide(
         config.income_recipients?.bond_rewards[recipient] ?? 0,
-        1
+        100
       );
       const payable = integerize(multiply(share, lockedBondRewards));
 

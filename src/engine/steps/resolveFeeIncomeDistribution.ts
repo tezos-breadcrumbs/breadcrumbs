@@ -24,7 +24,7 @@ export const resolveFeeIncomeDistribution = (
     for (const recipient in config.income_recipients?.fee_income) {
       const share = divide(
         config.income_recipients?.fee_income[recipient] ?? 0,
-        1
+        100
       );
       const payable = integerize(multiply(share, feeIncome));
 

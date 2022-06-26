@@ -51,7 +51,7 @@ describe("resolveFeeIncomeDistrubtion", () => {
     const recipientAddress = "tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof";
     const config = generateConfig({
       income_recipients: {
-        fee_income: { [recipientAddress]: 1 },
+        fee_income: { [recipientAddress]: 100 },
       },
     });
     const cycleData = await client.getCycleData(config.baking_address, 470);
@@ -80,8 +80,8 @@ describe("resolveFeeIncomeDistrubtion", () => {
 
   it("should split payments correctly if multiple fee_income_recipients are given", async () => {
     const feeIncomeRecpients = {
-      tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: 0.4,
-      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: 0.6,
+      tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: 40,
+      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: 60,
     };
     const config = generateConfig({
       income_recipients: {
@@ -112,7 +112,7 @@ describe("resolveFeeIncomeDistrubtion", () => {
     expect(feeIncomePayments).toHaveLength(2);
 
     for (const payment of feeIncomePayments) {
-      const share = feeIncomeRecpients[payment.recipient];
+      const share = feeIncomeRecpients[payment.recipient] / 100;
 
       const amount = new BigNumber(share)
         .times(input.cycleReport.feeIncome)
