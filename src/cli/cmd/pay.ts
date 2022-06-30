@@ -1,5 +1,5 @@
 import { initializeCycleReport } from "src/engine/helpers";
-
+import fs from "fs";
 import { join } from "path";
 import client from "src/api-client";
 import engine from "src/engine";
@@ -22,7 +22,7 @@ import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
-import { flatten } from "lodash";
+import { flatten, includes } from "lodash";
 import { schema } from "src/config/validate/runtime";
 
 export const pay = async (commandOptions) => {
@@ -78,6 +78,12 @@ export const pay = async (commandOptions) => {
 
   if (globalCliOptions.dryRun) {
     process.exit(0);
+  }
+
+  const files = await fs.readdirSync(REPORTS_SUCCESS_PAYMENTS_DIRECTORY);
+  if (includes(files, `${cycle}.csv`)) {
+    console.info(`Existing payment for cycle ${cycle}. Aborting ...`);
+    process.exit(1);
   }
 
   if (!commandOptions.confirm) {
