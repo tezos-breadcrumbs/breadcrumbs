@@ -2,8 +2,8 @@
 const JSONBigInt = require("json-bigint")({ alwaysParseAsBig: true });
 
 import axios, { AxiosInstance } from "axios";
-import _ from "lodash";
-import { sum } from "../utils/math";
+import { map, pick, update } from "lodash";
+import { sum } from "src/utils/math";
 import { Client, CycleData } from "./abstract_client";
 
 export class TzKT implements Client {
@@ -33,8 +33,8 @@ export class TzKT implements Client {
         blockRewards,
         endorsementRewards,
         blockFees,
-      } = _.update(data, "delegators", (list) =>
-        _.map(list, (item) => _.pick(item, ["address", "balance"]))
+      } = update(data, "delegators", (list) =>
+        map(list, (item) => pick(item, ["address", "balance"]))
       );
 
       console.info("Received cycle data from TzKT.");
