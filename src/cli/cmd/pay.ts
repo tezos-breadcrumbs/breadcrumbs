@@ -26,6 +26,14 @@ import { flatten, includes } from "lodash";
 import { schema } from "src/config/validate/runtime";
 
 export const pay = async (commandOptions) => {
+  const cycle = commandOptions.cycle;
+  const lastCycle = await client.getLastCycle();
+
+  if (lastCycle < commandOptions.cycle) {
+    console.log(`Cannot run payments for an unfinished or future cycle`);
+    process.exit(1);
+  }
+
   if (globalCliOptions.dryRun) {
     console.log(`Running in 'dry-run' mode...`);
   }
@@ -38,7 +46,6 @@ export const pay = async (commandOptions) => {
     process.exit(1);
   }
 
-  const cycle = commandOptions.cycle;
   const cycleReport = initializeCycleReport(cycle);
   const cycleData = await client.getCycleData(config.baking_address, cycle);
 
