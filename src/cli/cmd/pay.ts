@@ -80,14 +80,10 @@ export const pay = async (commandOptions) => {
     process.exit(0);
   }
 
-  if (!commandOptions.force) {
-    const files = await fs.readdirSync(REPORTS_SUCCESS_PAYMENTS_DIRECTORY);
-    if (includes(files, `${cycle}.csv`)) {
-      console.info(
-        `Existing payment for cycle ${cycle}. Use the '--force' flag to execute.`
-      );
-      process.exit(0);
-    }
+  const files = await fs.readdirSync(REPORTS_SUCCESS_PAYMENTS_DIRECTORY);
+  if (includes(files, `${cycle}.csv`)) {
+    console.info(`Existing payment for cycle ${cycle}. Aborting ...`);
+    process.exit(1);
   }
 
   if (!commandOptions.confirm) {

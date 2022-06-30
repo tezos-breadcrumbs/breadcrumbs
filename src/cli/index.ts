@@ -23,10 +23,6 @@ export const run = async () => {
       "--confirm",
       "Automatically sends rewards without need for confirmation."
     )
-    .option(
-      "--force",
-      "Required to execute a payment if a payment file already exists for the give cycle"
-    )
     .action(pay);
 
   // we need to set global options before action is executed
