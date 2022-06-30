@@ -82,7 +82,7 @@ export const pay = async (commandOptions) => {
 
   if (!commandOptions.force) {
     const files = await fs.readdirSync(REPORTS_SUCCESS_PAYMENTS_DIRECTORY);
-    if (files.includes(`${cycle}.csv`)) {
+    if (includes(files, `${cycle}.csv`)) {
       console.info(
         `Existing payment for cycle ${cycle}. Use the '--force' flag to execute.`
       );
