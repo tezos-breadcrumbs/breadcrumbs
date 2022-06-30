@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { includes, reject } from "lodash";
 import { StepArguments } from "src/engine/interfaces";
 
 export const resolveExcludedDelegators = (
@@ -7,8 +7,8 @@ export const resolveExcludedDelegators = (
   const { config, cycleData } = args;
   const { cycleShares } = cycleData;
 
-  const updatedCycleShares = _.reject(cycleShares, (share) =>
-    _.includes(config.overdelegation?.excluded_addresses ?? [], share.address)
+  const updatedCycleShares = reject(cycleShares, (share) =>
+    includes(config.overdelegation?.excluded_addresses ?? [], share.address)
   );
 
   return {

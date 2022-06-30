@@ -1,5 +1,5 @@
 import { BigNumber } from "bignumber.js";
-import _ from "lodash";
+import { map } from "lodash";
 import { getApplicableFee, getRedirectAddress } from "src/engine/helpers";
 import {
   DelegatorPayment,
@@ -22,7 +22,7 @@ export const resolveDelegatorRewards = (args: StepArguments): StepArguments => {
   /* The total delegated balance minus any excluded delegator shares */
   /* This proportionally distributes the reward share of excluded delegators to the rest of the pool */
   const applicableTotalDelegatedBalance = sum(
-    ..._.map(cycleShares, (share) => share.balance)
+    ...map(cycleShares, (share) => share.balance)
   );
 
   const delegatorPayments: DelegatorPayment[] = [];
