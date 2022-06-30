@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import { Table } from "console-table-printer";
 
-import { divide } from "src/utils/math";
+import { divide, multiply } from "src/utils/math";
 import { getConfig } from "src/config";
 
 import {
@@ -40,6 +40,7 @@ export const printDelegatorPaymentsTable = (payments: DelegatorPayment[]) => {
     const paymentInfo: PrintableDelegatorPayment = {
       recipient: shortenAddress(payment.recipient),
       delegator: shortenAddress(payment.delegator),
+      feeRate: `${multiply(payment.feeRate, 100).toString()}%`,
       amount: `${normalizeAmount(payment.amount)} TEZ`,
       delegatorBalance: `${normalizeAmount(payment.delegatorBalance)} TEZ`,
       transactionFee: `${normalizeAmount(payment.transactionFee)} TEZ`,

@@ -3,21 +3,22 @@ import BigNumber from "bignumber.js";
 export interface PrintableDelegatorPayment {
   delegator: string;
   recipient: string;
-  amount: BigNumber | string;
-  delegatorBalance: BigNumber | string;
-  transactionFee: BigNumber | string;
+  amount: string;
+  feeRate: string;
+  delegatorBalance: string;
+  transactionFee: string;
 }
 
 export interface PrintableExcludedPayment {
   delegator: string;
   recipient: string;
-  amount: BigNumber | string;
-  delegatorBalance: BigNumber | string;
+  amount: string;
+  delegatorBalance: string;
   note: string;
 }
 
 export interface PrintableBakerPayment {
   recipient: string;
-  amount: BigNumber | string;
+  amount: string;
   type: string;
 }
