@@ -28,7 +28,7 @@
     "suppress_KT_payments": "true | false"
   },
   "overdelegation": {
-    "excluded_address": [
+    "excluded_addresses": [
       "tz1...xyz",
       "tz2...xyz"
     ],

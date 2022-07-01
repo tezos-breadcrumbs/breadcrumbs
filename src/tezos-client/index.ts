@@ -6,8 +6,6 @@ import { BreadcrumbsConfiguration } from "src/config/interfaces";
 import { BasePayment } from "src/engine/interfaces";
 import { getSigner } from "src/tezos-client/signers";
 
-require("dotenv").config();
-
 export const createProvider = async (config: BreadcrumbsConfiguration) => {
   const RPC_URL = config.network_configuration?.rpc_url;
   if (RPC_URL === undefined) throw Error("No RPC URL given");

@@ -11,6 +11,7 @@ export interface PrintableExcludedPayment {
   delegator: string;
   recipient: string;
   amount: string;
+  feeRate: string;
   delegatorBalance: string;
   note: string;
 }
