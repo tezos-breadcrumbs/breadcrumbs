@@ -42,7 +42,7 @@ const validDistributionShares = Joi.custom((i) => {
 const validRpcUrl = Joi.string().uri({ scheme: ["https"] });
 
 export const schema = Joi.object({
-  baking_address: validPKH,
+  baking_address: validPKH.required(),
   default_fee: validPercentage.required(),
   payout_wallet_mode: validPayoutWalletMode.required(),
   delegator_overrides: validDelegatorOverrides,
@@ -58,7 +58,7 @@ export const schema = Joi.object({
     suppress_KT_payments: Joi.boolean(),
   },
   overdelegation: {
-    excluded_address: validOverdelegationExcludedAddresses,
+    excluded_addresses: validOverdelegationExcludedAddresses,
     guard: Joi.boolean(),
   },
   payment_requirements: {
