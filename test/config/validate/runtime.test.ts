@@ -12,7 +12,7 @@ const baseConfig: BreadcrumbsConfiguration = {
   payout_wallet_mode: EPayoutWalletMode.LocalPrivateKey,
 };
 
-describe("schema", () => {
+describe("configuration validation (runtime)", () => {
   test("accepts valid required arguments", () => {
     expect(schema.validate(baseConfig).error).toBeUndefined();
   });
