@@ -45,7 +45,7 @@ describe("configuration validation (runtime)", () => {
       "payout_wallet_mode",
     ];
 
-    for (let key of requiredKeys) {
+    for (const key of requiredKeys) {
       const config = omit(baseConfig, key);
       const result = schema.validate(config);
       expect(result.error?.message).toEqual(`"${key}" is required`);
@@ -54,7 +54,7 @@ describe("configuration validation (runtime)", () => {
   test("does not accept an invalid baking address", () => {
     const invalidValues = ["foo", 1, "KT19UA2fYomEAptTiwBV6dvqm4mNZL7JPquK"];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = { ...baseConfig, baking_address: v };
       expect(schema.validate(input).error).toBeDefined();
     }
@@ -63,7 +63,7 @@ describe("configuration validation (runtime)", () => {
   test("does not accept an invalid default fee", () => {
     const invalidValues = ["-1", "101", -1, 101, "foo", true];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = { ...baseConfig, default_fee: v };
       expect(schema.validate(input).error).toBeDefined();
     }
@@ -71,7 +71,7 @@ describe("configuration validation (runtime)", () => {
   test("does not accept an invalid payout mode", () => {
     const invalidValues = ["foo", true, 1];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = { ...baseConfig, payout_wallet_mode: v };
       expect(schema.validate(input).error).toBeDefined();
     }
@@ -84,7 +84,7 @@ describe("configuration validation (runtime)", () => {
       "foo.bar",
     ];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = { ...baseConfig, network_configuration: { rpc_url: v } };
       expect(schema.validate(input).error).toBeDefined();
     }
@@ -98,7 +98,7 @@ describe("configuration validation (runtime)", () => {
   test("does not accept invalid overdelegation.guard", () => {
     const invalidValues = ["foo", 1, []];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = {
         ...baseConfig,
         overdelegation: {
@@ -125,7 +125,7 @@ describe("configuration validation (runtime)", () => {
   test("does not accept invalid overdelegation.excluded_addresses", () => {
     const invalidValues = [["foo"], [1], true, "bar"];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = {
         ...baseConfig,
         overdelegation: {
@@ -144,7 +144,7 @@ describe("configuration validation (runtime)", () => {
   test("does not accept invalid delegator_overrides (wrong key)", () => {
     const invalidValues = ["foo", 1];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = {
         ...baseConfig,
         delegator_overrides: {
@@ -175,7 +175,7 @@ describe("configuration validation (runtime)", () => {
   test("does not accept invalid delegator_overrides (fee)", () => {
     const invalidValues = ["foo", true, []];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = {
         ...baseConfig,
         delegator_overrides: {
@@ -207,7 +207,7 @@ describe("configuration validation (runtime)", () => {
   test("does not accept invalid delegator_overrides (recipient)", () => {
     const invalidValues = ["foo", 1, []];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = {
         ...baseConfig,
         delegator_overrides: {
@@ -237,7 +237,7 @@ describe("configuration validation (runtime)", () => {
   test("does not accept invalid payment_requirements", () => {
     const invalidValues = ["foo", []];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = {
         ...baseConfig,
         payment_requirements: {
@@ -265,7 +265,7 @@ describe("configuration validation (runtime)", () => {
   test("does not accept invalid delegator_requirements", () => {
     const invalidValues = ["foo", []];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = {
         ...baseConfig,
         delegator_requirements: {
@@ -307,7 +307,7 @@ describe("configuration validation (runtime)", () => {
       },
     ];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = {
         ...baseConfig,
         income_recipients: {
@@ -352,7 +352,7 @@ describe("configuration validation (runtime)", () => {
       },
     ];
 
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       const input = {
         ...baseConfig,
         income_recipients: {

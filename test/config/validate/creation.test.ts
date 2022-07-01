@@ -12,7 +12,7 @@ describe("configuration validation (creation)", () => {
 
     it("returns message if an invalid percentage", () => {
       const invalidValues = ["foo", 101, -1];
-      for (let v of invalidValues) {
+      for (const v of invalidValues) {
         expect(validPercentage(v)).not.toBe(true);
       }
     });
@@ -28,7 +28,7 @@ describe("validBakingAddress", () => {
 
   it("returns false if an invalid public key hash is given", () => {
     const invalidValues = ["foo", 1, "tz2EfZMt9Zs9S4WmxRGmDxQFNpFaYukFmsD"];
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       expect(validBakingAddress(v)).not.toBe(true);
     }
   });
@@ -43,7 +43,7 @@ describe("validBakingAddress", () => {
 describe("validBakingAddress", () => {
   it("returns false if an invalid private key hash is given", async () => {
     const invalidValues = ["foo", 1, "tz2EfZMt9Zs9S4WmxRGmDxQFNpFaYukFmsD"];
-    for (let v of invalidValues) {
+    for (const v of invalidValues) {
       expect(await validPrivateKey(v)).not.toBe(true);
     }
   });
