@@ -22,34 +22,29 @@ import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
-import { flatten, includes } from "lodash";
-import { schema } from "src/config/validate/runtime";
+import { flatten } from "lodash";
+import {
+  checkNoPreviousPayments,
+  checkValidConfig,
+  checkValidCycle,
+} from "./helpers";
 
 export const pay = async (commandOptions) => {
   const cycle = commandOptions.cycle;
-  const lastCycle = await client.getLastCycle();
-
-  if (lastCycle < commandOptions.cycle) {
-    console.log(`Cannot run payments for an unfinished or future cycle`);
-    process.exit(1);
-  }
+  await checkValidCycle(client, cycle);
 
   if (globalCliOptions.dryRun) {
     console.log(`Running in 'dry-run' mode...`);
   }
 
   const config = getConfig();
-  try {
-    await schema.validateAsync(config);
-  } catch (e) {
-    console.log(`Configuration error: ${(e as Error).message}`);
-    process.exit(1);
-  }
+  await checkValidConfig(config);
 
   const cycleReport = initializeCycleReport(cycle);
   const cycleData = await client.getCycleData(config.baking_address, cycle);
 
   const provider = await createProvider(config);
+
   const result = await engine.run({
     config,
     cycleReport,
@@ -87,11 +82,7 @@ export const pay = async (commandOptions) => {
     process.exit(0);
   }
 
-  const files = await fs.readdirSync(REPORTS_SUCCESS_PAYMENTS_DIRECTORY);
-  if (includes(files, `${cycle}.csv`)) {
-    console.info(`Existing payment for cycle ${cycle}. Aborting ...`);
-    process.exit(1);
-  }
+  await checkNoPreviousPayments(cycle);
 
   if (!commandOptions.confirm) {
     const result = await inquirer.prompt({
