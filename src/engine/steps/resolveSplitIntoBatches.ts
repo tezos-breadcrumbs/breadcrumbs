@@ -70,13 +70,8 @@ export const resolveSplitIntoBatches = async (
   /* Process fee income and bond reward payments into separate batches */
   const { feeIncomePayments, bondRewardPayments } = cycleReport;
 
-  if (!isEmpty(feeIncomePayments)) {
-    batches.push(feeIncomePayments);
-  }
-
-  if (!isEmpty(bondRewardPayments)) {
-    batches.push(bondRewardPayments);
-  }
+  batches.push(feeIncomePayments);
+  batches.push(bondRewardPayments);
 
   return {
     ...args,

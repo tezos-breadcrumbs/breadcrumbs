@@ -1,6 +1,7 @@
-import fs from "fs";
+import { parse } from "csv-parse";
+import { writeFile, readFile } from "fs/promises";
 import { createObjectCsvWriter } from "csv-writer";
-import { get } from "lodash";
+import _, { get, isEmpty, some } from "lodash";
 import { stringify } from "hjson";
 
 import { CycleData } from "src/api-client/abstract_client";
@@ -9,20 +10,31 @@ import {
   CycleReport,
   DelegatorPayment,
 } from "src/engine/interfaces";
+import { ensureDirectoryExists } from "src/utils/fs";
 
 const DELEGATOR_REPORT_HEADERS = [
   { id: "timestamp", title: "Timestamp" },
   { id: "cycle", title: "Cycle" },
-  { id: "payment_type", title: "Payment Type" },
+  { id: "type", title: "Payment Type" },
   { id: "delegator", title: "Delegator" },
-  { id: "delegator_balance", title: "Delegated Balance" },
-  { id: "fee_rate", title: "Fee Rate" },
+  { id: "delegatorBalance", title: "Delegated Balance" },
+  { id: "feeRate", title: "Fee Rate" },
   { id: "fee", title: "Fee" },
   { id: "amount", title: "Amount" },
   { id: "recipient", title: "Recipient" },
-  { id: "tx_hash", title: "Transaction Hash" },
+  { id: "hash", title: "Transaction Hash" },
   { id: "note", title: "Note" },
 ];
+
+export const readPaymentReport = async (
+  cycle: number,
+  path: string
+): Promise<(DelegatorPayment | BasePayment)[]> => {
+  return (await readCSV(`${path}/${cycle}.csv`, DELEGATOR_REPORT_HEADERS)) as (
+    | DelegatorPayment
+    | BasePayment
+  )[];
+};
 
 export const writePaymentReport = async (
   cycle: number,
@@ -31,10 +43,7 @@ export const writePaymentReport = async (
 ) => {
   const records = payments.map(formatPayment);
 
-  if (!fs.existsSync(path)) {
-    fs.mkdirSync(path, { recursive: true });
-  }
-
+  await ensureDirectoryExists(path);
   await writeCSV(`${path}/${cycle}.csv`, DELEGATOR_REPORT_HEADERS, records);
 };
 
@@ -43,9 +52,7 @@ export const writeCycleReport = async (
   cycleData: CycleData,
   path: string
 ) => {
-  if (!fs.existsSync(path)) {
-    fs.mkdirSync(path, { recursive: true });
-  }
+  await ensureDirectoryExists(path);
 
   await writeHJSON(
     path,
@@ -68,20 +75,63 @@ function formatPayment(payment: DelegatorPayment | BasePayment): {
   [key: string]: string;
 } {
   return {
-    payment_type: payment.type,
+    type: payment.type,
     cycle: payment.cycle.toString(),
     recipient: payment.recipient,
     amount: payment.amount.toString(),
     timestamp: new Date().toISOString(),
-    tx_hash: payment.hash,
+    hash: payment.hash,
     /* The below fields are applicable to delegator payments only */
     delegator: get(payment, "delegator", ""),
-    delegator_balance: get(payment, "delegatorBalance", "").toString(),
+    delegatorBalance: get(payment, "delegatorBalance", "").toString(),
     fee: get(payment, "fee", "").toString(),
-    fee_rate: get(payment, "feeRate", "").toString(),
+    feeRate: get(payment, "feeRate", "").toString(),
     note: get(payment, "note", "").toString(),
   };
 }
+
+const readCSV = async (
+  path: string,
+  header: { id: string; title: string }[]
+) => {
+  const data = (await readFile(path)).toString();
+  const records: Array<object> = await new Promise((resolve, reject) =>
+    parse(
+      data,
+      { columns: header.map((x) => x.title), skip_empty_lines: true },
+      (err, records) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(records);
+      }
+    )
+  );
+  // remap keys
+  const results: Array<object> = [];
+  // strip header
+  if (
+    isEmpty(
+      Object.entries(records[0]).filter(
+        (entry) =>
+          !some(
+            header,
+            (column) => column.title === entry[0] && column.title === entry[1]
+          )
+      )
+    )
+  ) {
+    records.shift();
+  }
+  for (const record of records) {
+    const mappedRecord = {};
+    for (const column of header) {
+      mappedRecord[column.id] = record[column.title];
+    }
+    results.push(mappedRecord);
+  }
+  return results;
+};
 
 const writeCSV = async (
   path: string,
@@ -103,7 +153,9 @@ const writeHJSON = async (
   object: { [key: string]: any }
 ) => {
   const json = stringify(object, { space: "  " });
-  await fs.writeFile(`${path}/${cycle}.hjson`, json, (err) => {
-    if (err) console.log(err);
-  });
+  try {
+    await writeFile(`${path}/${cycle}.hjson`, json);
+  } catch (err) {
+    console.log(err);
+  }
 };

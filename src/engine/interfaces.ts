@@ -16,6 +16,7 @@ export interface CycleReport {
   creditablePayments: DelegatorPayment[];
   feeIncomePayments: BasePayment[];
   bondRewardPayments: BasePayment[];
+  distributedPayments: DelegatorPayment[] | BasePayment[];
   feeIncome: BigNumber;
   feesPaid: BigNumber;
   lockedBondRewards: BigNumber;

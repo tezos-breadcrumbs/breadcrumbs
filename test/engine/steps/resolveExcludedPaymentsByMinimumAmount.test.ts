@@ -21,7 +21,7 @@ import { DelegatorPayment, ENoteType } from "src/engine/interfaces";
 
 describe("resolveExcludedPaymentsByMinimumAmount", () => {
   Polly.start();
-  const provider = new TezosToolkit("https://ithacanet.ecadinfra.com");
+  const provider = new TezosToolkit("https://ghostnet.ecadinfra.com");
 
   let mockProvider;
 

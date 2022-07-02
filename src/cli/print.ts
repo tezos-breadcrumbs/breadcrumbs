@@ -12,6 +12,7 @@ import {
 import {
   PrintableBakerPayment,
   PrintableDelegatorPayment,
+  PrintableDistributedPayment,
   PrintableExcludedPayment,
 } from "./interfaces";
 
@@ -59,6 +60,32 @@ export const printDelegatorPaymentsTable = (payments: DelegatorPayment[]) => {
 
   table.printTable();
   console.log(feeNote);
+};
+
+export const printDistributedPaymentsTable = (payments: DelegatorPayment[]) => {
+  const table = new Table({
+    columns: [
+      { name: "delegator", alignment: "left" },
+      { name: "recipient" },
+      { name: "delegatorBalance" },
+      { name: "amount" },
+      { name: "hash" },
+    ],
+  });
+
+  for (const payment of payments) {
+    const paymentInfo: PrintableDistributedPayment = {
+      recipient: shortenAddress(payment.recipient),
+      delegator: shortenAddress(payment.delegator),
+      amount: `${normalizeAmount(payment.amount)}`,
+      feeRate: `${multiply(payment.feeRate, 100).toString()}%`,
+      delegatorBalance: `${normalizeAmount(payment.delegatorBalance)} TEZ`,
+      hash: payment.hash,
+    };
+
+    table.addRow(paymentInfo);
+  }
+  table.printTable();
 };
 
 export const printExcludedPaymentsTable = (payments: DelegatorPayment[]) => {

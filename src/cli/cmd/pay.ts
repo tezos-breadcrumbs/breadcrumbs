@@ -1,5 +1,4 @@
 import { initializeCycleReport } from "src/engine/helpers";
-import fs from "fs";
 import { join } from "path";
 import client from "src/api-client";
 import engine from "src/engine";
@@ -7,6 +6,7 @@ import { getConfig } from "src/config";
 import {
   printBakerPaymentsTable,
   printDelegatorPaymentsTable,
+  printDistributedPaymentsTable,
   printExcludedPaymentsTable,
 } from "src/cli/print";
 import {
@@ -22,12 +22,8 @@ import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
-import { flatten } from "lodash";
-import {
-  checkNoPreviousPayments,
-  checkValidConfig,
-  checkValidCycle,
-} from "./helpers";
+import { every, flatten, isEmpty } from "lodash";
+import { checkValidConfig, checkValidCycle } from "./helpers";
 
 export const pay = async (commandOptions) => {
   const cycle = commandOptions.cycle;
@@ -53,25 +49,36 @@ export const pay = async (commandOptions) => {
     tezos: provider,
   });
 
-  const { batches, creditablePayments, excludedPayments } = result.cycleReport;
+  const { batches, creditablePayments, excludedPayments, distributedPayments } =
+    result.cycleReport;
 
   /* The last two batches are related to fee income and bond rewards */
   const delegatorPayments = flatten(batches.slice(0, -2));
   const bakerPayments = flatten(batches.slice(-2));
 
-  console.log("Payments excluded by minimum amount:");
-  printExcludedPaymentsTable(
-    config.accounting_mode ? creditablePayments : excludedPayments
-  );
+  if (!isEmpty(distributedPayments)) {
+    console.log("\nAlready distributed payments:");
+    printDistributedPaymentsTable(distributedPayments as DelegatorPayment[]);
+  }
 
-  console.log(""); /* Line break */
+  if (
+    !isEmpty(config.accounting_mode ? creditablePayments : excludedPayments)
+  ) {
+    console.log("\nPayments excluded by minimum amount:");
+    printExcludedPaymentsTable(
+      config.accounting_mode ? creditablePayments : excludedPayments
+    );
+  }
 
-  console.log("Delegator Payments:");
-  printDelegatorPaymentsTable(delegatorPayments as DelegatorPayment[]);
-  console.log(""); /* Line break */
+  if (!isEmpty(delegatorPayments)) {
+    console.log("\nDelegator Payments:");
+    printDelegatorPaymentsTable(delegatorPayments as DelegatorPayment[]);
+  }
 
-  console.log("Baker Payments:");
-  printBakerPaymentsTable(bakerPayments);
+  if (!isEmpty(bakerPayments)) {
+    console.log("\nBaker Payments:");
+    printBakerPaymentsTable(bakerPayments);
+  }
   console.log(""); /* Line break */
 
   if (config.accounting_mode) {
@@ -82,7 +89,10 @@ export const pay = async (commandOptions) => {
     process.exit(0);
   }
 
-  await checkNoPreviousPayments(cycle);
+  if (isEmpty(batches) || every(batches, (batch) => isEmpty(batch))) {
+    console.log("Nothing to pay. Aborting...");
+    process.exit(0);
+  }
 
   if (!commandOptions.confirm) {
     const result = await inquirer.prompt({
@@ -97,17 +107,17 @@ export const pay = async (commandOptions) => {
     }
   }
 
-  const allPayments = flatten(batches);
-
-  const successfulPayments: Array<BasePayment> = [];
+  const successfulPayments: Array<BasePayment> = [...distributedPayments];
   const failedPayments: Array<BasePayment> = [];
 
-  for (let i = 0; i < batches.length; i++) {
+  const nonEmptyBatches = batches.filter((batch) => !isEmpty(batch));
+  for (let i = 0; i < nonEmptyBatches.length; i++) {
     try {
-      const batch = batches[i];
+      const batch = nonEmptyBatches[i];
+      if (isEmpty(batch)) continue;
       console.log(
-        `Sending batch ${i + 1}/${batches.length} containing ${
-          batches[i].length
+        `Sending batch ${i + 1}/${nonEmptyBatches.length} containing ${
+          nonEmptyBatches[i].length
         } transaction(s) ...`
       );
       const opBatch = await sendBatch(provider, batch.map(prepareTransaction));
@@ -116,12 +126,12 @@ export const pay = async (commandOptions) => {
       }
       await opBatch.confirmation(2);
       console.log(
-        `Transaction confirmed on https://ithacanet.tzkt.io/${opBatch.opHash}`
+        `Transaction confirmed on https://ghostnet.tzkt.io/${opBatch.opHash}`
       );
       successfulPayments.push(...batch);
     } catch (e: unknown) {
       console.error(e);
-      const batch = batches[i];
+      const batch = nonEmptyBatches[i];
       for (const payment of batch) {
         (payment as DelegatorPayment).note = (e as Error).message;
       }
@@ -139,7 +149,7 @@ export const pay = async (commandOptions) => {
   if (failedPayments.length > 0) {
     await writePaymentReport(
       cycle,
-      allPayments,
+      failedPayments,
       join(globalCliOptions.workDir, REPORTS_FAILED_PAYMENTS_DIRECTORY)
     );
   }

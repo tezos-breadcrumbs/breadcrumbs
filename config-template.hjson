@@ -1,7 +1,7 @@
 {
   "baking_address": "YOUR_BAKING_ADDRESS",
   "default_fee": 10,
-  "payout-wallet-mode": "local-private-key",
+  "payout_wallet_mode": "local-private-key",
   "delegator_requirements": {
     "minimum_balance": 100
   },
