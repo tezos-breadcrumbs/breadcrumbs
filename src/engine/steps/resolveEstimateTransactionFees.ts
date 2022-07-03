@@ -24,7 +24,7 @@ export const resolveEstimateTransactionFees = async (
   const walletPayments = delegatorPayments.filter(
     (payment) => !payment.recipient.startsWith(`KT`)
   );
-  let ktPayments = delegatorPayments.filter(
+  const ktPayments = delegatorPayments.filter(
     (payment) => !walletPayments.includes(payment)
   );
 
