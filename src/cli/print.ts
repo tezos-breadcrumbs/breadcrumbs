@@ -75,7 +75,6 @@ export const printDistributedPaymentsTable = (payments: DelegatorPayment[]) => {
   });
 
   for (const payment of payments) {
-    console.log(payment.transactionFee);
     const paymentInfo: PrintableDistributedPayment = {
       recipient: shortenAddress(payment.recipient),
       delegator: shortenAddress(payment.delegator),
