@@ -44,7 +44,7 @@ export const printDelegatorPaymentsTable = (payments: DelegatorPayment[]) => {
       feeRate: `${multiply(payment.feeRate, 100).toString()}%`,
       amount: `${normalizeAmount(payment.amount)} TEZ`,
       delegatorBalance: `${normalizeAmount(payment.delegatorBalance)} TEZ`,
-      transactionFee: `${normalizeAmount(payment.transactionFee)} TEZ`,
+      transactionFee: `${normalizeAmount(payment.transactionFee, 5)} TEZ`,
     };
 
     table.addRow(paymentInfo);
@@ -68,18 +68,20 @@ export const printDistributedPaymentsTable = (payments: DelegatorPayment[]) => {
       { name: "delegator", alignment: "left" },
       { name: "recipient" },
       { name: "delegatorBalance" },
+      { name: "feeRate" },
       { name: "amount" },
       { name: "hash" },
     ],
   });
 
   for (const payment of payments) {
+    console.log(payment.transactionFee);
     const paymentInfo: PrintableDistributedPayment = {
       recipient: shortenAddress(payment.recipient),
       delegator: shortenAddress(payment.delegator),
-      amount: `${normalizeAmount(payment.amount)}`,
-      feeRate: `${multiply(payment.feeRate, 100).toString()}%`,
       delegatorBalance: `${normalizeAmount(payment.delegatorBalance)} TEZ`,
+      feeRate: `${multiply(payment.feeRate, 100).toString()}%`,
+      amount: `${normalizeAmount(payment.amount)}`,
       hash: payment.hash,
     };
 
@@ -177,6 +179,6 @@ const shortenAddress = (address: string) => {
   )}`;
 };
 
-const normalizeAmount = (input: BigNumber | undefined) => {
-  return divide(input ?? 0, MUTEZ_FACTOR).dp(3);
+const normalizeAmount = (input: BigNumber | undefined, decimalPlaces = 3) => {
+  return divide(input ?? 0, MUTEZ_FACTOR).dp(decimalPlaces);
 };
