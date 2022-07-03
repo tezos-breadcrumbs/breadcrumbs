@@ -36,6 +36,7 @@ interface IncomeRecipientsConfiguration {
 export enum EPayoutWalletMode {
   LocalPrivateKey = "local-private-key",
   Ledger = "ledger",
+  RemoteSigner = "remote-signer",
 }
 
 export interface BreadcrumbsConfiguration {

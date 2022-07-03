@@ -5,6 +5,7 @@ export const MUTEZ_FACTOR = 1000000;
 // configuration files
 export const CONFIG_FILE = `config.hjson`;
 export const WALLET_PRIVATE_KEY_FILE = `payout_wallet_private.key`;
+export const REMOTE_SIGNER_CONFIG_FILE = `remote-signer.hjson`;
 // reports
 export const REPORTS_DIRECTORY = "reports";
 export const REPORTS_SUCCESS_PAYMENTS_DIRECTORY = join(

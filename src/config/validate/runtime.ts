@@ -1,3 +1,4 @@
+import { validateKeyHash } from "@taquito/utils";
 import Joi from "joi";
 import { values, sum } from "lodash";
 import { EPayoutWalletMode } from "../interfaces";
@@ -17,7 +18,8 @@ const validPercentage = Joi.number().min(0).max(100);
 
 const validPayoutWalletMode = Joi.string().valid(
   EPayoutWalletMode.Ledger,
-  EPayoutWalletMode.LocalPrivateKey
+  EPayoutWalletMode.LocalPrivateKey,
+  EPayoutWalletMode.RemoteSigner
 );
 
 const validOverdelegationExcludedAddresses = Joi.array().items(validAddress);
@@ -66,4 +68,13 @@ export const schema = Joi.object({
     baker_pays_transaction_fee: Joi.boolean(),
     minimum_amount: Joi.number().positive(),
   },
+});
+
+export const validRemoteSignerUrl = Joi.string().uri({
+  scheme: ["https", "http", "tcp"],
+});
+
+export const remoteSignerSchema = Joi.object({
+  pkh: Joi.string().custom((value) => validateKeyHash(value) === 3),
+  url: validRemoteSignerUrl,
 });
