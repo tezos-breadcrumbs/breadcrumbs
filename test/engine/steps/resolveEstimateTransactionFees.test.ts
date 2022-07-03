@@ -66,6 +66,7 @@ describe("resolveEstimateTransactionFees", () => {
       index,
       payment,
     ] of output.cycleReport.delegatorPayments.entries()) {
+      console.log(index, payment);
       expect(payment.gasLimit).toStrictEqual(new BigNumber(index));
       expect(payment.storageLimit).toStrictEqual(new BigNumber(index + 1));
       expect(payment.transactionFee).toStrictEqual(new BigNumber(index + 2));

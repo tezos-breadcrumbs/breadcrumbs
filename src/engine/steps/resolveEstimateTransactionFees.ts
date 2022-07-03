@@ -1,5 +1,5 @@
-import { get, head, map } from "lodash";
-import { Estimate, ParamsWithKind } from "@taquito/taquito";
+import { get, last, map } from "lodash";
+import { ParamsWithKind } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 
 import { prepareTransaction } from "src/tezos-client";
@@ -19,7 +19,6 @@ export const resolveEstimateTransactionFees = async (
   const { delegatorPayments, excludedPayments, feeIncome } = cycleReport;
 
   let _feeIncome = feeIncome;
-  const _delegatorPayments: typeof delegatorPayments = [];
   const _excludedPayments = [...excludedPayments];
 
   const walletPayments = delegatorPayments.filter(
@@ -37,22 +36,19 @@ export const resolveEstimateTransactionFees = async (
     walletEstimates.splice(0, 1);
   }
 
-  for (const index in walletEstimates) {
+  walletPayments.forEach((payment, index) => {
     const estimate = walletEstimates[index];
-    const payment = walletPayments[index];
-
-    _delegatorPayments.push({
-      ...payment,
+    Object.assign(payment, {
       transactionFee: new BigNumber(estimate.totalCost),
       storageLimit: new BigNumber(estimate.storageLimit),
       gasLimit: new BigNumber(estimate.gasLimit),
     });
-  }
+  });
 
-  const ktEstimates: Array<Estimate> = [];
   for (const payment of ktPayments) {
     try {
-      const estimate = head(
+      /* last to skip reveal operation at the beginning. This only happens on testnet */
+      const estimate = last(
         await tezos.estimate.batch([
           prepareTransaction(payment),
         ] as ParamsWithKind[])
@@ -61,7 +57,11 @@ export const resolveEstimateTransactionFees = async (
         throw new Error(
           `Contract call without available estimate. This should never happen!`
         );
-      ktEstimates.push(estimate);
+      Object.assign(payment, {
+        transactionFee: new BigNumber(estimate.totalCost),
+        storageLimit: new BigNumber(estimate.storageLimit),
+        gasLimit: new BigNumber(estimate.gasLimit),
+      });
     } catch (err) {
       const id: string = get(err, "id", "").toString();
       if (id.endsWith(`script_rejected`)) {
@@ -78,7 +78,6 @@ export const resolveEstimateTransactionFees = async (
             "unknown"
           )}`,
         });
-        console.log(payment);
         _excludedPayments.push(payment);
         continue;
       }
@@ -92,25 +91,9 @@ export const resolveEstimateTransactionFees = async (
     }
   }
   /* Drop rejected payments */
-  ktPayments = ktPayments.filter(
+  const _delegatorPayments = delegatorPayments.filter(
     (payment) => !_excludedPayments.includes(payment)
   );
-
-  if (ktEstimates.length - 1 === ktPayments.length) {
-    /* Exclude reveal operation at the beginning. This only happens on testnet */
-    ktEstimates.splice(0, 1);
-  }
-  for (const index in ktEstimates) {
-    const estimate = ktEstimates[index];
-    const payment = ktPayments[index];
-
-    _delegatorPayments.push({
-      ...payment,
-      transactionFee: new BigNumber(estimate.totalCost),
-      storageLimit: new BigNumber(estimate.storageLimit),
-      gasLimit: new BigNumber(estimate.gasLimit),
-    });
-  }
 
   return {
     ...args,
