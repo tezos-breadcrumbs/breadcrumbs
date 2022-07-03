@@ -24,6 +24,7 @@ import {
 } from "src/utils/constants";
 import { every, flatten, isEmpty } from "lodash";
 import { checkValidConfig, checkValidCycle } from "./helpers";
+import { getExplorerUrl } from "src/utils/url";
 
 export const pay = async (commandOptions) => {
   const cycle = commandOptions.cycle;
@@ -64,7 +65,7 @@ export const pay = async (commandOptions) => {
   if (
     !isEmpty(config.accounting_mode ? creditablePayments : excludedPayments)
   ) {
-    console.log("\nPayments excluded by minimum amount:");
+    console.log("\nPayments excluded:");
     printExcludedPaymentsTable(
       config.accounting_mode ? creditablePayments : excludedPayments
     );
@@ -126,7 +127,10 @@ export const pay = async (commandOptions) => {
       }
       await opBatch.confirmation(2);
       console.log(
-        `Transaction confirmed on https://ghostnet.tzkt.io/${opBatch.opHash}`
+        `Transaction confirmed on ${getExplorerUrl(
+          opBatch.opHash,
+          getConfig("network_configuration").explorer_url_template
+        )}`
       );
       successfulPayments.push(...batch);
     } catch (e: unknown) {

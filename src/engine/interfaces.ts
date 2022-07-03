@@ -40,6 +40,7 @@ export enum EPaymentType {
 export enum ENoteType {
   BalanceBelowMinimum = "Balance Below Minimum",
   PaymentBelowMinimum = "Payment Amount Below Minimum",
+  ScriptRejected = "Script Rejected",
 }
 
 export enum EFeePayer {

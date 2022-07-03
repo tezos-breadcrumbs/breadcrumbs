@@ -110,10 +110,10 @@ export const printExcludedPaymentsTable = (payments: DelegatorPayment[]) => {
     const getThreshold = () => {
       switch (paymentNote) {
         case ENoteType.BalanceBelowMinimum: {
-          return getConfig().delegator_requirements?.minimum_balance;
+          return ` ${getConfig().delegator_requirements?.minimum_balance} TEZ`;
         }
         case ENoteType.PaymentBelowMinimum: {
-          return getConfig().payment_requirements?.minimum_amount;
+          return ` ${getConfig().payment_requirements?.minimum_amount} TEZ`;
         }
         default: {
           return "";
@@ -121,7 +121,7 @@ export const printExcludedPaymentsTable = (payments: DelegatorPayment[]) => {
       }
     };
 
-    return `${paymentNote} ${getThreshold()} TEZ`;
+    return `${paymentNote}${getThreshold()}`;
   };
 
   for (const payment of payments) {

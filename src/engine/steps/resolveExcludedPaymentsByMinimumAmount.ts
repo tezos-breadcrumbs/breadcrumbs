@@ -15,7 +15,9 @@ export const resolveExcludedPaymentsByMinimumAmount = (
     getMinimumPaymentAmount(config).times(MUTEZ_FACTOR);
 
   const _delegatorPayments: typeof cycleReport.delegatorPayments = [];
-  const _excludedPayments: typeof cycleReport.delegatorPayments = [];
+  const _excludedPayments: typeof cycleReport.delegatorPayments = [
+    ...cycleReport.excludedPayments,
+  ];
   const _creditablePayments: typeof cycleReport.delegatorPayments = [];
 
   let _feeIncome = cycleReport.feeIncome;

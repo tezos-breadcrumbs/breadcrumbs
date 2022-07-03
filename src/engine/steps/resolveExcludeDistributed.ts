@@ -1,12 +1,8 @@
-import { find, groupBy, mapValues, some } from "lodash";
+import { find, groupBy, some } from "lodash";
 import { globalCliOptions } from "src/cli";
 import { join } from "path";
 
-import {
-  BasePayment,
-  DelegatorPayment,
-  StepArguments,
-} from "src/engine/interfaces";
+import { BasePayment, StepArguments } from "src/engine/interfaces";
 import { readPaymentReport } from "src/fs-client";
 import { REPORTS_SUCCESS_PAYMENTS_DIRECTORY } from "src/utils/constants";
 
