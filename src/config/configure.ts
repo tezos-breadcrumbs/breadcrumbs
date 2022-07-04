@@ -7,15 +7,14 @@ import {
   REMOTE_SIGNER_CONFIG_FILE,
   WALLET_PRIVATE_KEY_FILE,
 } from "src/utils/constants";
-import { validateKeyHash } from "@taquito/utils";
-import { validRemoteSignerUrl } from "./validate/runtime";
 
 const {
   filterRpcUrl,
   filterWalletMode,
-  validBakingAddress,
+  validAddress,
   validPercentage,
   validPrivateKey,
+  validRemoteSignerUrl,
 } = require("./validate/creation");
 
 (async () => {
@@ -24,7 +23,7 @@ const {
       type: "input",
       name: "baking_address",
       message: "Please enter your baking address:",
-      validate: validBakingAddress,
+      validate: validAddress,
     },
     {
       type: "input",
@@ -61,11 +60,11 @@ const {
     },
     {
       type: "input",
-      name: "pkh",
+      name: "remote_signer_public_key",
       when: (answers) =>
         answers.payout_wallet_mode === EPayoutWalletMode.RemoteSigner,
-      message: `Please enter your pkh. It will be persisted locally in "${REMOTE_SIGNER_CONFIG_FILE}" file`,
-      validate: async (input) => validateKeyHash(input) === 3,
+      message: `Please enter your remote signer public key. It will be persisted locally in "${REMOTE_SIGNER_CONFIG_FILE}" file`,
+      validate: validAddress,
     },
     {
       type: "input",
@@ -73,7 +72,7 @@ const {
       when: (answers) =>
         answers.payout_wallet_mode === EPayoutWalletMode.RemoteSigner,
       message: `Please enter url of your remote signer. It will be persisted locally in "${REMOTE_SIGNER_CONFIG_FILE}" file`,
-      validate: async (input) => validRemoteSignerUrl.validate(input),
+      validate: validRemoteSignerUrl,
     },
   ];
 
@@ -113,8 +112,8 @@ const {
         REMOTE_SIGNER_CONFIG_FILE,
         stringify(
           {
-            pkh: answers.pkh,
-            url: answers.remote_signer_url,
+            remote_signer_public_key: answers.remote_signer_public_key,
+            remote_signer_url: answers.remote_signer_url,
           },
           { space: "  " }
         ),

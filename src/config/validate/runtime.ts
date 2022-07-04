@@ -1,4 +1,3 @@
-import { validateKeyHash } from "@taquito/utils";
 import Joi from "joi";
 import { values, sum } from "lodash";
 import { EPayoutWalletMode } from "../interfaces";
@@ -75,6 +74,6 @@ export const validRemoteSignerUrl = Joi.string().uri({
 });
 
 export const remoteSignerSchema = Joi.object({
-  pkh: Joi.string().custom((value) => validateKeyHash(value) === 3),
-  url: validRemoteSignerUrl,
+  remote_signer_public_key: Joi.string().custom((value) => isPKH(value)),
+  remote_signer_url: validRemoteSignerUrl,
 });
