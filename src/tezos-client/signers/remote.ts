@@ -10,7 +10,7 @@ export const loadRemoteSignerConfig = async () => {
 export const getRemoteSigner = async () => {
   const remoteSignerConfig = await loadRemoteSignerConfig();
   return new RemoteSigner(
-    remoteSignerConfig.remote_signer_public_key,
-    remoteSignerConfig.remote_signer_url
+    remoteSignerConfig.public_key,
+    remoteSignerConfig.url
   );
 };

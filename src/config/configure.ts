@@ -90,7 +90,7 @@ const {
     };
 
     const json = stringify(config, { space: "  " });
-    fs.writeFile("./config.hjson", json, (err) => {
+    fs.writeFile("./config-foo.hjson", json, (err) => {
       if (!err) {
         console.log(
           "Successfully created configuration file `config.hjson`. Please edit directly for more advanced configuration"
@@ -112,8 +112,8 @@ const {
         REMOTE_SIGNER_CONFIG_FILE,
         stringify(
           {
-            remote_signer_public_key: answers.remote_signer_public_key,
-            remote_signer_url: answers.remote_signer_url,
+            public_key: answers.remote_signer_public_key,
+            url: answers.remote_signer_url,
           },
           { space: "  " }
         ),
