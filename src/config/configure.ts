@@ -90,7 +90,7 @@ const {
     };
 
     const json = stringify(config, { space: "  " });
-    fs.writeFile("./config-foo.hjson", json, (err) => {
+    fs.writeFile("./config.hjson", json, (err) => {
       if (!err) {
         console.log(
           "Successfully created configuration file `config.hjson`. Please edit directly for more advanced configuration"
