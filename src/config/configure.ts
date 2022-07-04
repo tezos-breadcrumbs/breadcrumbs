@@ -37,8 +37,8 @@ const {
       message:
         "Please select a Tezos RPC URL. You can customize it later by editing the configuration file",
       choices: [
-        "Mainnet|https://mainnet-tezos.giganode.io/",
-        "Testnet|https://testnet-tezos.giganode.io/",
+        "Mainnet|https://mainnet.api.tez.ie/",
+        "Testnet|https://ghostnet.ecadinfra.com",
       ],
       filter: filterRpcUrl,
     },
