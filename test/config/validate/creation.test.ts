@@ -1,6 +1,6 @@
 import {
   validPercentage,
-  validBakingAddress,
+  validAddress,
   validPrivateKey,
 } from "src/config/validate/creation";
 
@@ -21,22 +21,18 @@ describe("configuration validation (creation)", () => {
 
 describe("validBakingAddress", () => {
   it("returns true if an valid public key hash is given", () => {
-    expect(validBakingAddress("tz2EfZMt9Zs9S4WmxRGmDxQFNpFaYukFmsDh")).toBe(
-      true
-    );
+    expect(validAddress("tz2EfZMt9Zs9S4WmxRGmDxQFNpFaYukFmsDh")).toBe(true);
   });
 
   it("returns false if an invalid public key hash is given", () => {
     const invalidValues = ["foo", 1, "tz2EfZMt9Zs9S4WmxRGmDxQFNpFaYukFmsD"];
     for (const v of invalidValues) {
-      expect(validBakingAddress(v)).not.toBe(true);
+      expect(validAddress(v)).not.toBe(true);
     }
   });
 
   it("returns false if KT address is given", () => {
-    expect(validBakingAddress("KT1GEDCeg5yJuuLkSvVGXniQfQzhgTwCzXdb")).not.toBe(
-      true
-    );
+    expect(validAddress("KT1GEDCeg5yJuuLkSvVGXniQfQzhgTwCzXdb")).not.toBe(true);
   });
 });
 
