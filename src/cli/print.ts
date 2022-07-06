@@ -8,6 +8,7 @@ import {
   BasePayment,
   DelegatorPayment,
   ENoteType,
+  EPaymentType,
 } from "src/engine/interfaces";
 import {
   PrintableBakerPayment,
@@ -77,9 +78,18 @@ export const printDistributedPaymentsTable = (payments: DelegatorPayment[]) => {
   for (const payment of payments) {
     const paymentInfo: PrintableDistributedPayment = {
       recipient: shortenAddress(payment.recipient),
-      delegator: shortenAddress(payment.delegator),
-      delegatorBalance: `${normalizeAmount(payment.delegatorBalance)} TEZ`,
-      feeRate: `${multiply(payment.feeRate, 100).toString()}%`,
+      delegator:
+        payment.type === EPaymentType.Delegator
+          ? shortenAddress(payment.delegator)
+          : "N/A",
+      delegatorBalance:
+        payment.type === EPaymentType.Delegator
+          ? `${normalizeAmount(payment.delegatorBalance)} TEZ`
+          : "N/A",
+      feeRate:
+        payment.type === EPaymentType.Delegator
+          ? `${multiply(payment.feeRate, 100).toString()}%`
+          : "N/A",
       amount: `${normalizeAmount(payment.amount)}`,
       hash: payment.hash,
     };
