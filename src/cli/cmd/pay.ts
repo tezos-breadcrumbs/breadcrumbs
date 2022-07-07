@@ -25,6 +25,7 @@ import {
 import { every, flatten, isEmpty } from "lodash";
 import { checkValidConfig, checkValidCycle } from "./helpers";
 import { getExplorerUrl } from "src/utils/url";
+import { EPayoutWalletMode } from "src/config/interfaces";
 
 export const pay = async (commandOptions) => {
   const cycle = commandOptions.cycle;
@@ -112,6 +113,9 @@ export const pay = async (commandOptions) => {
   const failedPayments: Array<BasePayment> = [];
 
   const nonEmptyBatches = batches.filter((batch) => !isEmpty(batch));
+  if (getConfig("payout_wallet_mode") === EPayoutWalletMode.Ledger) {
+    console.log(`NOTE: You have to confirm each batch on ledger.`);
+  }
   for (let i = 0; i < nonEmptyBatches.length; i++) {
     try {
       const batch = nonEmptyBatches[i];
