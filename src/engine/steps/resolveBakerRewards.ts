@@ -11,6 +11,7 @@ export const resolveBakerRewards = (args: StepArguments): StepArguments => {
     frozenDepositLimit,
   } = cycleData;
   const bakerBalance = subtract(cycleStakingBalance, cycleDelegatedBalance);
+
   let bakerRewards;
   if (
     config.overdelegation?.guard &&

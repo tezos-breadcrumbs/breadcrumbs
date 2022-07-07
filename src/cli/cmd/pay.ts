@@ -1,5 +1,4 @@
 import { initializeCycleReport } from "src/engine/helpers";
-import fs from "fs";
 import { join } from "path";
 import client from "src/api-client";
 import engine from "src/engine";
@@ -19,15 +18,18 @@ import { writeCycleReport, writePaymentReport } from "src/fs-client";
 import inquirer from "inquirer";
 import { BasePayment, DelegatorPayment } from "src/engine/interfaces";
 import {
+  MUTEZ_FACTOR,
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
-import { flatten } from "lodash";
+import { flatten, sumBy } from "lodash";
 import {
   checkNoPreviousPayments,
   checkValidConfig,
   checkValidCycle,
 } from "./helpers";
+import { load_notification_plugin } from "src/plugin/notification";
+import { divide } from "src/utils/math";
 
 export const pay = async (commandOptions) => {
   const cycle = commandOptions.cycle;
@@ -149,4 +151,26 @@ export const pay = async (commandOptions) => {
     cycleData,
     "reports/cycle_summary/"
   );
+
+  if (failedPayments.length === 0) {
+    for (const plugin of getConfig("notifications") ?? []) {
+      console.log(
+        `Sending payout notification for ${cycle} through ${
+          plugin.name ?? plugin.type
+        }`
+      );
+      const notificator = await load_notification_plugin(plugin);
+
+      await notificator.notify(`(TEST) Payment rewards distributed.`, {
+        Cycle: cycle,
+        // StakingBalance: `${divide(cycleData.cycleStakingBalance, MUTEZ_FACTOR).toString()} TEZ`,
+        Distributed: `${sumBy(successfulPayments, (x) =>
+          divide(x.amount, MUTEZ_FACTOR).toNumber()
+        ).toString()} TEZ`,
+      });
+    }
+    console.log(`Payout notifications sent.`);
+  } else {
+    console.log(`Failed payments detected. Notifications suppressed...`);
+  }
 };
