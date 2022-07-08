@@ -12,5 +12,5 @@ payout_wallet_private.key
 remote-signer.hjson
 
 # bundling
-build
-bin
+bin/*
+!bin/.gitkeep

@@ -1,7 +1,7 @@
 import { InMemorySigner } from "@taquito/signer";
 import { readFile } from "fs/promises";
 import { join } from "path";
-import { globalCliOptions } from "src/cli";
+import { globalCliOptions } from "src/cli/global";
 import { WALLET_PRIVATE_KEY_FILE } from "src/utils/constants";
 
 export const loadStoredPrivateKey = async () => {

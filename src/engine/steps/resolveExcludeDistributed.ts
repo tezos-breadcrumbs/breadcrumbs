@@ -1,5 +1,5 @@
-import { find, groupBy, some } from "lodash";
-import { globalCliOptions } from "src/cli";
+import { find, get, groupBy, some } from "lodash";
+import { globalCliOptions } from "src/cli/global";
 import { join } from "path";
 
 import {
@@ -19,10 +19,18 @@ export const resolveExcludeDistributed = async (
   const { delegatorPayments, feeIncomePayments, bondRewardPayments, cycle } =
     cycleReport;
 
-  const appliedPayments = await readPaymentReport(
-    cycle,
-    join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
-  );
+  let appliedPayments: Array<DelegatorPayment | BasePayment>;
+  try {
+    appliedPayments = await readPaymentReport(
+      cycle,
+      join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
+    );
+  } catch (err: any) {
+    if (get(err, "code") === "ENOENT") return args;
+    throw new Error(
+      "Unexpected internal error. Failed to check past payments."
+    );
+  }
 
   /* appliedPayments includes payments excluded by minimum amount or minimum balance in the CSV file. */
 

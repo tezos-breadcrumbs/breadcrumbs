@@ -2,16 +2,19 @@ import typescript from "@rollup/plugin-typescript";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
+import injectProcessEnv from "rollup-plugin-inject-process-env";
 
 export default {
   input: "./index.ts",
   output: {
-    file: "build/bc.js",
+    dir: "bin/",
     format: "cjs",
+    inlineDynamicImports: true,
   },
+  preserveEntrySignatures: true,
   plugins: [
     typescript({
-      module: "ESNext",
+      module: "esnext",
       moduleResolution: "node",
       compilerOptions: {
         paths: {
@@ -24,7 +27,11 @@ export default {
     }),
     commonjs({
       include: /node_modules/,
+      ignoreDynamicRequires: true,
     }),
     json(),
+    injectProcessEnv({
+      BREADCRUMBS_PREBUILD: process.env.BREADCRUMBS_PREBUILD,
+    }),
   ],
 };
