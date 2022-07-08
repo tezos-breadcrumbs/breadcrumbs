@@ -1,8 +1,13 @@
-import { find, groupBy, some } from "lodash";
+import { filter, find, groupBy, some } from "lodash";
 import { globalCliOptions } from "src/cli";
 import { join } from "path";
 
-import { BasePayment, StepArguments } from "src/engine/interfaces";
+import {
+  BasePayment,
+  DelegatorPayment,
+  EPaymentType,
+  StepArguments,
+} from "src/engine/interfaces";
 import { readPaymentReport } from "src/fs-client";
 import { REPORTS_SUCCESS_PAYMENTS_DIRECTORY } from "src/utils/constants";
 
@@ -14,60 +19,105 @@ export const resolveExcludeDistributed = async (
   const { delegatorPayments, feeIncomePayments, bondRewardPayments, cycle } =
     cycleReport;
 
-  const paidPayments = await readPaymentReport(
+  const appliedPayments = await readPaymentReport(
     cycle,
     join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
   );
-  const paidPaymentsGrouped = groupBy(paidPayments, (payment) => payment.type);
-  const nonDistributedDelegatorPayments = delegatorPayments.filter(
+
+  /* appliedPayments includes payments excluded by minimum amount or minimum balance in the CSV file. */
+
+  const appliedPaymentsGroupedByType = groupBy(
+    appliedPayments,
+    (payment) => payment.type
+  );
+
+  const pendingDelegatorPayments = delegatorPayments.filter(
     (payment) =>
       !some(
-        paidPaymentsGrouped[payment.type],
-        (paid) => paid.recipient === payment.recipient
+        /* 
+        Delegator payments cannot be matched via the recipient key 
+        as multiple delegators may have the same recipient. 
+        */
+
+        /*
+        If there is no change in configured minimum balance or 
+        payment threshold, previously excluded payments do not
+        show up here. 
+        */
+
+        /* 
+        If there is change in the configured minimum balance or 
+        payment threshold, a previously excluded payment would
+        show up as pending here.
+        */
+
+        appliedPaymentsGroupedByType[
+          EPaymentType.Delegator
+        ] as DelegatorPayment[],
+        (paid) => paid.delegator === payment.delegator
       )
   );
-  const nonDistributedFeeIncomePayments = feeIncomePayments.filter(
+
+  const pendingFeeIncomePayments = feeIncomePayments.filter(
+    /* 
+        If there is change in the configured income recipients, 
+        a new payment would show up here. 
+        */
     (payment) =>
       !some(
-        paidPaymentsGrouped[payment.type],
-        (paid) => paid.recipient === payment.recipient
-      )
-  );
-  const nonDistributedBondRewardPayments = bondRewardPayments.filter(
-    (payment) =>
-      !some(
-        paidPaymentsGrouped[payment.type],
+        appliedPaymentsGroupedByType[EPaymentType.FeeIncome],
         (paid) => paid.recipient === payment.recipient
       )
   );
 
-  const distributedPayments = [
-    ...delegatorPayments.filter(
-      (payment) => !nonDistributedDelegatorPayments.includes(payment)
-    ),
-    ...feeIncomePayments.filter(
-      (payment) => !nonDistributedFeeIncomePayments.includes(payment)
-    ),
-    ...bondRewardPayments.filter(
-      (payment) => !nonDistributedBondRewardPayments.includes(payment)
-    ),
-  ]
-    .map((payment) =>
-      find(
-        paidPaymentsGrouped[payment.type],
+  const pendingBondRewardPayments = bondRewardPayments.filter(
+    /* 
+        If there is change in the configured income recipients, 
+        a new payment would show up here. 
+        */
+    (payment) =>
+      !some(
+        appliedPaymentsGroupedByType[EPaymentType.BondReward],
         (paid) => paid.recipient === payment.recipient
       )
-    )
+  );
+
+  const allPendingPayments = [
+    ...pendingDelegatorPayments,
+    ...pendingFeeIncomePayments,
+    ...pendingBondRewardPayments,
+  ];
+
+  const distributedPayments = [
+    ...delegatorPayments,
+    ...feeIncomePayments,
+    ...bondRewardPayments,
+  ]
+    .filter((payment) => !allPendingPayments.includes(payment))
+    .map((payment) => {
+      if (payment.type === EPaymentType.Delegator) {
+        return find(
+          appliedPaymentsGroupedByType[payment.type] as DelegatorPayment[],
+          (paid) => paid.delegator === (payment as DelegatorPayment).delegator
+        );
+      } else {
+        return find(
+          appliedPaymentsGroupedByType[payment.type],
+          (paid) => paid.recipient === payment.recipient
+        );
+      }
+    })
+    /* Filter `undefined` results from the previous step*/
     .filter((payment) => payment) as BasePayment[];
 
   return {
     ...args,
     cycleReport: {
       ...cycleReport,
-      delegatorPayments: nonDistributedDelegatorPayments,
-      feeIncomePayments: nonDistributedFeeIncomePayments,
-      bondRewardPayments: nonDistributedBondRewardPayments,
-      distributedPayments,
+      delegatorPayments: pendingDelegatorPayments,
+      feeIncomePayments: pendingFeeIncomePayments,
+      bondRewardPayments: pendingBondRewardPayments,
+      distributedPayments: distributedPayments,
     },
   };
 };
