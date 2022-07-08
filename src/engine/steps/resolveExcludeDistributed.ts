@@ -1,4 +1,4 @@
-import { filter, find, groupBy, some } from "lodash";
+import { find, groupBy, some } from "lodash";
 import { globalCliOptions } from "src/cli";
 import { join } from "path";
 
