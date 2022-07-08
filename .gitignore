@@ -9,6 +9,7 @@ config.hjson
 reports/*
 !reports/.gitkeep
 payout_wallet_private.key
+remote-signer.hjson
 
 # bundling
 build

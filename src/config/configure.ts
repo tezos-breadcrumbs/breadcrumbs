@@ -3,13 +3,18 @@ import inquirer from "inquirer";
 import fs from "fs";
 import { stringify } from "hjson";
 import { EPayoutWalletMode } from "./interfaces";
+import {
+  REMOTE_SIGNER_CONFIG_FILE,
+  WALLET_PRIVATE_KEY_FILE,
+} from "src/utils/constants";
 
 const {
   filterRpcUrl,
   filterWalletMode,
-  validBakingAddress,
+  validAddress,
   validPercentage,
   validPrivateKey,
+  validRemoteSignerUrl,
 } = require("./validate/creation");
 
 (async () => {
@@ -18,7 +23,7 @@ const {
       type: "input",
       name: "baking_address",
       message: "Please enter your baking address:",
-      validate: validBakingAddress,
+      validate: validAddress,
     },
     {
       type: "input",
@@ -32,8 +37,8 @@ const {
       message:
         "Please select a Tezos RPC URL. You can customize it later by editing the configuration file",
       choices: [
-        "Mainnet|https://mainnet-tezos.giganode.io/",
-        "Testnet|https://testnet-tezos.giganode.io/",
+        "Mainnet|https://mainnet.api.tez.ie/",
+        "Testnet|https://ghostnet.ecadinfra.com",
       ],
       filter: filterRpcUrl,
     },
@@ -41,7 +46,7 @@ const {
       type: "list",
       name: "payout_wallet_mode",
       message: "Please select the type of wallet you will use for payouts",
-      choices: ["Private Key Stored Locally", "Ledger"],
+      choices: ["Private Key Stored Locally", "Ledger", "Remote Signer"],
       filter: filterWalletMode,
     },
 
@@ -50,9 +55,24 @@ const {
       name: "private_key",
       when: (answers) =>
         answers.payout_wallet_mode === EPayoutWalletMode.LocalPrivateKey,
-      message:
-        "Please enter your private key. It will be persisted locally in `payout_wallet_private.key` file",
+      message: `Please enter your private key. It will be persisted locally in "${WALLET_PRIVATE_KEY_FILE}" file`,
       validate: async (input) => validPrivateKey(input),
+    },
+    {
+      type: "input",
+      name: "remote_signer_public_key",
+      when: (answers) =>
+        answers.payout_wallet_mode === EPayoutWalletMode.RemoteSigner,
+      message: `Please enter your remote signer public key. It will be persisted locally in "${REMOTE_SIGNER_CONFIG_FILE}" file`,
+      validate: validAddress,
+    },
+    {
+      type: "input",
+      name: "remote_signer_url",
+      when: (answers) =>
+        answers.payout_wallet_mode === EPayoutWalletMode.RemoteSigner,
+      message: `Please enter url of your remote signer. It will be persisted locally in "${REMOTE_SIGNER_CONFIG_FILE}" file`,
+      validate: validRemoteSignerUrl,
     },
   ];
 
@@ -79,13 +99,32 @@ const {
     });
 
     if (answers.payout_wallet_mode === EPayoutWalletMode.LocalPrivateKey) {
-      fs.writeFile("./payout_wallet_private.key", privateKey, (err) => {
+      fs.writeFile(WALLET_PRIVATE_KEY_FILE, privateKey, (err) => {
         if (!err) {
           console.log(
-            "Successfully created private key file at payout_wallet_private.key"
+            `Successfully created private key file at ${WALLET_PRIVATE_KEY_FILE}`
           );
         }
       });
+    }
+    if (answers.payout_wallet_mode === EPayoutWalletMode.RemoteSigner) {
+      fs.writeFile(
+        REMOTE_SIGNER_CONFIG_FILE,
+        stringify(
+          {
+            public_key: answers.remote_signer_public_key,
+            url: answers.remote_signer_url,
+          },
+          { space: "  " }
+        ),
+        (err) => {
+          if (!err) {
+            console.log(
+              `Successfully created remote signer config file at ${REMOTE_SIGNER_CONFIG_FILE}`
+            );
+          }
+        }
+      );
     }
   });
 })();

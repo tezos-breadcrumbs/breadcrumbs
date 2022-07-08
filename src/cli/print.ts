@@ -8,10 +8,12 @@ import {
   BasePayment,
   DelegatorPayment,
   ENoteType,
+  EPaymentType,
 } from "src/engine/interfaces";
 import {
   PrintableBakerPayment,
   PrintableDelegatorPayment,
+  PrintableDistributedPayment,
   PrintableExcludedPayment,
 } from "./interfaces";
 
@@ -43,7 +45,7 @@ export const printDelegatorPaymentsTable = (payments: DelegatorPayment[]) => {
       feeRate: `${multiply(payment.feeRate, 100).toString()}%`,
       amount: `${normalizeAmount(payment.amount)} TEZ`,
       delegatorBalance: `${normalizeAmount(payment.delegatorBalance)} TEZ`,
-      transactionFee: `${normalizeAmount(payment.transactionFee)} TEZ`,
+      transactionFee: `${normalizeAmount(payment.transactionFee, 5)} TEZ`,
     };
 
     table.addRow(paymentInfo);
@@ -59,6 +61,42 @@ export const printDelegatorPaymentsTable = (payments: DelegatorPayment[]) => {
 
   table.printTable();
   console.log(feeNote);
+};
+
+export const printDistributedPaymentsTable = (payments: DelegatorPayment[]) => {
+  const table = new Table({
+    columns: [
+      { name: "delegator", alignment: "left" },
+      { name: "recipient" },
+      { name: "delegatorBalance" },
+      { name: "feeRate" },
+      { name: "amount" },
+      { name: "hash" },
+    ],
+  });
+
+  for (const payment of payments) {
+    const paymentInfo: PrintableDistributedPayment = {
+      recipient: shortenAddress(payment.recipient),
+      delegator:
+        payment.type === EPaymentType.Delegator
+          ? shortenAddress(payment.delegator)
+          : "N/A",
+      delegatorBalance:
+        payment.type === EPaymentType.Delegator
+          ? `${normalizeAmount(payment.delegatorBalance)} TEZ`
+          : "N/A",
+      feeRate:
+        payment.type === EPaymentType.Delegator
+          ? `${multiply(payment.feeRate, 100).toString()}%`
+          : "N/A",
+      amount: `${normalizeAmount(payment.amount)}`,
+      hash: payment.hash,
+    };
+
+    table.addRow(paymentInfo);
+  }
+  table.printTable();
 };
 
 export const printExcludedPaymentsTable = (payments: DelegatorPayment[]) => {
@@ -82,10 +120,10 @@ export const printExcludedPaymentsTable = (payments: DelegatorPayment[]) => {
     const getThreshold = () => {
       switch (paymentNote) {
         case ENoteType.BalanceBelowMinimum: {
-          return getConfig().delegator_requirements?.minimum_balance;
+          return ` ${getConfig().delegator_requirements?.minimum_balance} TEZ`;
         }
         case ENoteType.PaymentBelowMinimum: {
-          return getConfig().payment_requirements?.minimum_amount;
+          return ` ${getConfig().payment_requirements?.minimum_amount} TEZ`;
         }
         default: {
           return "";
@@ -93,7 +131,7 @@ export const printExcludedPaymentsTable = (payments: DelegatorPayment[]) => {
       }
     };
 
-    return `${paymentNote} ${getThreshold()} TEZ`;
+    return `${paymentNote}${getThreshold()}`;
   };
 
   for (const payment of payments) {
@@ -150,6 +188,6 @@ const shortenAddress = (address: string) => {
   )}`;
 };
 
-const normalizeAmount = (input: BigNumber | undefined) => {
-  return divide(input ?? 0, MUTEZ_FACTOR).dp(3);
+const normalizeAmount = (input: BigNumber | undefined, decimalPlaces = 3) => {
+  return divide(input ?? 0, MUTEZ_FACTOR).dp(decimalPlaces);
 };

@@ -9,3 +9,4 @@ export { resolveSplitIntoBatches } from "./resolveSplitIntoBatches";
 export { resolveEstimateTransactionFees } from "./resolveEstimateTransactionFees";
 export { resolveSubstractTransactionFees } from "./resolveSubstractTransactionFees";
 export { resolveExcludedPaymentsByContext } from "./resolveExcludedPaymentsByContext";
+export { resolveExcludeDistributed } from "./resolveExcludeDistributed";

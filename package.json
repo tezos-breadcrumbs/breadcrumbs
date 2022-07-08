@@ -1,6 +1,6 @@
 {
   "name": "breadcrumbs",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,11 +13,12 @@
     "pkg": "rimraf bin/* && pkg --output bin/bc --no-bytecode --public-packages '*' --public -C Brotli -c pkg.config.json build/bc.js"
   },
   "author": "",
-  "license": "GPL-3",
+  "license": "GPL-3.0",
   "dependencies": {
     "@ledgerhq/hw-transport-node-hid": "^6.27.1",
     "@microsoft/tsdoc": "^0.14.1",
     "@taquito/ledger-signer": "^12.1.1",
+    "@taquito/remote-signer": "^13.0.0",
     "@taquito/signer": "^12.1.1",
     "@taquito/taquito": "^12.1.1",
     "@taquito/utils": "^12.0.0",
@@ -28,6 +29,7 @@
     "bignumber.js": "^9.0.2",
     "commander": "^9.2.0",
     "console-table-printer": "^2.11.0",
+    "csv-parse": "^5.2.2",
     "csv-writer": "^1.6.0",
     "hjson": "^3.2.2",
     "inquirer": "^8.2.2",

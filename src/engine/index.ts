@@ -11,6 +11,7 @@ import {
   resolveSplitIntoBatches,
   resolveSubstractTransactionFees,
   resolveExcludedPaymentsByContext,
+  resolveExcludeDistributed,
 } from "./steps";
 
 const steps: StepFunction[] = [
@@ -24,6 +25,7 @@ const steps: StepFunction[] = [
   resolveSubstractTransactionFees,
   resolveFeeIncomeDistribution,
   resolveBondRewardDistribution,
+  resolveExcludeDistributed,
   resolveSplitIntoBatches,
 ];
 

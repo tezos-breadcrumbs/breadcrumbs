@@ -16,6 +16,7 @@ export interface CycleReport {
   creditablePayments: DelegatorPayment[];
   feeIncomePayments: BasePayment[];
   bondRewardPayments: BasePayment[];
+  distributedPayments: DelegatorPayment[] | BasePayment[];
   feeIncome: BigNumber;
   feesPaid: BigNumber;
   lockedBondRewards: BigNumber;
@@ -28,6 +29,7 @@ export interface StepArguments {
   cycleReport: CycleReport;
   distributableRewards: BigNumber;
   tezos: TezosToolkit;
+  flags?: { [key: string]: any };
 }
 
 export enum EPaymentType {
@@ -39,6 +41,7 @@ export enum EPaymentType {
 export enum ENoteType {
   BalanceBelowMinimum = "Balance Below Minimum",
   PaymentBelowMinimum = "Payment Amount Below Minimum",
+  ScriptRejected = "Script Rejected",
 }
 
 export enum EFeePayer {
