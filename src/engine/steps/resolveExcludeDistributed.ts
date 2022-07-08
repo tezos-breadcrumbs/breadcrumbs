@@ -31,26 +31,21 @@ export const resolveExcludeDistributed = async (
     (payment) => payment.type
   );
 
+  /* 
+    Delegator payments cannot be matched via the recipient key 
+    as multiple delegators may have the same recipient. 
+  */
+
+  /* 
+    If there is change in the configured minimum balance or 
+    payment thresholds, a previously excluded payment would
+    still be excluded because it is present in both arrays. 
+    (`delegatorPayments` and `appliedPayments`)
+  */
+
   const pendingDelegatorPayments = delegatorPayments.filter(
     (payment) =>
       !some(
-        /* 
-        Delegator payments cannot be matched via the recipient key 
-        as multiple delegators may have the same recipient. 
-        */
-
-        /*
-        If there is no change in configured minimum balance or 
-        payment threshold, previously excluded payments do not
-        show up here. 
-        */
-
-        /* 
-        If there is change in the configured minimum balance or 
-        payment threshold, a previously excluded payment would
-        show up as pending here.
-        */
-
         appliedPaymentsGroupedByType[
           EPaymentType.Delegator
         ] as DelegatorPayment[],
@@ -58,11 +53,13 @@ export const resolveExcludeDistributed = async (
       )
   );
 
+  /* 
+    If there is change in the configured income recipients, 
+    a new payment would show up here. Ignoring this edge 
+    case.
+  */
+
   const pendingFeeIncomePayments = feeIncomePayments.filter(
-    /* 
-        If there is change in the configured income recipients, 
-        a new payment would show up here. 
-        */
     (payment) =>
       !some(
         appliedPaymentsGroupedByType[EPaymentType.FeeIncome],
@@ -71,10 +68,6 @@ export const resolveExcludeDistributed = async (
   );
 
   const pendingBondRewardPayments = bondRewardPayments.filter(
-    /* 
-        If there is change in the configured income recipients, 
-        a new payment would show up here. 
-        */
     (payment) =>
       !some(
         appliedPaymentsGroupedByType[EPaymentType.BondReward],
