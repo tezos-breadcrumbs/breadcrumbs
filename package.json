@@ -9,7 +9,7 @@
     "test": "jest --runInBand",
     "lint": "eslint .",
     "prepare": "husky install",
-    "build": "rimraf bin/* && cross-env BREADCRUMBS_PREBUILD=./native/win-x64 rollup --config build/rollup.config.ts --configPlugin typescript",
+    "build": "rimraf bin/* && rollup --config build/rollup.config.ts --configPlugin typescript",
     "pkg": "pkg --output bin/bc --no-bytecode --public-packages '*' --public -C Brotli -c build/pkg.config.json bin/index.js"
   },
   "author": "",
