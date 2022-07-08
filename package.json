@@ -1,6 +1,6 @@
 {
   "name": "breadcrumbs",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,8 @@
     "test": "jest --runInBand",
     "lint": "eslint .",
     "prepare": "husky install",
-    "build": "rimraf build/* && rollup --config rollup.config.ts --configPlugin typescript",
-    "pkg": "rimraf bin/* && pkg --output bin/bc --no-bytecode --public-packages '*' --public -C Brotli -c pkg.config.json build/index.js"
+    "build": "rimraf bin/* && cross-env BREADCRUMBS_PREBUILD=./native/win-x64 rollup --config build/rollup.config.ts --configPlugin typescript",
+    "pkg": "pkg --output bin/bc --no-bytecode --public-packages '*' --public -C Brotli -c build/pkg.config.json bin/index.js"
   },
   "author": "",
   "license": "GPL-3.0",
@@ -53,6 +53,7 @@
     "@types/setup-polly-jest": "^0.5.1",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.17.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
