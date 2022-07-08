@@ -14,7 +14,7 @@ import {
   prepareTransaction,
   sendBatch,
 } from "src/tezos-client";
-import { globalCliOptions } from "src/cli";
+import { globalCliOptions } from "src/cli/global";
 import { writeCycleReport, writePaymentReport } from "src/fs-client";
 import { unlink } from "fs/promises";
 import inquirer from "inquirer";

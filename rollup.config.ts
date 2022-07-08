@@ -6,12 +6,14 @@ import json from "@rollup/plugin-json";
 export default {
   input: "./index.ts",
   output: {
-    file: "build/bc.js",
+    dir: "build/",
     format: "cjs",
+    inlineDynamicImports: true,
   },
+  preserveEntrySignatures: true,
   plugins: [
     typescript({
-      module: "ESNext",
+      module: "esnext",
       moduleResolution: "node",
       compilerOptions: {
         paths: {

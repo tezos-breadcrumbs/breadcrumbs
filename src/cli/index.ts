@@ -1,8 +1,7 @@
-import { OptionValues, program } from "commander";
+import { program } from "commander";
 import { pay } from "./cmd";
+import { globalCliOptions } from "./global";
 import { validateCycleOpt } from "./validate";
-
-export const globalCliOptions: OptionValues = {};
 
 export const run = async () => {
   // global options

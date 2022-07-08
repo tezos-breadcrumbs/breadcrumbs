@@ -1,4 +1,4 @@
-import { globalCliOptions } from "src/cli";
+import { globalCliOptions } from "src/cli/global";
 import { ConfigurationBase } from "./base";
 import { BreadcrumbsConfiguration } from "./interfaces";
 

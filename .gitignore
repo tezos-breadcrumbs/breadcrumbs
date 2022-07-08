@@ -13,4 +13,6 @@ remote-signer.hjson
 
 # bundling
 build
+!build/.gitkeep
 bin
+!bin/.gitkeep
