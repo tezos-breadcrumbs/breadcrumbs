@@ -9,7 +9,7 @@ export default {
   output: {
     dir: "bin/",
     format: "cjs",
-    inlineDynamicImports: true,
+    inlineDynamicImports: false,
   },
   preserveEntrySignatures: true,
   plugins: [
