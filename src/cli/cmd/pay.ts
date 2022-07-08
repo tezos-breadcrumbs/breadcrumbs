@@ -16,6 +16,7 @@ import {
 } from "src/tezos-client";
 import { globalCliOptions } from "src/cli";
 import { writeCycleReport, writePaymentReport } from "src/fs-client";
+import { unlink } from "fs/promises";
 import inquirer from "inquirer";
 import { BasePayment, DelegatorPayment } from "src/engine/interfaces";
 import {
@@ -172,6 +173,18 @@ export const pay = async (commandOptions) => {
       failedPayments,
       join(globalCliOptions.workDir, REPORTS_FAILED_PAYMENTS_DIRECTORY)
     );
+  } else {
+    // no failed payments remove old report if exists
+    const reportPath = join(
+      globalCliOptions.workDir,
+      REPORTS_FAILED_PAYMENTS_DIRECTORY,
+      `${cycle}.csv`
+    );
+    try {
+      await unlink(reportPath);
+    } catch {
+      /** not found */
+    }
   }
 
   await writeCycleReport(

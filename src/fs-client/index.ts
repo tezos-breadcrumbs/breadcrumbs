@@ -1,7 +1,7 @@
 import { parse } from "csv-parse";
 import { writeFile, readFile } from "fs/promises";
 import { createObjectCsvWriter } from "csv-writer";
-import _, { get, isEmpty, some } from "lodash";
+import { get, isEmpty, some } from "lodash";
 import { stringify } from "hjson";
 
 import { CycleData } from "src/api-client/abstract_client";
