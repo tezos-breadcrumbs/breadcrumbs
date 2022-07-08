@@ -49,7 +49,7 @@ export const resolveEstimateTransactionFees = async (
   } catch (err) {
     const id: string = get(err, "id", "").toString();
     if (id.endsWith("balance_too_low")) {
-      walletPayments.forEach((payment, index) => {
+      walletPayments.forEach((payment) => {
         Object.assign(payment, {
           transactionFee: new BigNumber(0),
           storageLimit: new BigNumber(0),
