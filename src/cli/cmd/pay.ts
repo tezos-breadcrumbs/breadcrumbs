@@ -59,29 +59,30 @@ export const pay = async (commandOptions) => {
   const bakerPayments = flatten(batches.slice(-2));
 
   if (!isEmpty(distributedPayments)) {
-    console.log("\nAlready distributed payments:");
+    console.log("\nPAYMENTS PREVIOUSLY DISTRIBUTED:");
     printDistributedPaymentsTable(distributedPayments as DelegatorPayment[]);
   }
 
   if (
     !isEmpty(config.accounting_mode ? creditablePayments : excludedPayments)
   ) {
-    console.log("\nPayments excluded:");
+    console.log("\nPAYMENTS EXCLUDED:");
     printExcludedPaymentsTable(
       config.accounting_mode ? creditablePayments : excludedPayments
     );
   }
 
   if (!isEmpty(delegatorPayments)) {
-    console.log("\nDelegator Payments:");
+    console.log("\nPENDING DELEGATOR PAYMENTS:");
     printDelegatorPaymentsTable(delegatorPayments as DelegatorPayment[]);
   }
 
   if (!isEmpty(bakerPayments)) {
-    console.log("\nBaker Payments:");
+    console.log("\nPENDING BAKER PAYMENTS:");
     printBakerPaymentsTable(bakerPayments);
   }
-  console.log(""); /* Line break */
+
+  console.log("\n");
 
   if (config.accounting_mode) {
     /* TO DO: persist creditablePayments  */
