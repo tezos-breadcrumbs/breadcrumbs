@@ -95,17 +95,14 @@ export const resolveExcludeDistributed = async (
   ]
     .filter((payment) => !allPendingPayments.includes(payment))
     .map((payment) => {
-      if (payment.type === EPaymentType.Delegator) {
-        return find(
-          appliedPaymentsGroupedByType[payment.type] as DelegatorPayment[],
-          (paid) => paid.delegator === (payment as DelegatorPayment).delegator
-        );
-      } else {
-        return find(
-          appliedPaymentsGroupedByType[payment.type],
-          (paid) => paid.recipient === payment.recipient
-        );
-      }
+      return find(
+        appliedPaymentsGroupedByType[payment.type],
+        payment.type === EPaymentType.Delegator
+          ? (paid) =>
+              (paid as DelegatorPayment).delegator ===
+              (payment as DelegatorPayment).delegator
+          : (paid) => paid.recipient === payment.recipient
+      );
     })
     /* Filter `undefined` results from the previous step*/
     .filter((payment) => payment) as BasePayment[];
