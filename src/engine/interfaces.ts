@@ -29,6 +29,7 @@ export interface StepArguments {
   cycleReport: CycleReport;
   distributableRewards: BigNumber;
   tezos: TezosToolkit;
+  flags?: { [key: string]: any };
 }
 
 export enum EPaymentType {

@@ -88,7 +88,18 @@ export const pay = async (commandOptions) => {
   }
 
   if (globalCliOptions.dryRun) {
+    if (result.flags?.insufficientBalance) {
+      console.log(
+        "NOTE: Balance is insufficient. Transaction fees not estimated."
+      );
+    }
     process.exit(0);
+  }
+
+  if (result.flags?.insufficientBalance) {
+    console.log("Insufficient balance to make payments. Aborting ...");
+    console.log("NOTE: Transaction fees have not been estimated.");
+    process.exit(1);
   }
 
   if (isEmpty(batches) || every(batches, (batch) => isEmpty(batch))) {

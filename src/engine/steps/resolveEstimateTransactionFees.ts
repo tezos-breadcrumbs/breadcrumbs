@@ -10,6 +10,7 @@ export const resolveEstimateTransactionFees = async (
   args: StepArguments
 ): Promise<StepArguments> => {
   const { cycleReport, tezos } = args;
+  const flags: { insufficientBalance?: boolean } = {};
 
   if (!tezos)
     throw new Error(
@@ -28,22 +29,44 @@ export const resolveEstimateTransactionFees = async (
     (payment) => !walletPayments.includes(payment)
   );
 
-  const walletEstimates = await tezos.estimate.batch(
-    map(walletPayments, prepareTransaction) as ParamsWithKind[]
-  );
-  if (walletEstimates.length - 1 === walletPayments.length) {
-    /* Exclude reveal operation at the beginning. This only happens on testnet */
-    walletEstimates.splice(0, 1);
-  }
+  try {
+    const walletEstimates = await tezos.estimate.batch(
+      map(walletPayments, prepareTransaction) as ParamsWithKind[]
+    );
+    if (walletEstimates.length - 1 === walletPayments.length) {
+      /* Exclude reveal operation at the beginning. This only happens on testnet */
+      walletEstimates.splice(0, 1);
+    }
 
-  walletPayments.forEach((payment, index) => {
-    const estimate = walletEstimates[index];
-    Object.assign(payment, {
-      transactionFee: new BigNumber(estimate.totalCost),
-      storageLimit: new BigNumber(estimate.storageLimit),
-      gasLimit: new BigNumber(estimate.gasLimit),
+    walletPayments.forEach((payment, index) => {
+      const estimate = walletEstimates[index];
+      Object.assign(payment, {
+        transactionFee: new BigNumber(estimate.totalCost),
+        storageLimit: new BigNumber(estimate.storageLimit),
+        gasLimit: new BigNumber(estimate.gasLimit),
+      });
     });
-  });
+  } catch (err) {
+    const id: string = get(err, "id", "").toString();
+    if (id.endsWith("balance_too_low")) {
+      walletPayments.forEach((payment, index) => {
+        Object.assign(payment, {
+          transactionFee: new BigNumber(0),
+          storageLimit: new BigNumber(0),
+          gasLimit: new BigNumber(0),
+        });
+      });
+      flags.insufficientBalance = true;
+    } else {
+      throw new Error(
+        `Failed to estimate fees for tz transfer - ${get(
+          err,
+          "message",
+          "unknown reason"
+        )}!`
+      );
+    }
+  }
 
   for (const payment of ktPayments) {
     try {
@@ -80,6 +103,12 @@ export const resolveEstimateTransactionFees = async (
         });
         _excludedPayments.push(payment);
         continue;
+      } else if (id.endsWith("balance_too_low")) {
+        Object.assign(payment, {
+          transactionFee: new BigNumber(0),
+        });
+        flags.insufficientBalance = true;
+        continue;
       }
       throw new Error(
         `Failed to estimate fees for contract transfer - ${get(
@@ -103,5 +132,6 @@ export const resolveEstimateTransactionFees = async (
       excludedPayments: _excludedPayments,
       feeIncome: _feeIncome,
     },
+    flags,
   };
 };
