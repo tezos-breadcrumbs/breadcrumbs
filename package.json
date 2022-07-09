@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "audit-ci": "audit-ci --moderate",
     "pay": "ts-node index.ts pay",
     "configure": "ts-node src/config/configure.ts",
     "test": "jest --runInBand",
@@ -53,6 +54,7 @@
     "@types/setup-polly-jest": "^0.5.1",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
+    "audit-ci": "^6.3.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.17.0",
     "eslint-config-prettier": "^8.5.0",
