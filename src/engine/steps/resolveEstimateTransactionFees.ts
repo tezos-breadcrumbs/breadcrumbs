@@ -10,7 +10,7 @@ export const resolveEstimateTransactionFees = async (
   args: StepArguments
 ): Promise<StepArguments> => {
   const { cycleReport, tezos } = args;
-  const flags: { insufficientBalance?: boolean } = {};
+  const flags: typeof args.flags = {};
 
   if (!tezos)
     throw new Error(

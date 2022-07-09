@@ -1,4 +1,5 @@
 import { BigNumber } from "bignumber.js";
+import { TezosToolkit } from "@taquito/taquito";
 import { CycleReport } from "./interfaces";
 import { BreadcrumbsConfiguration } from "src/config/interfaces";
 
@@ -57,4 +58,10 @@ export const getMinimumDelegationAmount = (
   config: BreadcrumbsConfiguration
 ) => {
   return new BigNumber(config.delegator_requirements?.minimum_balance ?? 0);
+};
+
+export const getSignerBalance = async (tezos: TezosToolkit) => {
+  const publicKey = await tezos.wallet.pkh();
+  const balance = await tezos.tz.getBalance(publicKey);
+  return balance;
 };
