@@ -12,6 +12,7 @@ import {
   resolveSubstractTransactionFees,
   resolveExcludedPaymentsByContext,
   resolveExcludeDistributed,
+  resolveSufficientBalance,
 } from "./steps";
 
 const steps: StepFunction[] = [
@@ -27,6 +28,7 @@ const steps: StepFunction[] = [
   resolveBondRewardDistribution,
   resolveExcludeDistributed,
   resolveSplitIntoBatches,
+  resolveSufficientBalance,
 ];
 
 const run = async (
