@@ -9,7 +9,7 @@ export const start = () => {
       fs: { recordingsDir: "test/__recordings__" },
     },
     expiresIn: "30d",
-    expiryStrategy: "warn",
+    expiryStrategy: process.env.CI ? "warn" : "record",
     matchRequestsBy: {
       method: true,
       headers: false,
