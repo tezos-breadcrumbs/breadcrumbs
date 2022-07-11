@@ -1,4 +1,4 @@
-import { get, last, map } from "lodash";
+import { get, isEmpty, last, map } from "lodash";
 import { ParamsWithKind } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 
@@ -30,9 +30,11 @@ export const resolveEstimateTransactionFees = async (
   );
 
   try {
-    const walletEstimates = await tezos.estimate.batch(
-      map(walletPayments, prepareTransaction) as ParamsWithKind[]
-    );
+    const walletEstimates = isEmpty(walletPayments)
+      ? []
+      : await tezos.estimate.batch(
+          map(walletPayments, prepareTransaction) as ParamsWithKind[]
+        );
     if (walletEstimates.length - 1 === walletPayments.length) {
       /* Exclude reveal operation at the beginning. This only happens on testnet */
       walletEstimates.splice(0, 1);
