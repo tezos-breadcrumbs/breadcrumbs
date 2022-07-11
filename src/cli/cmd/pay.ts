@@ -21,7 +21,6 @@ import { unlink } from "fs/promises";
 import inquirer from "inquirer";
 import { BasePayment, DelegatorPayment } from "src/engine/interfaces";
 import {
-  MUTEZ_FACTOR,
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
@@ -30,7 +29,6 @@ import { checkValidConfig, checkValidCycle } from "./helpers";
 import { getExplorerUrl } from "src/utils/url";
 import { EPayoutWalletMode } from "src/config/interfaces";
 import { load_notification_plugin } from "src/plugin/notification";
-import { divide } from "src/utils/math";
 
 export const pay = async (commandOptions) => {
   const cycle = commandOptions.cycle;

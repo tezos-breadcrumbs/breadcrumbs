@@ -55,5 +55,5 @@ export interface BreadcrumbsConfiguration {
 
   /* Experimental */
   accounting_mode?: boolean;
-  notifications: Array<NotificationPluginConfiguration>;
+  notifications?: Array<NotificationPluginConfiguration>;
 }
