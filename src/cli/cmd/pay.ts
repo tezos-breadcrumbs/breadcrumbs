@@ -90,11 +90,15 @@ export const pay = async (commandOptions) => {
   }
 
   if (globalCliOptions.dryRun) {
+    if (isEmpty(batches) || every(batches, (batch) => isEmpty(batch))) {
+      console.log("There is noting to pay for this cycle.");
+    }
     if (result.flags?.insufficientBalance) {
       console.log(
         "NOTE: Balance is insufficient. Transaction fees not estimated."
       );
     }
+
     process.exit(0);
   }
 

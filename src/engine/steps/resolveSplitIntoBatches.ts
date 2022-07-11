@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import { isEmpty } from "lodash";
 
 import { BasePayment, StepArguments } from "src/engine/interfaces";
-import { paymentAmountRequirementsFactory } from "src/engine/validate";
+import { paymentAmountAboveZeroFactory } from "src/engine/validate";
 import { add } from "src/utils/math";
 
 export const resolveSplitIntoBatches = async (
@@ -35,7 +35,7 @@ export const resolveSplitIntoBatches = async (
   const { delegatorPayments } = cycleReport;
 
   const filteredDelegatorPayments = delegatorPayments.filter(
-    paymentAmountRequirementsFactory
+    paymentAmountAboveZeroFactory
   );
 
   for (const payment of filteredDelegatorPayments) {
