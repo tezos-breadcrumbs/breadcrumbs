@@ -25,7 +25,7 @@
   },
   "network_configuration": {
     "rpc_url": "https://mainnet-tezos.giganode.io/",
-    "suppress_KT_payments": "true | false"
+    "suppress_KT_payments": "true | false | testnet"
   },
   "overdelegation": {
     "excluded_addresses": [

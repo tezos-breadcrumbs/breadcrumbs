@@ -47,7 +47,6 @@ export class DiscordClient implements NotificationPlugin {
       name: k,
       value: data[k].toString(),
     }));
-    console.log(data, fields);
     const embed = new MessageEmbed()
       .setColor(color)
       .setFooter({ text: this.hostInfo })

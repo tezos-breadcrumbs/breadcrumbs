@@ -4,6 +4,7 @@ import client from "src/api-client";
 import engine from "src/engine";
 import { getConfig } from "src/config";
 import {
+  normalizeAmount,
   printBakerPaymentsTable,
   printDelegatorPaymentsTable,
   printDistributedPaymentsTable,
@@ -24,10 +25,12 @@ import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
-import { every, flatten, isEmpty } from "lodash";
+import { every, flatten, isEmpty, sumBy, uniq } from "lodash";
 import { checkValidConfig, checkValidCycle } from "./helpers";
 import { getExplorerUrl } from "src/utils/url";
 import { EPayoutWalletMode } from "src/config/interfaces";
+import { load_notification_plugin } from "src/plugin/notification";
+import { divide } from "src/utils/math";
 
 export const pay = async (commandOptions) => {
   const cycle = commandOptions.cycle;
@@ -207,12 +210,16 @@ export const pay = async (commandOptions) => {
       );
       const notificator = await load_notification_plugin(plugin);
 
-      await notificator.notify(`(TEST) Payment rewards distributed.`, {
-        Cycle: cycle,
-        // StakingBalance: `${divide(cycleData.cycleStakingBalance, MUTEZ_FACTOR).toString()} TEZ`,
-        Distributed: `${sumBy(successfulPayments, (x) =>
-          divide(x.amount, MUTEZ_FACTOR).toNumber()
+      await notificator.notify(`Payout report #${cycle}`, {
+        [`Staking Balance`]: `${normalizeAmount(
+          cycleData.cycleDelegatedBalance
         ).toString()} TEZ`,
+        Distributed: `${sumBy(delegatorPayments, (x) =>
+          normalizeAmount(x.amount).toNumber()
+        ).toString()} TEZ`,
+        [`Rewarded Delegators`]: uniq(
+          delegatorPayments.map((x) => (x as DelegatorPayment).delegator)
+        ).length.toString(),
       });
     }
     console.log(`Payout notifications sent.`);

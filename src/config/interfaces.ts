@@ -22,7 +22,7 @@ interface DelegatorOverrides {
 
 interface NetworkConfiguration {
   rpc_url: string;
-  suppress_KT_payments?: boolean;
+  suppress_KT_payments?: boolean | "testnet";
   explorer_url_template?: string;
 }
 
