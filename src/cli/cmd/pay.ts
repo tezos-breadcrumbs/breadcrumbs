@@ -31,7 +31,7 @@ import { EPayoutWalletMode } from "src/config/interfaces";
 import { load_notification_plugin } from "src/plugin/notification";
 
 export const pay = async (commandOptions) => {
-  const cycle = commandOptions.cycle;
+  const cycle = commandOptions.cycle ?? (await client.getLastCompletedCycle());
   await checkValidCycle(client, cycle);
 
   if (globalCliOptions.dryRun) {
@@ -40,6 +40,8 @@ export const pay = async (commandOptions) => {
 
   const config = getConfig();
   await checkValidConfig(config);
+
+  console.log(`Working on cycle ${cycle}...`);
 
   const cycleReport = initializeCycleReport(cycle);
   const cycleData = await client.getCycleData(config.baking_address, cycle);
