@@ -1,6 +1,6 @@
 import { StepArguments } from "src/engine/interfaces";
 import {
-  paymentAmountRequirementsFactory,
+  paymentAmountAboveZeroFactory,
   paymentContextRequirementsFactory,
 } from "src/engine/validate";
 
@@ -11,7 +11,7 @@ export const resolveExcludedPaymentsByContext = (
 
   const delegatorPayments = cycleReport.delegatorPayments
     .filter(paymentContextRequirementsFactory(config))
-    .filter(paymentAmountRequirementsFactory);
+    .filter(paymentAmountAboveZeroFactory);
 
   return {
     ...args,

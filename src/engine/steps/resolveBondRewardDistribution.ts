@@ -5,7 +5,7 @@ import {
   StepArguments,
 } from "src/engine/interfaces";
 import { divide, multiply, integerize } from "src/utils/math";
-import { paymentAmountRequirementsFactory } from "../validate";
+import { paymentAmountAboveZeroFactory } from "../validate";
 
 export const resolveBondRewardDistribution = (
   args: StepArguments
@@ -40,10 +40,7 @@ export const resolveBondRewardDistribution = (
     }
 
     /* Sanity check */
-    const bondRewardPayments = filter(
-      payments,
-      paymentAmountRequirementsFactory
-    );
+    const bondRewardPayments = filter(payments, paymentAmountAboveZeroFactory);
 
     return {
       ...args,
