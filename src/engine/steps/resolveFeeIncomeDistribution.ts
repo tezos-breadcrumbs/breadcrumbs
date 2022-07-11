@@ -5,7 +5,7 @@ import {
   StepArguments,
 } from "src/engine/interfaces";
 import { divide, multiply, integerize } from "src/utils/math";
-import { paymentAmountRequirementsFactory } from "../validate";
+import { paymentAmountAboveZeroFactory } from "../validate";
 
 export const resolveFeeIncomeDistribution = (
   args: StepArguments
@@ -40,10 +40,7 @@ export const resolveFeeIncomeDistribution = (
     }
 
     /* Sanity check */
-    const feeIncomePayments = filter(
-      payments,
-      paymentAmountRequirementsFactory
-    );
+    const feeIncomePayments = filter(payments, paymentAmountAboveZeroFactory);
 
     return {
       ...args,

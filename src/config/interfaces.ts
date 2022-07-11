@@ -23,6 +23,7 @@ interface DelegatorOverrides {
 interface NetworkConfiguration {
   rpc_url: string;
   suppress_KT_payments?: boolean;
+  explorer_url_template?: string;
 }
 
 interface IncomeRecipientsConfiguration {
@@ -37,6 +38,7 @@ interface IncomeRecipientsConfiguration {
 export enum EPayoutWalletMode {
   LocalPrivateKey = "local-private-key",
   Ledger = "ledger",
+  RemoteSigner = "remote-signer",
 }
 
 export interface BreadcrumbsConfiguration {

@@ -9,6 +9,10 @@ import { BreadcrumbsConfiguration } from "src/config/interfaces";
  * @member creditablePayments is for payments excluded by minimum amount or delegator balance that WILL be credited later.
  */
 
+interface Flags {
+  insufficientBalance?: boolean;
+}
+
 export interface CycleReport {
   cycle: number;
   delegatorPayments: DelegatorPayment[];
@@ -16,6 +20,7 @@ export interface CycleReport {
   creditablePayments: DelegatorPayment[];
   feeIncomePayments: BasePayment[];
   bondRewardPayments: BasePayment[];
+  distributedPayments: DelegatorPayment[] | BasePayment[];
   feeIncome: BigNumber;
   feesPaid: BigNumber;
   lockedBondRewards: BigNumber;
@@ -28,6 +33,7 @@ export interface StepArguments {
   cycleReport: CycleReport;
   distributableRewards: BigNumber;
   tezos: TezosToolkit;
+  flags?: Flags;
 }
 
 export enum EPaymentType {
@@ -39,6 +45,7 @@ export enum EPaymentType {
 export enum ENoteType {
   BalanceBelowMinimum = "Balance Below Minimum",
   PaymentBelowMinimum = "Payment Amount Below Minimum",
+  ScriptRejected = "Script Rejected",
 }
 
 export enum EFeePayer {

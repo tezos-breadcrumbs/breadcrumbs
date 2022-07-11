@@ -17,7 +17,8 @@ const validPercentage = Joi.number().min(0).max(100);
 
 const validPayoutWalletMode = Joi.string().valid(
   EPayoutWalletMode.Ledger,
-  EPayoutWalletMode.LocalPrivateKey
+  EPayoutWalletMode.LocalPrivateKey,
+  EPayoutWalletMode.RemoteSigner
 );
 
 const validOverdelegationExcludedAddresses = Joi.array().items(validAddress);
@@ -56,6 +57,7 @@ export const schema = Joi.object({
   network_configuration: {
     rpc_url: validRpcUrl.required(),
     suppress_KT_payments: Joi.boolean(),
+    explorer_url_template: Joi.string(),
   },
   overdelegation: {
     excluded_addresses: validOverdelegationExcludedAddresses,
@@ -66,4 +68,13 @@ export const schema = Joi.object({
     minimum_amount: Joi.number().positive(),
   },
   notifications: Joi.array(),
+});
+
+export const validRemoteSignerUrl = Joi.string().uri({
+  scheme: ["https", "http", "tcp"],
+});
+
+export const remoteSignerSchema = Joi.object({
+  public_key: Joi.string().custom((value) => isPKH(value)),
+  url: validRemoteSignerUrl,
 });

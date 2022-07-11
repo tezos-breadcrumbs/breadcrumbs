@@ -25,7 +25,7 @@ describe("resolveExcludedPaymentsByContext", () => {
 
     const config = generateConfig({
       network_configuration: {
-        rpc_url: "https://ithacanet.ecadinfra.com",
+        rpc_url: "https://ghostnet.ecadinfra.com",
         suppress_KT_payments: false,
       },
       delegator_overrides: { [DELEGATOR]: { recipient: BAKER } },
@@ -66,7 +66,7 @@ describe("resolveExcludedPaymentsByContext", () => {
   it("excludes payments to KT addresses if this is configured", async () => {
     const config = generateConfig({
       network_configuration: {
-        rpc_url: "https://ithacanet.ecadinfra.com",
+        rpc_url: "https://ghostnet.ecadinfra.com",
         suppress_KT_payments: true,
       },
     });
@@ -105,7 +105,7 @@ describe("resolveExcludedPaymentsByContext", () => {
   it("does not exclude payments to KT addresses if this is not configured", async () => {
     const config = generateConfig({
       network_configuration: {
-        rpc_url: "https://ithacanet.ecadinfra.com",
+        rpc_url: "https://ghostnet.ecadinfra.com",
         suppress_KT_payments: false,
       },
     });

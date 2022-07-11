@@ -40,5 +40,8 @@ jobs:
       - name: Running test suite
         run: npm run test
 
-      - name: Linting files
+      - name: Running linting tests.
         run: npm run lint
+
+      - name: Running dependency audit.
+        run: npm run audit-ci

@@ -8,7 +8,7 @@ import { schema } from "src/config/validate/runtime";
 const baseConfig: BreadcrumbsConfiguration = {
   baking_address: "tz1Uoy4PdQDDiHRRec77pJEQJ21tSyksarur",
   default_fee: 10,
-  network_configuration: { rpc_url: "https://ithacanet.ecadinfra.com" },
+  network_configuration: { rpc_url: "https://ghostnet.ecadinfra.com" },
   payout_wallet_mode: EPayoutWalletMode.LocalPrivateKey,
 };
 
@@ -77,12 +77,7 @@ describe("configuration validation (runtime)", () => {
     }
   });
   test("does not accept an invalid RPC URL", () => {
-    const invalidValues = [
-      "http://ithacanet.ecadinfra.com",
-      true,
-      1,
-      "foo.bar",
-    ];
+    const invalidValues = ["http://ghostnet.ecadinfra.com", true, 1, "foo.bar"];
 
     for (const v of invalidValues) {
       const input = { ...baseConfig, network_configuration: { rpc_url: v } };

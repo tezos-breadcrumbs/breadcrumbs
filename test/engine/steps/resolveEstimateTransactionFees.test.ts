@@ -18,7 +18,7 @@ import BigNumber from "bignumber.js";
 
 describe("resolveEstimateTransactionFees", () => {
   Polly.start();
-  const provider = new TezosToolkit("https://ithacanet.ecadinfra.com");
+  const provider = new TezosToolkit("https://ghostnet.ecadinfra.com");
 
   let mockProvider;
 
@@ -52,8 +52,8 @@ describe("resolveEstimateTransactionFees", () => {
       )
     );
 
-    mockProvider.mockResolvedValue(
-      input.cycleReport.delegatorPayments.map((_item, index) => ({
+    mockProvider.mockImplementation((payments) =>
+      payments.map((_item, index) => ({
         gasLimit: index,
         storageLimit: index + 1,
         totalCost: index + 2,
@@ -62,13 +62,20 @@ describe("resolveEstimateTransactionFees", () => {
 
     const output = await resolveEstimateTransactionFees(input);
 
-    for (const [
-      index,
-      payment,
-    ] of output.cycleReport.delegatorPayments.entries()) {
+    for (const [index, payment] of output.cycleReport.delegatorPayments
+      .filter((p) => p.recipient.startsWith("tz"))
+      .entries()) {
       expect(payment.gasLimit).toStrictEqual(new BigNumber(index));
       expect(payment.storageLimit).toStrictEqual(new BigNumber(index + 1));
       expect(payment.transactionFee).toStrictEqual(new BigNumber(index + 2));
+    }
+
+    for (const payment of output.cycleReport.delegatorPayments.filter((p) =>
+      p.recipient.startsWith("KT")
+    )) {
+      expect(payment.gasLimit).toStrictEqual(new BigNumber(0));
+      expect(payment.storageLimit).toStrictEqual(new BigNumber(1));
+      expect(payment.transactionFee).toStrictEqual(new BigNumber(2));
     }
   });
 });

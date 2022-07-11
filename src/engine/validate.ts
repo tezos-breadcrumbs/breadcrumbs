@@ -15,7 +15,7 @@ const paymentContextRequirements = (
   ];
 };
 
-const paymentAmountRequirements: Validator[] = [
+const paymentAmountAboveZero: Validator[] = [
   (p: BasePayment) => p.amount.gt(0),
 ];
 
@@ -32,8 +32,8 @@ const arePaymentsRequirementsMet = (
 const requirementsFactory = (requirements: Validator[]) => (p: BasePayment) =>
   arePaymentsRequirementsMet(p, requirements);
 
-export const paymentAmountRequirementsFactory = requirementsFactory(
-  paymentAmountRequirements
+export const paymentAmountAboveZeroFactory = requirementsFactory(
+  paymentAmountAboveZero
 );
 
 export const paymentContextRequirementsFactory = (config) =>

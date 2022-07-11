@@ -16,7 +16,7 @@ export const generateConfig = (
     payout_wallet_mode:
       args.payout_wallet_mode ?? EPayoutWalletMode.LocalPrivateKey,
     network_configuration: {
-      rpc_url: "https://ithacanet.ecadinfra.com",
+      rpc_url: "https://ghostnet.ecadinfra.com",
       suppress_KT_payments:
         args.network_configuration?.suppress_KT_payments ?? false,
     },

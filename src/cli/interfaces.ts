@@ -7,6 +7,15 @@ export interface PrintableDelegatorPayment {
   transactionFee: string;
 }
 
+export interface PrintableDistributedPayment {
+  delegator: string;
+  recipient: string;
+  amount: string;
+  feeRate: string;
+  delegatorBalance: string;
+  hash: string;
+}
+
 export interface PrintableExcludedPayment {
   delegator: string;
   recipient: string;

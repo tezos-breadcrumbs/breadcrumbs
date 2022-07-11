@@ -24,7 +24,7 @@ import { generateConfig } from "test/helpers";
 
 describe("resolveSplitIntoBatches", () => {
   Polly.start();
-  const provider = new TezosToolkit("https://ithacanet.ecadinfra.com");
+  const provider = new TezosToolkit("https://ghostnet.ecadinfra.com");
 
   let mockProviderEstimateBatch;
   let mockProviderRpcConstants;
