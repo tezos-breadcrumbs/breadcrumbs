@@ -216,7 +216,9 @@ export const pay = async (commandOptions) => {
         ).toString()} TEZ`,
         Distributed: `${sumBy(delegatorPayments, (x) =>
           normalizeAmount(x.amount).toNumber()
-        ).toString()} TEZ`,
+        )
+          .toFixed(3)
+          .toString()} TEZ`,
         [`Rewarded Delegators`]: uniq(
           delegatorPayments.map((x) => (x as DelegatorPayment).delegator)
         ).length.toString(),
