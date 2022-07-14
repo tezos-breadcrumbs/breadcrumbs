@@ -8,7 +8,7 @@ import { schema, remoteSignerSchema } from "src/config/validate/runtime";
 import { WALLET_PRIVATE_KEY_FILE } from "src/utils/constants";
 
 export const checkValidCycle = async (client: Client, inputCycle: number) => {
-  const lastCycle = await client.getLastCycle();
+  const lastCycle = await client.getLastCompletedCycle();
 
   if (lastCycle < inputCycle) {
     console.log(`Cannot run payments for an unfinished or future cycle`);

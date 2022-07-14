@@ -50,7 +50,7 @@ export class TzKT implements Client {
     }
   }
 
-  public getLastCycle = async (): Promise<number> => {
+  public getLastCompletedCycle = async (): Promise<number> => {
     try {
       const {
         data: { cycle: headCycle },

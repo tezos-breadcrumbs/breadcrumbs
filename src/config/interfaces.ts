@@ -1,3 +1,5 @@
+import { NotificationPluginConfiguration } from "src/plugin/notification/interfaces";
+
 interface PaymentRequirements {
   baker_pays_transaction_fee?: boolean;
   minimum_amount?: number;
@@ -53,4 +55,5 @@ export interface BreadcrumbsConfiguration {
 
   /* Experimental */
   accounting_mode?: boolean;
+  notifications?: Array<NotificationPluginConfiguration>;
 }

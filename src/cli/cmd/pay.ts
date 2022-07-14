@@ -4,6 +4,7 @@ import client from "src/api-client";
 import engine from "src/engine";
 import { getConfig } from "src/config";
 import {
+  normalizeAmount,
   printBakerPaymentsTable,
   printDelegatorPaymentsTable,
   printDistributedPaymentsTable,
@@ -23,13 +24,14 @@ import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
-import { every, flatten, isEmpty } from "lodash";
+import { every, flatten, isEmpty, sumBy, uniq } from "lodash";
 import { checkValidConfig, checkValidCycle } from "./helpers";
 import { getExplorerUrl } from "src/utils/url";
 import { EPayoutWalletMode } from "src/config/interfaces";
+import { loadNotificationPlugin } from "src/plugin/notification";
 
 export const pay = async (commandOptions) => {
-  const cycle = commandOptions.cycle;
+  const cycle = commandOptions.cycle ?? (await client.getLastCompletedCycle());
   await checkValidCycle(client, cycle);
 
   if (globalCliOptions.dryRun) {
@@ -38,6 +40,8 @@ export const pay = async (commandOptions) => {
 
   const config = getConfig();
   await checkValidConfig(config);
+
+  console.log(`Working on cycle ${cycle}...`);
 
   const cycleReport = initializeCycleReport(cycle);
   const cycleData = await client.getCycleData(config.baking_address, cycle);
@@ -117,7 +121,7 @@ export const pay = async (commandOptions) => {
     const result = await inquirer.prompt({
       type: "confirm",
       name: "confirm",
-      message: "Do you confirm the above rewards?",
+      message: `Do you confirm the above rewards for cycle #${cycle}?`,
       default: false,
     });
     if (!result.confirm) {
@@ -196,4 +200,32 @@ export const pay = async (commandOptions) => {
     cycleData,
     "reports/cycle_summary/"
   );
+
+  if (failedPayments.length === 0) {
+    for (const plugin of getConfig("notifications") ?? []) {
+      console.log(
+        `Sending payout notification for ${cycle} through ${
+          plugin.name ?? plugin.type
+        }`
+      );
+      const notificator = await loadNotificationPlugin(plugin);
+
+      await notificator.notify(`Payout report #${cycle}`, {
+        [`Staking Balance`]: `${normalizeAmount(
+          cycleData.cycleDelegatedBalance
+        ).toString()} TEZ`,
+        Distributed: `${sumBy(delegatorPayments, (x) =>
+          normalizeAmount(x.amount).toNumber()
+        )
+          .toFixed(3)
+          .toString()} TEZ`,
+        [`Rewarded Delegators`]: uniq(
+          delegatorPayments.map((x) => (x as DelegatorPayment).delegator)
+        ).length.toString(),
+      });
+    }
+    console.log(`Payout notifications sent.`);
+  } else {
+    console.log(`Failed payments detected. Notifications suppressed...`);
+  }
 };

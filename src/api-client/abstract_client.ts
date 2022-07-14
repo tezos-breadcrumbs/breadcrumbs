@@ -4,7 +4,7 @@ import { AxiosInstance } from "axios";
 export interface Client {
   instance: AxiosInstance;
   getCycleData(baker: string, cycle: number): Promise<CycleData>;
-  getLastCycle(): Promise<number | void>;
+  getLastCompletedCycle(): Promise<number | void>;
 }
 
 export interface CycleData {

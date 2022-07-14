@@ -10,6 +10,7 @@ const baseConfig: BreadcrumbsConfiguration = {
   default_fee: 10,
   network_configuration: { rpc_url: "https://ghostnet.ecadinfra.com" },
   payout_wallet_mode: EPayoutWalletMode.LocalPrivateKey,
+  notifications: [],
 };
 
 describe("configuration validation (runtime)", () => {

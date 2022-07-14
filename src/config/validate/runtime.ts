@@ -67,6 +67,7 @@ export const schema = Joi.object({
     baker_pays_transaction_fee: Joi.boolean(),
     minimum_amount: Joi.number().positive(),
   },
+  notifications: Joi.array(),
 });
 
 export const validRemoteSignerUrl = Joi.string().uri({

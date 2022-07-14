@@ -188,6 +188,9 @@ const shortenAddress = (address: string) => {
   )}`;
 };
 
-const normalizeAmount = (input: BigNumber | undefined, decimalPlaces = 3) => {
+export const normalizeAmount = (
+  input: BigNumber | undefined,
+  decimalPlaces = 3
+) => {
   return divide(input ?? 0, MUTEZ_FACTOR).dp(decimalPlaces);
 };

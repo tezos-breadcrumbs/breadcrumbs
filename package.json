@@ -1,6 +1,6 @@
 {
   "name": "breadcrumbs",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.2-alpha",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -32,6 +32,7 @@
     "console-table-printer": "^2.11.0",
     "csv-parse": "^5.2.2",
     "csv-writer": "^1.6.0",
+    "discord.js": "^13.8.1",
     "hjson": "^3.2.2",
     "inquirer": "^8.2.2",
     "joi": "^17.6.0",
