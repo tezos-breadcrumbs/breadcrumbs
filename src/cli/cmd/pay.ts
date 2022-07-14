@@ -28,7 +28,7 @@ import { every, flatten, isEmpty, sumBy, uniq } from "lodash";
 import { checkValidConfig, checkValidCycle } from "./helpers";
 import { getExplorerUrl } from "src/utils/url";
 import { EPayoutWalletMode } from "src/config/interfaces";
-import { load_notification_plugin } from "src/plugin/notification";
+import { loadNotificationPlugin } from "src/plugin/notification";
 
 export const pay = async (commandOptions) => {
   const cycle = commandOptions.cycle ?? (await client.getLastCompletedCycle());
@@ -121,7 +121,7 @@ export const pay = async (commandOptions) => {
     const result = await inquirer.prompt({
       type: "confirm",
       name: "confirm",
-      message: "Do you confirm the above rewards?",
+      message: `Do you confirm the above rewards for cycle #${cycle}?`,
       default: false,
     });
     if (!result.confirm) {
@@ -208,7 +208,7 @@ export const pay = async (commandOptions) => {
           plugin.name ?? plugin.type
         }`
       );
-      const notificator = await load_notification_plugin(plugin);
+      const notificator = await loadNotificationPlugin(plugin);
 
       await notificator.notify(`Payout report #${cycle}`, {
         [`Staking Balance`]: `${normalizeAmount(

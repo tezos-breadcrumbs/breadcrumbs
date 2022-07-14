@@ -56,10 +56,7 @@ export const schema = Joi.object({
   },
   network_configuration: {
     rpc_url: validRpcUrl.required(),
-    suppress_KT_payments: Joi.alternatives().try(
-      Joi.boolean(),
-      Joi.string().allow("testnet").only()
-    ),
+    suppress_KT_payments: Joi.boolean(),
     explorer_url_template: Joi.string(),
   },
   overdelegation: {

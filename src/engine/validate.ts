@@ -8,18 +8,10 @@ const paymentContextRequirements = (
 ): Validator[] => {
   return [
     (p: BasePayment) => p.recipient !== config.baking_address, // in case rewards are redirected to baker himself
-    (p: BasePayment) => {
-      switch (config.network_configuration?.suppress_KT_payments) {
-        case "testnet":
-          return !config.network_configuration.rpc_url?.includes("mainnet")
-            ? !p.recipient.startsWith("KT")
-            : true;
-        default:
-          return config.network_configuration?.suppress_KT_payments === true
-            ? !p.recipient.startsWith("KT")
-            : true;
-      }
-    },
+    (p: BasePayment) =>
+      config.network_configuration?.suppress_KT_payments
+        ? !p.recipient.startsWith("KT")
+        : true,
   ];
 };
 

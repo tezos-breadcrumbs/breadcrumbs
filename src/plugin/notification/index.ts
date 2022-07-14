@@ -9,7 +9,7 @@ const HOST_INFO = {
   version,
 };
 
-export const load_notification_plugin = async (
+export const loadNotificationPlugin = async (
   config: NotificationPluginConfiguration
 ): Promise<NotificationPlugin> => {
   switch (config.type) {
