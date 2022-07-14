@@ -37,5 +37,11 @@
   "payment_requirements": {
     "baker_pays_transaction_fee": "true | false",
     "minimum_amount": 1
-  }
+  },
+  "notifications": [
+    { 
+      "type": "discord", 
+      "webhook": "<webhook url>"
+    }
+  ]
 }
