@@ -14,3 +14,6 @@ remote-signer.hjson
 # bundling
 bin/*
 !bin/.gitkeep
+build/Release/*
+!build/Release/.gitkeep
+.parcel-cache

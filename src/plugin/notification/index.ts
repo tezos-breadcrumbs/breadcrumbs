@@ -3,7 +3,7 @@ import {
   NotificationPlugin,
   NotificationPluginConfiguration,
 } from "./interfaces";
-import { name, version } from "src/../package.json";
+import { name, version } from "../../../package.json";
 const HOST_INFO = {
   id: name,
   version,
