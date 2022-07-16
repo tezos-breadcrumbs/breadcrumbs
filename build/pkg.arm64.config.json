@@ -1,5 +1,5 @@
 {
-  "targets": ["node16-linux-arm64", "node16-macos-arm64"],
+  "targets": ["node16-linux-arm64"],
   "assets": [
     "../node_modules/usb/prebuilds/linux-x64/node.napi.glibc.node",
     "../node_modules/usb/prebuilds/linux-arm64/node.napi.armv8.node",

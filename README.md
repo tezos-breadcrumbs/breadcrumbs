@@ -20,7 +20,9 @@ To install breadcrumbs just:
    - e.g. on linux: `mkdir /breadcrumbs && cd /breadcrumbs`
 2. [download latest binary release](https://github.com/kalouo/breadcrumbs/releases).
 3. (linux only) enable executable flag
-   - `chmod +x bc-linux-*`
+   - `chmod +x bc-* && mv bc-* bc`
+4. Prepare your [config.hjson](https://github.com/kalouo/breadcrumbs/blob/master/config-template.hjson)
+5. Run payout `./bc pay --cycle=<cycle>` or for latest completed cycle just `./bc pay`
 
 ### Features
 

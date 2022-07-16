@@ -1,6 +1,6 @@
 {
   "name": "breadcrumbs",
-  "version": "0.0.2-alpha.3",
+  "version": "0.0.2-alpha.4",
   "description": "",
   "main": "index.js",
   "targets": {
@@ -17,8 +17,8 @@
     "lint": "eslint .",
     "prepare": "husky install",
     "build": "rimraf bin/* && parcel build",
-    "pkg-x64": "cpy build/hid/x64/* build/Release/ && pkg --output bin/bc-x64 --no-bytecode --public-packages '*' --public -C Brotli -c build/pkg.x64.config.json bin/index.js",
-    "pkg-arm64": "cpy build/hid/arm64/* build/Release/ && pkg --output bin/bc-arm64 --no-bytecode --public-packages '*' --public -C Brotli -c build/pkg.arm64.config.json bin/index.js",
+    "pkg-x64": "cpy build/hid/x64/* node_modules/node-hid/build/Release/ && cpy build/hid/x64/* build/Release/ && pkg --output bin/bc-x64 --no-bytecode --public-packages \"*\" --public -c build/pkg.x64.config.json bin/index.js",
+    "pkg-arm64": "cpy build/hid/arm64/* node_modules/node-hid/build/Release/ && cpy build/hid/arm64/* build/Release/ && pkg --output bin/bc-arm64 --no-bytecode --public-packages \"*\" --public -C Brotli -c build/pkg.arm64.config.json bin/index.js",
     "pkg": "npm run pkg-x64 && npm run pkg-arm64"
   },
   "author": "",
