@@ -14,7 +14,9 @@ export const loadNotificationPlugin = async (
 ): Promise<NotificationPlugin> => {
   switch (config.type) {
     case ENotificationPluginKind.Discord:
-      return (await import("./discord")).get_plugin(config, HOST_INFO);
+      return (await import("./discord")).getPlugin(config, HOST_INFO);
+    case ENotificationPluginKind.Telegram:
+      return await (await import("./telegram")).getPlugin(config);
     default:
       throw new Error(`Plugin ${config.type} not supported!`);
   }

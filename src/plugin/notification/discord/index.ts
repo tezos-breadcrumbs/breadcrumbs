@@ -5,7 +5,7 @@ import {
 import { DiscordClient } from "./client";
 
 let cachedClient: DiscordClient | undefined = undefined;
-export const get_plugin = async (
+export const getPlugin = async (
   config: NotificationPluginConfiguration,
   host: PluginHostDetails
 ) => {
