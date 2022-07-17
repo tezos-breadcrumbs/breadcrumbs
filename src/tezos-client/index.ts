@@ -33,20 +33,10 @@ export const prepareTransactionForSubmission = (
     to: payment.recipient,
     amount: payment.amount.toNumber(),
     mutez: true,
-    /* For current simplicity, submit non-delegator payments without the estimates */
-    fee:
-      payment.type === EPaymentType.Delegator
-        ? payment.transactionFee?.toNumber()
-        : undefined,
-
-    gasLimit:
-      payment.type === EPaymentType.Delegator
-        ? payment.gasLimit?.toNumber()
-        : undefined,
-    storageLimit:
-      payment.type === EPaymentType.Delegator
-        ? payment.storageLimit?.toNumber()
-        : undefined,
+    /* Payments can pass through without an estimate – e.g. non-delegator payments. */
+    fee: payment.transactionFee?.toNumber(),
+    gasLimit: payment.gasLimit?.toNumber(),
+    storageLimit: payment.storageLimit?.toNumber(),
   };
 };
 
