@@ -7,6 +7,8 @@
     "../node_modules/usb/prebuilds/darwin-x64+arm64/node.napi.node",
     "../node_modules/usb/package.json",
     "../node_modules/node-hid/build/Release/HID_hidraw.node",
+    "../node_modules/node-hid/build/Release/HID.node",
+    "../build/Release/HID_hidraw.node",
     "../build/Release/HID.node",
     "../package.json"
   ]
