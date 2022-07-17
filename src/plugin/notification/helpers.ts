@@ -29,8 +29,8 @@ export const constructMessage = (
   data: Partial<NotificationInputData>
 ) => {
   return message
-    .replace("<CYCLE>", data.cycle ?? "")
-    .replace("<CYCLE_STAKING_BALANCE>", data.cycleStakingBalance ?? "")
-    .replace("<N_DELEGATORS>", data.numberOfDelegators ?? "")
-    .replace("<T_REWARDS>", data.totalDistributed ?? "");
+    .replace("<CYCLE>", data.cycle ?? "UNKNOWN")
+    .replace("<CYCLE_STAKING_BALANCE>", data.cycleStakingBalance ?? "UNKNOWN")
+    .replace("<N_DELEGATORS>", data.numberOfDelegators ?? "UNKNOWN")
+    .replace("<T_REWARDS>", data.totalDistributed ?? "UNKNOWN");
 };
