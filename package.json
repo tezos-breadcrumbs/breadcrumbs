@@ -42,6 +42,7 @@
     "@types/lodash": "^4.14.181",
     "axios": "^0.26.1",
     "bignumber.js": "^9.0.2",
+    "change-case": "^4.1.2",
     "commander": "^9.2.0",
     "console-table-printer": "^2.11.0",
     "csv-parse": "^5.2.2",
