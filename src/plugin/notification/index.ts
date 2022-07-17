@@ -4,6 +4,7 @@ import {
   NotificationPluginConfiguration,
 } from "./interfaces";
 import { name, version } from "../../../package.json";
+import { TelegramPluginConfiguration } from "./telegram/interfaces";
 const HOST_INFO = {
   id: name,
   version,
@@ -16,7 +17,9 @@ export const loadNotificationPlugin = async (
     case ENotificationPluginKind.Discord:
       return (await import("./discord")).getPlugin(config, HOST_INFO);
     case ENotificationPluginKind.Telegram:
-      return await (await import("./telegram")).getPlugin(config);
+      return await (
+        await import("./telegram")
+      ).getPlugin(config as TelegramPluginConfiguration);
     default:
       throw new Error(`Plugin ${config.type} not supported!`);
   }
