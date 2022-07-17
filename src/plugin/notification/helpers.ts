@@ -1,6 +1,6 @@
 import { uniq } from "lodash";
 import { CycleData } from "src/api-client/abstract_client";
-import { CycleReport, DelegatorPayment } from "src/engine/interfaces";
+import { CycleReport } from "src/engine/interfaces";
 import { MUTEZ_FACTOR } from "src/utils/constants";
 import { sum } from "src/utils/math";
 import { NotificationInputData } from "./interfaces";

@@ -4,7 +4,6 @@ import client from "src/api-client";
 import engine from "src/engine";
 import { getConfig } from "src/config";
 import {
-  normalizeAmount,
   printBakerPaymentsTable,
   printDelegatorPaymentsTable,
   printDistributedPaymentsTable,
@@ -24,7 +23,7 @@ import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
-import { capitalize, every, flatten, isEmpty, sumBy, uniq } from "lodash";
+import { capitalize, every, flatten, isEmpty } from "lodash";
 import { checkValidConfig, checkValidCycle } from "./helpers";
 import { getExplorerUrl } from "src/utils/url";
 import { EPayoutWalletMode } from "src/config/interfaces";
