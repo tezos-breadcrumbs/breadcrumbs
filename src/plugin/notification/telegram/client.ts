@@ -1,8 +1,9 @@
 import TelegramBot from "node-telegram-bot-api";
 import {
   NotificationPlugin,
-  NotificationPluginConfiguration,
+  NotificationInputData,
 } from "src/plugin/notification/interfaces";
+import { constructMessage } from "../helpers";
 
 import { TelegramPluginConfiguration } from "./interfaces";
 
@@ -11,11 +12,11 @@ export class TelegramClient implements NotificationPlugin {
   private chatId: number;
 
   constructor(config: TelegramPluginConfiguration) {
-    this.chatId = config.chatId;
-    this.client = new TelegramBot(config.apiToken);
+    this.chatId = config.chat_id;
+    this.client = new TelegramBot(config.api_token);
   }
 
-  public async notify(message: string) {
-    await this.client.sendMessage(this.chatId, message);
+  public async notify(message: string, data: NotificationInputData) {
+    await this.client.sendMessage(this.chatId, constructMessage(message, data));
   }
 }

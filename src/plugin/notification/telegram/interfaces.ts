@@ -2,6 +2,6 @@ import { NotificationPluginConfiguration } from "src/plugin/notification/interfa
 
 export interface TelegramPluginConfiguration
   extends NotificationPluginConfiguration {
-  apiToken: string;
-  chatId: number;
+  api_token: string;
+  chat_id: number;
 }
