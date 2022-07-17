@@ -24,11 +24,12 @@ import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
-import { every, flatten, isEmpty, sumBy, uniq } from "lodash";
+import { capitalize, every, flatten, isEmpty, sumBy, uniq } from "lodash";
 import { checkValidConfig, checkValidCycle } from "./helpers";
 import { getExplorerUrl } from "src/utils/url";
 import { EPayoutWalletMode } from "src/config/interfaces";
 import { loadNotificationPlugin } from "src/plugin/notification";
+import { getDataForPlugins } from "src/plugin/notification/helpers";
 
 export const pay = async (commandOptions) => {
   const cycle = commandOptions.cycle ?? (await client.getLastCompletedCycle());
@@ -202,29 +203,18 @@ export const pay = async (commandOptions) => {
   );
 
   if (failedPayments.length === 0) {
-    for (const plugin of getConfig("notifications") ?? []) {
-      console.log(
-        `Sending payout notification for ${cycle} through ${
-          plugin.name ?? plugin.type
-        }`
-      );
-      const notificator = await loadNotificationPlugin(plugin);
+    const data = getDataForPlugins(result.cycleData, result.cycleReport);
 
-      await notificator.notify(`Payout report #${cycle}`, {
-        [`Staking Balance`]: `${normalizeAmount(
-          cycleData.cycleDelegatedBalance
-        ).toString()} TEZ`,
-        Distributed: `${sumBy(delegatorPayments, (x) =>
-          normalizeAmount(x.amount).toNumber()
-        )
-          .toFixed(3)
-          .toString()} TEZ`,
-        [`Rewarded Delegators`]: uniq(
-          delegatorPayments.map((x) => (x as DelegatorPayment).delegator)
-        ).length.toString(),
-      });
+    for (const plugin of getConfig("notifications") ?? []) {
+      try {
+        console.log(`Sending notifications via ${capitalize(plugin.type)}`);
+        const notificator = await loadNotificationPlugin(plugin);
+        await notificator.notify(plugin.message, data);
+        console.log(`${capitalize(plugin.type)} notifications sent`);
+      } catch (e) {
+        console.log(`Notification error: ${(e as Error).message}`);
+      }
     }
-    console.log(`Payout notifications sent.`);
   } else {
     console.log(`Failed payments detected. Notifications suppressed...`);
   }

@@ -1,11 +1,16 @@
 import { WebhookClient, MessageEmbed, HexColorString } from "discord.js";
+import { omit } from "lodash";
+import { capitalCase } from "change-case";
+
 import {
   ENotificationLevel,
+  NotificationInputData,
   NotificationPlugin,
   NotificationPluginConfiguration,
   PluginHostDetails,
 } from "../interfaces";
 import { DiscordPluginConfiguration } from "./interfaces";
+import { constructMessage } from "../helpers";
 
 export class DiscordClient implements NotificationPlugin {
   private hostInfo: string;
@@ -39,12 +44,12 @@ export class DiscordClient implements NotificationPlugin {
 
   public async notify(
     message: string,
-    data: { [key: string]: string } = {},
+    data: NotificationInputData,
     level: ENotificationLevel = ENotificationLevel.Info
   ) {
     const color = this.getMessageColor(level);
-    const fields = Object.keys(data).map((k) => ({
-      name: k,
+    const fields = Object.keys(omit(data, ["cycle"])).map((k) => ({
+      name: capitalCase(k),
       value: data[k].toString(),
     }));
     const embed = new MessageEmbed()
@@ -52,6 +57,9 @@ export class DiscordClient implements NotificationPlugin {
       .setFooter({ text: this.hostInfo })
       .addFields(fields)
       .setTimestamp();
-    await this.client.send({ content: message, embeds: [embed] });
+    await this.client.send({
+      content: constructMessage(message, data),
+      embeds: [embed],
+    });
   }
 }
