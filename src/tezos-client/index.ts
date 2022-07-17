@@ -3,7 +3,7 @@
 import { OpKind, TezosToolkit, WalletParamsWithKind } from "@taquito/taquito";
 import { BatchWalletOperation } from "@taquito/taquito/dist/types/wallet/batch-operation";
 import { BreadcrumbsConfiguration } from "src/config/interfaces";
-import { BasePayment } from "src/engine/interfaces";
+import { BasePayment, EPaymentType } from "src/engine/interfaces";
 import { getSigner } from "src/tezos-client/signers";
 
 export const createProvider = async (config: BreadcrumbsConfiguration) => {
@@ -14,7 +14,7 @@ export const createProvider = async (config: BreadcrumbsConfiguration) => {
   return tezos;
 };
 
-export const prepareTransaction = (
+export const prepareTransactionForEstimation = (
   payment: BasePayment
 ): WalletParamsWithKind => {
   return {
@@ -22,6 +22,21 @@ export const prepareTransaction = (
     to: payment.recipient,
     amount: payment.amount.toNumber(),
     mutez: true,
+  };
+};
+
+export const prepareTransactionForSubmission = (
+  payment: BasePayment
+): WalletParamsWithKind => {
+  return {
+    kind: OpKind.TRANSACTION,
+    to: payment.recipient,
+    amount: payment.amount.toNumber(),
+    mutez: true,
+    /* Payments can pass through without an estimate – e.g. non-delegator payments. */
+    fee: payment.transactionFee?.toNumber(),
+    gasLimit: payment.gasLimit?.toNumber(),
+    storageLimit: payment.storageLimit?.toNumber(),
   };
 };
 
