@@ -45,7 +45,7 @@ export class DiscordClient implements NotificationPlugin {
 
   public async notify(
     data: NotificationInputData,
-    messageTemplate: string = `Payments for cycle <CYCLE>.`,
+    messageTemplate = `Payments for cycle <CYCLE>.`,
     level: ENotificationLevel = ENotificationLevel.Info
   ) {
     const color = this.getMessageColor(level);

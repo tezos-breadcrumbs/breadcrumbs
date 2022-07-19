@@ -18,7 +18,7 @@ export class TelegramClient implements NotificationPlugin {
 
   public async notify(
     data: NotificationInputData,
-    messageTemplate: string = `A total of <T_REWARDS> tez was distributed for cycle <CYCLE>.`
+    messageTemplate = `A total of <T_REWARDS> tez was distributed for cycle <CYCLE>.`
   ) {
     await this.client.sendMessage(
       this.chatId,

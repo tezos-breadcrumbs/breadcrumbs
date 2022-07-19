@@ -3,7 +3,7 @@
 import { OpKind, TezosToolkit, WalletParamsWithKind } from "@taquito/taquito";
 import { BatchWalletOperation } from "@taquito/taquito/dist/types/wallet/batch-operation";
 import { BreadcrumbsConfiguration } from "src/config/interfaces";
-import { BasePayment, EPaymentType } from "src/engine/interfaces";
+import { BasePayment } from "src/engine/interfaces";
 import { getSigner } from "src/tezos-client/signers";
 
 export const createProvider = async (config: BreadcrumbsConfiguration) => {
