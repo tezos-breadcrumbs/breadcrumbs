@@ -39,9 +39,15 @@
     "minimum_amount": 1
   },
   "notifications": [
-    { 
-      "type": "discord", 
+    {
+      "type": "discord",
       "webhook": "<webhook url>"
+    },
+    {
+      "type": "telegram",
+      "api_token": "API_TOKEN",
+      "chat_id": -123456789,
+      "messageTemplate": "A total of <T_REWARDS> tez was distributed for cycle <CYCLE>."
     }
   ]
 }
