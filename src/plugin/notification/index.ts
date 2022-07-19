@@ -1,6 +1,3 @@
-import * as Discord from "./discord";
-import * as Telegram from "./telegram";
-
 import {
   ENotificationPluginKind,
   NotificationPlugin,
@@ -10,6 +7,7 @@ import {
 import { name, version } from "../../../package.json";
 
 import { TelegramPluginConfiguration } from "./telegram/interfaces";
+import { DiscordPluginConfiguration } from "./discord/interfaces";
 const HOST_INFO = {
   id: name,
   version,
@@ -20,9 +18,13 @@ export const loadNotificationPlugin = async (
 ): Promise<NotificationPlugin> => {
   switch (config.type) {
     case ENotificationPluginKind.Discord:
-      return await Discord.getPlugin(config, HOST_INFO);
+      return await (
+        await import("./discord")
+      ).getPlugin(config as DiscordPluginConfiguration, HOST_INFO);
     case ENotificationPluginKind.Telegram:
-      return await Telegram.getPlugin(config as TelegramPluginConfiguration);
+      return await (
+        await import("./telegram")
+      ).getPlugin(config as TelegramPluginConfiguration);
     default:
       try {
         return await (await import(config.type)).getPlugin(config);

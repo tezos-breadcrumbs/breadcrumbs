@@ -1,12 +1,10 @@
-import {
-  NotificationPluginConfiguration,
-  PluginHostDetails,
-} from "../interfaces";
+import { PluginHostDetails } from "../interfaces";
 import { DiscordClient } from "./client";
+import { DiscordPluginConfiguration } from "./interfaces";
 
 let cachedClient: DiscordClient | undefined = undefined;
 export const getPlugin = async (
-  config: NotificationPluginConfiguration,
+  config: DiscordPluginConfiguration,
   host: PluginHostDetails
 ) => {
   if (cachedClient === undefined) {

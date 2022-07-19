@@ -21,11 +21,7 @@ export enum ENotificationPluginKind {
 }
 
 export interface NotificationPlugin {
-  notify(
-    data: NotificationInputData,
-    messageTemplate?: string,
-    level?: ENotificationLevel
-  );
+  notify(data: NotificationInputData, level?: ENotificationLevel);
 }
 
 export interface NotificationInputData {

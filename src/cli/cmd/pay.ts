@@ -211,7 +211,7 @@ export const pay = async (commandOptions) => {
       try {
         console.log(`Sending notifications via ${capitalize(plugin.type)}`);
         const notificator = await loadNotificationPlugin(plugin);
-        await notificator.notify(data, plugin.messageTemplate);
+        await notificator.notify(data);
         console.log(`${capitalize(plugin.type)} notifications sent`);
       } catch (e) {
         console.log(`Notification error: ${(e as Error).message}`);
