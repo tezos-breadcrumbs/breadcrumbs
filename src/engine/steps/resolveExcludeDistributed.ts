@@ -25,7 +25,7 @@ export const resolveExcludeDistributed = async (
       cycle,
       join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
     );
-  } catch (err: any) {
+  } catch (err) {
     if (get(err, "code") === "ENOENT") return args;
     throw new Error(
       "Unexpected internal error. Failed to check past payments."

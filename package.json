@@ -1,6 +1,6 @@
 {
   "name": "breadcrumbs",
-  "version": "0.0.3-alpha.2",
+  "version": "0.0.3-alpha.4",
   "description": "",
   "main": "index.js",
   "targets": {
@@ -18,7 +18,7 @@
     "prepare": "husky install",
     "build": "rimraf bin/* && parcel build",
     "pkg-internal": "pkg",
-    "pkg": "node build/build.js"
+    "pkg": "ts-node build/build.ts"
   },
   "author": "",
   "license": "GPL-3.0",
@@ -26,7 +26,7 @@
     "@ledgerhq/hw-transport-node-hid"
   ],
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "dependencies": {
     "@ledgerhq/hw-transport-node-hid": "^6.27.1",
@@ -41,6 +41,7 @@
     "@types/lodash": "^4.14.181",
     "axios": "^0.26.1",
     "bignumber.js": "^9.0.2",
+    "change-case": "^4.1.2",
     "commander": "^9.2.0",
     "console-table-printer": "^2.11.0",
     "csv-parse": "^5.2.2",
@@ -52,6 +53,7 @@
     "joi": "^17.6.0",
     "json-bigint": "^1.0.0",
     "lodash": "^4.17.21",
+    "node-telegram-bot-api": "^0.58.0",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
   },

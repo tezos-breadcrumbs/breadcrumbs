@@ -1,5 +1,5 @@
-const { copy, existsSync } = require("fs-extra");
-const { execSync } = require("child_process");
+import { copy, existsSync } from "fs-extra";
+import { execSync } from "child_process";
 
 const targets = [
   { platform: "x64", os: "linux" },
@@ -30,7 +30,7 @@ const targets = [
     console.log(`Compile ${target.os}-${target.platform}...`);
 
     execSync(
-      `npm run pkg-internal -- -t node14-${target.os}-${target.platform} --output bin/bc-${target.os}-${target.platform} --no-bytecode --public-packages "*" --public -C Brotli -c build/pkg.config.json bin/index.js`
+      `npm run pkg-internal -- -t node16-${target.os}-${target.platform} --output bin/bc-${target.os}-${target.platform} --no-bytecode --public-packages "*" --public -C Brotli -c build/pkg.config.json bin/index.js`
     );
     console.log(`${target.os}-${target.platform} compiled.`);
   }
