@@ -42,6 +42,30 @@ const validDistributionShares = Joi.custom((i) => {
 
 const validRpcUrl = Joi.string().uri({ scheme: ["https"] });
 
+const validPlugin = Joi.object({
+  type: Joi.string().required().valid("telegram", "discord"),
+  messageTemplate: Joi.string(),
+  /* DISCORD */
+  webhook: Joi.any().when("type", {
+    is: "discord",
+    then: Joi.string()
+      .uri({
+        scheme: ["https", "http"],
+      })
+      .required(),
+  }),
+
+  /* TELEGRAM */
+  chat_id: Joi.any().when("type", {
+    is: "telegram",
+    then: Joi.number().required(),
+  }),
+  api_token: Joi.any().when("type", {
+    is: "telegram",
+    then: Joi.string().required(),
+  }),
+});
+
 export const schema = Joi.object({
   baking_address: validPKH.required(),
   default_fee: validPercentage.required(),
@@ -67,7 +91,7 @@ export const schema = Joi.object({
     baker_pays_transaction_fee: Joi.boolean(),
     minimum_amount: Joi.number().positive(),
   },
-  notifications: Joi.array(),
+  notifications: Joi.array().items(validPlugin),
 });
 
 export const validRemoteSignerUrl = Joi.string().uri({
