@@ -16,7 +16,13 @@ export class TelegramClient implements NotificationPlugin {
     this.client = new TelegramBot(config.api_token);
   }
 
-  public async notify(message: string, data: NotificationInputData) {
-    await this.client.sendMessage(this.chatId, constructMessage(message, data));
+  public async notify(
+    data: NotificationInputData,
+    messageTemplate: string = `A total of <T_REWARDS> tez was distributed for cycle <CYCLE>.`
+  ) {
+    await this.client.sendMessage(
+      this.chatId,
+      constructMessage(messageTemplate, data)
+    );
   }
 }

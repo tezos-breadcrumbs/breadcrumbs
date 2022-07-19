@@ -25,10 +25,10 @@ export const getDataForPlugins = (
 };
 
 export const constructMessage = (
-  message: string,
+  messageTemplate: string,
   data: Partial<NotificationInputData>
 ) => {
-  return message
+  return messageTemplate
     .replace("<CYCLE>", data.cycle ?? "UNKNOWN")
     .replace("<CYCLE_STAKING_BALANCE>", data.cycleStakingBalance ?? "UNKNOWN")
     .replace("<N_DELEGATORS>", data.numberOfDelegators ?? "UNKNOWN")

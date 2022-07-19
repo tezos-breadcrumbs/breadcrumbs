@@ -44,7 +44,7 @@ const validRpcUrl = Joi.string().uri({ scheme: ["https"] });
 
 const validPlugin = Joi.object({
   type: Joi.string().required().valid("telegram", "discord"),
-  message: Joi.string().required(),
+  messageTemplate: Joi.string(),
   /* DISCORD */
   webhook: Joi.any().when("type", {
     is: "discord",

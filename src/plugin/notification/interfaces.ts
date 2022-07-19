@@ -1,7 +1,6 @@
 export type NotificationPluginConfiguration = {
-  name?: string;
   type: string;
-  message: string;
+  messageTemplate?: string;
 };
 
 export type PluginHostDetails = {
@@ -23,8 +22,8 @@ export enum ENotificationPluginKind {
 
 export interface NotificationPlugin {
   notify(
-    message: string,
-    data?: NotificationInputData,
+    data: NotificationInputData,
+    messageTemplate?: string,
     level?: ENotificationLevel
   );
 }

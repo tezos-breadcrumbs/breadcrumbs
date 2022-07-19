@@ -10,6 +10,7 @@ import {
   PluginHostDetails,
 } from "../interfaces";
 import { DiscordPluginConfiguration } from "./interfaces";
+
 import { constructMessage } from "../helpers";
 
 export class DiscordClient implements NotificationPlugin {
@@ -43,8 +44,8 @@ export class DiscordClient implements NotificationPlugin {
   }
 
   public async notify(
-    message: string,
     data: NotificationInputData,
+    messageTemplate: string = `Payments for cycle <CYCLE>.`,
     level: ENotificationLevel = ENotificationLevel.Info
   ) {
     const color = this.getMessageColor(level);
@@ -58,7 +59,7 @@ export class DiscordClient implements NotificationPlugin {
       .addFields(fields)
       .setTimestamp();
     await this.client.send({
-      content: constructMessage(message, data),
+      content: constructMessage(messageTemplate, data),
       embeds: [embed],
     });
   }
