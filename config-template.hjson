@@ -41,6 +41,7 @@
   "notifications": [
     {
       "type": "discord",
+      "messageTemplate": "Payouts for cycle <CYCLE>"
       "webhook": "<webhook url>"
     },
     {
