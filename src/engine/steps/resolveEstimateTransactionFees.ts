@@ -2,7 +2,7 @@ import { get, isEmpty, last, map } from "lodash";
 import { ParamsWithKind } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 
-import { prepareTransaction } from "src/tezos-client";
+import { prepareTransactionForEstimation } from "src/tezos-client";
 import { ENoteType, StepArguments } from "src/engine/interfaces";
 import { add } from "src/utils/math";
 
@@ -33,7 +33,10 @@ export const resolveEstimateTransactionFees = async (
     const walletEstimates = isEmpty(walletPayments)
       ? []
       : await tezos.estimate.batch(
-          map(walletPayments, prepareTransaction) as ParamsWithKind[]
+          map(
+            walletPayments,
+            prepareTransactionForEstimation
+          ) as ParamsWithKind[]
         );
     if (walletEstimates.length - 1 === walletPayments.length) {
       /* Exclude reveal operation at the beginning. This only happens on testnet */
@@ -75,7 +78,7 @@ export const resolveEstimateTransactionFees = async (
       /* last to skip reveal operation at the beginning. This only happens on testnet */
       const estimate = last(
         await tezos.estimate.batch([
-          prepareTransaction(payment),
+          prepareTransactionForEstimation(payment),
         ] as ParamsWithKind[])
       );
       if (!estimate)

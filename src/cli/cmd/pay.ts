@@ -11,7 +11,7 @@ import {
 } from "src/cli/print";
 import {
   createProvider,
-  prepareTransaction,
+  prepareTransactionForSubmission,
   sendBatch,
 } from "src/tezos-client";
 import { globalCliOptions } from "src/cli/global";
@@ -146,7 +146,10 @@ export const pay = async (commandOptions) => {
           nonEmptyBatches[i].length
         } transaction(s) ...`
       );
-      const opBatch = await sendBatch(provider, batch.map(prepareTransaction));
+      const opBatch = await sendBatch(
+        provider,
+        batch.map(prepareTransactionForSubmission)
+      );
       for (const payment of batch) {
         payment.hash = opBatch.opHash;
       }
