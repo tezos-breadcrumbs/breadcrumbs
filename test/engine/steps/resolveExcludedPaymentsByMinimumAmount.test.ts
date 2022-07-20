@@ -96,7 +96,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
 
     mockProvider.mockResolvedValue(
       inputWithoutTransactionFees.cycleReport.delegatorPayments.map(() => ({
-        totalCost: 1,
+        suggestedFeeMutez: 1,
       }))
     );
 
@@ -180,7 +180,7 @@ describe("resolveExcludedPaymentsByMinimumAmount", () => {
 
     mockProvider.mockResolvedValue(
       inputWithoutTransactionFees.cycleReport.delegatorPayments.map(() => ({
-        totalCost: 1,
+        suggestedFeeMutez: 1,
       }))
     );
 

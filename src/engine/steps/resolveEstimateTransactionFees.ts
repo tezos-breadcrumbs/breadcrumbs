@@ -46,7 +46,7 @@ export const resolveEstimateTransactionFees = async (
     walletPayments.forEach((payment, index) => {
       const estimate = walletEstimates[index];
       Object.assign(payment, {
-        transactionFee: new BigNumber(estimate.totalCost),
+        transactionFee: new BigNumber(estimate.suggestedFeeMutez),
         storageLimit: new BigNumber(estimate.storageLimit),
         gasLimit: new BigNumber(estimate.gasLimit),
       });
@@ -86,7 +86,7 @@ export const resolveEstimateTransactionFees = async (
           `Contract call without available estimate. This should never happen!`
         );
       Object.assign(payment, {
-        transactionFee: new BigNumber(estimate.totalCost),
+        transactionFee: new BigNumber(estimate.suggestedFeeMutez),
         storageLimit: new BigNumber(estimate.storageLimit),
         gasLimit: new BigNumber(estimate.gasLimit),
       });

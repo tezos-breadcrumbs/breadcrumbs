@@ -56,7 +56,7 @@ describe("resolveEstimateTransactionFees", () => {
       payments.map((_item, index) => ({
         gasLimit: index,
         storageLimit: index + 1,
-        totalCost: index + 2,
+        suggestedFeeMutez: index + 2,
       }))
     );
 
