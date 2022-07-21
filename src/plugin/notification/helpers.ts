@@ -1,6 +1,10 @@
 import { uniq } from "lodash";
 import { CycleData } from "src/api-client/abstract_client";
-import { CycleReport } from "src/engine/interfaces";
+import {
+  CycleReport,
+  DelegatorPayment,
+  EPaymentType,
+} from "src/engine/interfaces";
 import { MUTEZ_FACTOR } from "src/utils/constants";
 import { sum } from "src/utils/math";
 import { NotificationInputData } from "./interfaces";
@@ -9,18 +13,26 @@ export const getDataForPlugins = (
   cycleData: CycleData,
   cycleReport: CycleReport
 ): NotificationInputData => {
-  const { cycle, delegatorPayments } = cycleReport;
+  const { cycle, delegatorPayments, distributedPayments } = cycleReport;
 
   return {
     cycle: cycle.toString(),
     cycleStakingBalance: cycleData.cycleStakingBalance.toString(),
-    totalDistributed: sum(...delegatorPayments.map((p) => p.amount))
+    totalDistributed: sum(
+      ...delegatorPayments.map((p) => p.amount),
+      ...distributedPayments
+        .filter((p) => p.type === EPaymentType.Delegator)
+        .map((p) => (p as DelegatorPayment).amount)
+    )
       .div(MUTEZ_FACTOR)
       .dp(3)
       .toString(),
-    numberOfDelegators: uniq(
-      delegatorPayments.map((x) => x.delegator)
-    ).length.toString(),
+    numberOfDelegators: uniq([
+      ...delegatorPayments.map((x) => x.delegator),
+      ...distributedPayments
+        .filter((p) => p.type === EPaymentType.Delegator)
+        .map((p) => (p as DelegatorPayment).delegator),
+    ]).length.toString(),
   };
 };
 
