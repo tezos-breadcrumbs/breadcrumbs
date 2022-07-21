@@ -70,7 +70,7 @@ describe("resolveSufficientBalance", () => {
         () => ({
           gasLimit: 1,
           storageLimit: 1,
-          totalCost: 1,
+          suggestedFeeMutez: 1,
         })
       )
     );
