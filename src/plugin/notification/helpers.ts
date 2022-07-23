@@ -17,7 +17,10 @@ export const getDataForPlugins = (
 
   return {
     cycle: cycle.toString(),
-    cycleStakingBalance: cycleData.cycleStakingBalance.toString(),
+    cycleStakingBalance: cycleData.cycleStakingBalance
+      .div(MUTEZ_FACTOR)
+      .dp(3)
+      .toString(),
     totalDistributed: sum(
       ...delegatorPayments.map((p) => p.amount),
       ...distributedPayments
