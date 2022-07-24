@@ -219,5 +219,6 @@ export const pay = async (commandOptions) => {
     }
   } else {
     console.log(`Failed payments detected. Notifications suppressed...`);
+    process.exit(1);
   }
 };
