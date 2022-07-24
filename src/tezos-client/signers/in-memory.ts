@@ -7,7 +7,9 @@ import { WALLET_PRIVATE_KEY_FILE } from "src/utils/constants";
 export const loadStoredPrivateKey = async () => {
   return (
     await readFile(join(globalCliOptions.workDir, WALLET_PRIVATE_KEY_FILE))
-  ).toString();
+  )
+    .toString()
+    .trim();
 };
 
 export const getInMemorySigner = async (key?: string) => {
