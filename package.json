@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "audit-ci": "audit-ci --moderate",
+    "audit-ci": "audit-ci --high",
     "pay": "ts-node index.ts pay",
     "configure": "ts-node src/config/configure.ts",
     "test": "jest --runInBand",
