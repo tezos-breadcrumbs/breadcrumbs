@@ -51,6 +51,7 @@ describe("resolveEstimateTransactionFees", () => {
       cycleReport,
       distributableRewards,
       tezos: provider,
+      flags: {},
     };
 
     const partialInput = resolveExcludedPaymentsByContext(
@@ -112,6 +113,7 @@ describe("resolveEstimateTransactionFees", () => {
       cycleReport,
       distributableRewards,
       tezos: provider,
+      flags: {},
     };
 
     const partialInput = resolveExcludedPaymentsByContext(

@@ -7,7 +7,7 @@ const BUFFER_FACTOR = 1.01;
 export const resolveSufficientBalance = async (
   args: StepArguments
 ): Promise<StepArguments> => {
-  const { tezos, cycleReport } = args;
+  const { tezos, cycleReport, flags } = args;
 
   const signerBalance = await getSignerBalance(tezos);
 
@@ -24,5 +24,5 @@ export const resolveSufficientBalance = async (
 
   return signerBalance.gte(totalPayable)
     ? args
-    : { ...args, flags: { insufficientBalance: true } };
+    : { ...args, flags: { ...flags, insufficientBalance: true } };
 };

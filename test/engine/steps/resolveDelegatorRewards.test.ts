@@ -33,6 +33,7 @@ describe("resolveDelegatorRewards", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveExcludedDelegators(resolveBakerRewards(args));
@@ -144,6 +145,7 @@ describe("resolveDelegatorRewards", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveExcludedDelegators(resolveBakerRewards(args));
@@ -226,6 +228,7 @@ describe("resolveDelegatorRewards", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveExcludedDelegators(resolveBakerRewards(args));
@@ -308,6 +311,7 @@ describe("resolveDelegatorRewards", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveExcludedDelegators(resolveBakerRewards(args));

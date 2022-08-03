@@ -1,4 +1,5 @@
-import { StepArguments, StepFunction } from "./interfaces";
+import { StepArguments, StepFunction, Flags } from "./interfaces";
+import { Optional } from "utility-types";
 import {
   resolveBakerRewards,
   resolveBondRewardDistribution,
@@ -32,12 +33,13 @@ const steps: StepFunction[] = [
 ];
 
 const run = async (
-  args: StepArguments,
+  args: Optional<StepArguments, "flags">,
   remainingSteps: StepFunction[] = steps
 ): Promise<StepArguments> => {
-  if (!remainingSteps.length) return args; /* base case */
+  if (!args.flags) args.flags = {} as Flags;
+  if (!remainingSteps.length) return args as StepArguments; /* base case */
 
-  const nextArgs = await remainingSteps[0](args);
+  const nextArgs = await remainingSteps[0](args as StepArguments);
   const nextSteps = remainingSteps.slice(1);
 
   return await run(nextArgs, nextSteps);

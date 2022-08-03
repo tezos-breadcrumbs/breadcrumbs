@@ -1,4 +1,4 @@
-import { find, get, groupBy, some } from "lodash";
+import { every, find, get, groupBy, some, uniq } from "lodash";
 import { globalCliOptions } from "src/cli/global";
 import { join } from "path";
 
@@ -9,28 +9,69 @@ import {
   StepArguments,
 } from "src/engine/interfaces";
 import { readPaymentReport } from "src/fs-client";
-import { REPORTS_SUCCESS_PAYMENTS_DIRECTORY } from "src/utils/constants";
+import {
+  REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
+  REPORTS_FAILED_PAYMENTS_DIRECTORY,
+} from "src/utils/constants";
+import client from "src/api-client";
 
 export const resolveExcludeDistributed = async (
   args: StepArguments
 ): Promise<StepArguments> => {
-  const { cycleReport } = args;
+  const { cycleReport, flags } = args;
 
   const { delegatorPayments, feeIncomePayments, bondRewardPayments, cycle } =
     cycleReport;
 
-  let appliedPayments: Array<DelegatorPayment | BasePayment>;
+  let appliedPayments: Array<DelegatorPayment | BasePayment> = [];
   try {
     appliedPayments = await readPaymentReport(
       cycle,
       join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
     );
   } catch (err) {
-    if (get(err, "code") === "ENOENT") return args;
-    throw new Error(
-      "Unexpected internal error. Failed to check past payments."
-    );
+    if (get(err, "code") !== "ENOENT") {
+      throw new Error(
+        "Unexpected internal error. Failed to check past payments."
+      );
+    }
   }
+
+  try {
+    const failedPayments: Array<DelegatorPayment | BasePayment> =
+      await readPaymentReport(
+        cycle,
+        join(globalCliOptions.workDir, REPORTS_FAILED_PAYMENTS_DIRECTORY)
+      );
+    const opHashes = uniq(failedPayments.map((x) => x.hash));
+    for (const opHash of opHashes) {
+      const transactions = await client.getTransactionsByHash(opHash);
+      if (every(transactions, (tx) => tx.status === "applied")) {
+        appliedPayments.push(
+          ...failedPayments
+            .filter((tx) => tx.hash === opHash)
+            .map((tx) => ({ ...tx, note: `` }))
+        );
+        flags.successfulTransactionInFailed = true;
+      }
+      if (
+        some(transactions, (tx) => tx.status === "applied") &&
+        some(transactions, (tx) => tx.status !== "applied")
+      ) {
+        throw new Error(
+          "Unexpected internal error. Failed to check past payments."
+        );
+      }
+    }
+  } catch (err) {
+    if (get(err, "code") !== "ENOENT") {
+      throw new Error(
+        "Unexpected internal error. Failed to check past payments."
+      );
+    }
+  }
+
+  if (appliedPayments.length === 0) return args;
 
   /* appliedPayments includes payments excluded by minimum amount or minimum balance in the CSV file. */
 
@@ -117,5 +158,6 @@ export const resolveExcludeDistributed = async (
       bondRewardPayments: pendingBondRewardPayments,
       distributedPayments: distributedPayments,
     },
+    flags,
   };
 };

@@ -29,6 +29,7 @@ describe("resolveExcludedDelegators", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleData.cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveBakerRewards(args);
@@ -60,6 +61,7 @@ describe("resolveExcludedDelegators", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const actual = resolveExcludedDelegators(args);
