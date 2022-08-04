@@ -70,12 +70,16 @@ export class TzKT implements Client {
     }
   };
 
-  public getTransactionsByHash = async (
+  public getOperationByHash = async (
     opHash: string
   ): Promise<Array<Transaction>> => {
-    const { data } = await this.instance.get(
-      `/operations/transactions/${opHash}`
-    );
-    return data;
+    try {
+      const { data } = await this.instance.get(`/operations/${opHash}`);
+      if (!Array.isArray(data))
+        throw Error(`TZKT ERROR: Unexpected query result`);
+      return data;
+    } catch (err) {
+      throw Error("TZKT ERROR: Cannot fetch operation.");
+    }
   };
 }

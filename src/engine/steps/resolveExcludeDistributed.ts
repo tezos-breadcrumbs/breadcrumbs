@@ -14,6 +14,7 @@ import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
 import client from "src/api-client";
+import { validateOperation, ValidationResult } from "@taquito/utils";
 
 export const resolveExcludeDistributed = async (
   args: StepArguments
@@ -45,7 +46,8 @@ export const resolveExcludeDistributed = async (
       );
     const opHashes = uniq(failedPayments.map((x) => x.hash));
     for (const opHash of opHashes) {
-      const transactions = await client.getTransactionsByHash(opHash);
+      if (validateOperation(opHash) !== ValidationResult.VALID) continue; // process only valid op hashes
+      const transactions = await client.getOperationByHash(opHash);
       if (every(transactions, (tx) => tx.status === "applied")) {
         appliedPayments.push(
           ...failedPayments
