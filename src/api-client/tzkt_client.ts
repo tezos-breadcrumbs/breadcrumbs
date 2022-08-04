@@ -70,11 +70,15 @@ export class TzKT implements Client {
     }
   };
 
-  public getOperationByHash = async (
+  public getTransactionsByHash = async (
     opHash: string
   ): Promise<Array<Transaction>> => {
     try {
-      const { data } = await this.instance.get(`/operations/${opHash}`);
+      // Use `/operations/transactions/${opHash}` instead of `/operations/${opHash}`
+      // |-> recommended by tzkt team
+      const { data } = await this.instance.get(
+        `/operations/transactions/${opHash}`
+      );
       if (!Array.isArray(data))
         throw Error(`TZKT ERROR: Unexpected query result`);
       return data;

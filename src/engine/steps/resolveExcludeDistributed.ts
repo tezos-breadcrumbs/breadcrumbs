@@ -47,7 +47,7 @@ export const resolveExcludeDistributed = async (
     const opHashes = uniq(failedPayments.map((x) => x.hash));
     for (const opHash of opHashes) {
       if (validateOperation(opHash) !== ValidationResult.VALID) continue; // process only valid op hashes
-      const transactions = await client.getOperationByHash(opHash);
+      const transactions = await client.getTransactionsByHash(opHash);
       if (every(transactions, (tx) => tx.status === "applied")) {
         appliedPayments.push(
           ...failedPayments
