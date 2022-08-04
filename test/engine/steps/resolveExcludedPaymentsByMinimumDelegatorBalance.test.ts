@@ -39,6 +39,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveExcludedPaymentsByMinimumAmount(
@@ -73,6 +74,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveExcludedPaymentsByMinimumAmount(
@@ -151,6 +153,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveExcludedPaymentsByMinimumAmount(
@@ -234,6 +237,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveExcludedPaymentsByMinimumAmount(
@@ -341,6 +345,7 @@ describe("resolveExcludedPaymentsByMinimumDelegatorBalance", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveExcludedPaymentsByMinimumAmount(

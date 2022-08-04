@@ -42,6 +42,7 @@ describe("resolveExcludedPaymentsByContext", () => {
       cycleReport,
       distributableRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveDelegatorRewards(
@@ -82,6 +83,7 @@ describe("resolveExcludedPaymentsByContext", () => {
       cycleReport,
       distributableRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveDelegatorRewards(
@@ -121,6 +123,7 @@ describe("resolveExcludedPaymentsByContext", () => {
       cycleReport,
       distributableRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveDelegatorRewards(

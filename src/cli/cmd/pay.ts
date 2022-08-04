@@ -18,7 +18,11 @@ import { globalCliOptions } from "src/cli/global";
 import { writeCycleReport, writePaymentReport } from "src/fs-client";
 import { unlink } from "fs/promises";
 import inquirer from "inquirer";
-import { BasePayment, DelegatorPayment } from "src/engine/interfaces";
+import {
+  BasePayment,
+  DelegatorPayment,
+  StepArguments,
+} from "src/engine/interfaces";
 import {
   REPORTS_FAILED_PAYMENTS_DIRECTORY,
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
@@ -29,6 +33,68 @@ import { getExplorerUrl } from "src/utils/url";
 import { EPayoutWalletMode } from "src/config/interfaces";
 import { loadNotificationPlugin } from "src/plugin/notification";
 import { getDataForPlugins } from "src/plugin/notification/helpers";
+
+const writeReportAndSendNotifications = async (
+  cycle: number,
+  payments: {
+    successfulPayments: Array<BasePayment>;
+    failedPayments: Array<BasePayment>;
+    excludedPayments: Array<BasePayment>;
+  },
+  result: StepArguments
+) => {
+  const { successfulPayments, failedPayments, excludedPayments } = payments;
+  if (successfulPayments.length > 0) {
+    await writePaymentReport(
+      cycle,
+      [...successfulPayments, ...excludedPayments],
+      join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
+    );
+  }
+  if (failedPayments.length > 0) {
+    await writePaymentReport(
+      cycle,
+      failedPayments,
+      join(globalCliOptions.workDir, REPORTS_FAILED_PAYMENTS_DIRECTORY)
+    );
+  } else {
+    // no failed payments remove old report if exists
+    const reportPath = join(
+      globalCliOptions.workDir,
+      REPORTS_FAILED_PAYMENTS_DIRECTORY,
+      `${cycle}.csv`
+    );
+    try {
+      await unlink(reportPath);
+    } catch {
+      /** not found */
+    }
+  }
+
+  await writeCycleReport(
+    result.cycleReport,
+    result.cycleData,
+    "reports/cycle_summary/"
+  );
+
+  if (failedPayments.length === 0) {
+    const data = getDataForPlugins(result.cycleData, result.cycleReport);
+
+    for (const plugin of getConfig("notifications") ?? []) {
+      try {
+        console.log(`Sending notifications via ${capitalize(plugin.type)}`);
+        const notificator = await loadNotificationPlugin(plugin);
+        await notificator.notify(data);
+        console.log(`${capitalize(plugin.type)} notifications sent`);
+      } catch (e) {
+        console.log(`Notification error: ${(e as Error).message}`);
+      }
+    }
+  } else {
+    console.log(`Failed payments detected. Notifications suppressed...`);
+    process.exit(1);
+  }
+};
 
 export const pay = async (commandOptions) => {
   const cycle = commandOptions.cycle ?? (await client.getLastCompletedCycle());
@@ -113,6 +179,18 @@ export const pay = async (commandOptions) => {
   }
 
   if (isEmpty(batches) || every(batches, (batch) => isEmpty(batch))) {
+    if (result.flags.successfulTransactionInFailed) {
+      console.log(`Found misreported sucessful payments. Rewriting report...`);
+      await writeReportAndSendNotifications(
+        cycle,
+        {
+          successfulPayments: distributedPayments,
+          failedPayments: [],
+          excludedPayments,
+        },
+        result
+      );
+    }
     console.log("Nothing to pay. Aborting...");
     process.exit(0);
   }
@@ -170,55 +248,9 @@ export const pay = async (commandOptions) => {
       failedPayments.push(...batch);
     }
   }
-
-  if (successfulPayments.length > 0) {
-    await writePaymentReport(
-      cycle,
-      [...successfulPayments, ...excludedPayments],
-      join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
-    );
-  }
-  if (failedPayments.length > 0) {
-    await writePaymentReport(
-      cycle,
-      failedPayments,
-      join(globalCliOptions.workDir, REPORTS_FAILED_PAYMENTS_DIRECTORY)
-    );
-  } else {
-    // no failed payments remove old report if exists
-    const reportPath = join(
-      globalCliOptions.workDir,
-      REPORTS_FAILED_PAYMENTS_DIRECTORY,
-      `${cycle}.csv`
-    );
-    try {
-      await unlink(reportPath);
-    } catch {
-      /** not found */
-    }
-  }
-
-  await writeCycleReport(
-    result.cycleReport,
-    cycleData,
-    "reports/cycle_summary/"
+  await writeReportAndSendNotifications(
+    cycle,
+    { successfulPayments, failedPayments, excludedPayments },
+    result
   );
-
-  if (failedPayments.length === 0) {
-    const data = getDataForPlugins(result.cycleData, result.cycleReport);
-
-    for (const plugin of getConfig("notifications") ?? []) {
-      try {
-        console.log(`Sending notifications via ${capitalize(plugin.type)}`);
-        const notificator = await loadNotificationPlugin(plugin);
-        await notificator.notify(data);
-        console.log(`${capitalize(plugin.type)} notifications sent`);
-      } catch (e) {
-        console.log(`Notification error: ${(e as Error).message}`);
-      }
-    }
-  } else {
-    console.log(`Failed payments detected. Notifications suppressed...`);
-    process.exit(1);
-  }
 };

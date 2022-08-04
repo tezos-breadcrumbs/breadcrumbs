@@ -6,6 +6,15 @@ import { map, pick, update } from "lodash";
 import { sum } from "src/utils/math";
 import { Client, CycleData } from "./abstract_client";
 
+export interface Transaction {
+  type: string;
+  level: number;
+  timestamp: string;
+  block: string;
+  hash: string;
+  status: "applied" | string;
+}
+
 export class TzKT implements Client {
   instance: AxiosInstance;
 
@@ -58,6 +67,19 @@ export class TzKT implements Client {
       return headCycle - 1;
     } catch (err) {
       throw Error("TZKT ERROR: Cannot fetch last finished cycle.");
+    }
+  };
+
+  public getOperationByHash = async (
+    opHash: string
+  ): Promise<Array<Transaction>> => {
+    try {
+      const { data } = await this.instance.get(`/operations/${opHash}`);
+      if (!Array.isArray(data))
+        throw Error(`TZKT ERROR: Unexpected query result`);
+      return data;
+    } catch (err) {
+      throw Error("TZKT ERROR: Cannot fetch operation.");
     }
   };
 }

@@ -36,6 +36,7 @@ describe("resolveFeeIncomeDistrubtion", () => {
       cycleReport,
       distributableRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveDelegatorRewards(
@@ -62,6 +63,7 @@ describe("resolveFeeIncomeDistrubtion", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleData.cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveDelegatorRewards(
@@ -99,6 +101,7 @@ describe("resolveFeeIncomeDistrubtion", () => {
       cycleReport,
       distributableRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const input = resolveDelegatorRewards(

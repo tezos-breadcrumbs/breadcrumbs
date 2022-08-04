@@ -62,6 +62,7 @@ describe("resolveSplitIntoBatches", () => {
       cycleReport,
       distributableRewards,
       tezos: provider,
+      flags: {},
     };
 
     const partialInput = resolveExcludedPaymentsByContext(
@@ -137,6 +138,7 @@ describe("resolveSplitIntoBatches", () => {
       cycleReport,
       distributableRewards,
       tezos: provider,
+      flags: {},
     };
 
     const partialInput = resolveExcludedPaymentsByContext(
@@ -211,6 +213,7 @@ describe("resolveSplitIntoBatches", () => {
       cycleReport,
       distributableRewards,
       tezos: provider,
+      flags: {},
     };
 
     const partialInput = resolveExcludedPaymentsByContext(

@@ -1,4 +1,4 @@
-import { WebhookClient, MessageEmbed, HexColorString } from "discord.js";
+import { WebhookClient, EmbedBuilder, HexColorString } from "discord.js";
 import { omit } from "lodash";
 import { capitalCase } from "change-case";
 
@@ -52,7 +52,7 @@ export class DiscordClient implements NotificationPlugin {
       name: capitalCase(k),
       value: data[k].toString(),
     }));
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setColor(color)
       .setFooter({ text: this.hostInfo })
       .addFields(fields)

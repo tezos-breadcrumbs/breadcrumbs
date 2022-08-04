@@ -44,6 +44,7 @@ describe("resolveBakerRewards", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleData.cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const lockedBondRewards = bakerBalance
@@ -105,6 +106,7 @@ describe("resolveBakerRewards", () => {
       cycleReport: initializeCycleReport(470),
       distributableRewards: cycleData.cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const lockedBondRewards = bakerBalance
@@ -159,6 +161,7 @@ describe("resolveBakerRewards", () => {
       cycleReport: initializeCycleReport(475),
       distributableRewards: cycleData.cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const actual = resolveBakerRewards(args);
@@ -211,6 +214,7 @@ describe("resolveBakerRewards", () => {
       cycleReport: initializeCycleReport(476),
       distributableRewards: cycleData.cycleRewards,
       tezos: {} as TezosToolkit,
+      flags: {},
     };
 
     const actual = resolveBakerRewards(args);
