@@ -1,4 +1,5 @@
 import { uniq } from "lodash";
+import { emojify } from "node-emoji";
 import { CycleData } from "src/api-client/abstract_client";
 import {
   CycleReport,
@@ -43,9 +44,11 @@ export const constructMessage = (
   messageTemplate: string,
   data: Partial<NotificationInputData>
 ) => {
-  return messageTemplate
+  const message = messageTemplate
     .replace("<CYCLE>", data.cycle ?? "UNKNOWN")
     .replace("<CYCLE_STAKING_BALANCE>", data.cycleStakingBalance ?? "UNKNOWN")
     .replace("<N_DELEGATORS>", data.numberOfDelegators ?? "UNKNOWN")
     .replace("<T_REWARDS>", data.totalDistributed ?? "UNKNOWN");
+
+  return emojify(message, () => "");
 };
