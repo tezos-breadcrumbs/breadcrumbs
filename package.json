@@ -12,6 +12,7 @@
   "scripts": {
     "audit-ci": "audit-ci --high",
     "pay": "ts-node index.ts pay",
+    "generate-delegator-report": "ts-node index.ts generateDelegatorReport",
     "configure": "ts-node src/config/configure.ts",
     "test": "jest --runInBand",
     "lint": "eslint .",

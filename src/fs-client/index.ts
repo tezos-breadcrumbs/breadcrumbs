@@ -47,6 +47,25 @@ export const writePaymentReport = async (
   await writeCSV(`${path}/${cycle}.csv`, DELEGATOR_REPORT_HEADERS, records);
 };
 
+export const writeDelegatorReport = async (
+  startCycle: number,
+  endCycle: number,
+  delegator: string,
+  payments: (DelegatorPayment | BasePayment)[],
+  path: string
+) => {
+  const records = payments.map((payment) => ({
+    ...formatPayment(payment),
+    timestamp: payment["timestamp"],
+  }));
+  await ensureDirectoryExists(path);
+  await writeCSV(
+    `${path}/${delegator}:${startCycle}_to_${endCycle}.csv`,
+    DELEGATOR_REPORT_HEADERS,
+    records
+  );
+};
+
 export const writeCycleReport = async (
   cycleReport: CycleReport,
   cycleData: CycleData,
