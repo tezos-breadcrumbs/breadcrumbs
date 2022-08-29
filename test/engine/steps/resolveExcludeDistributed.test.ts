@@ -19,6 +19,7 @@ import {
 import engine from "src/engine";
 import * as helpers from "src/engine/helpers";
 
+import * as fsClient from "src/fs-client";
 import * as Polly from "test/helpers/polly";
 import { generateConfig } from "test/helpers";
 
@@ -30,6 +31,7 @@ describe("resolveSufficientBalance", () => {
 
   let mockProvider;
   let mockProviderRpcConstants;
+  let mockReadPaymentReport;
 
   const inputSteps = [
     resolveBakerRewards,
@@ -47,6 +49,7 @@ describe("resolveSufficientBalance", () => {
   beforeEach(() => {
     mockProvider = jest.spyOn(provider.estimate, "batch");
     mockProviderRpcConstants = jest.spyOn(provider.rpc, "getConstants");
+    mockReadPaymentReport = jest.spyOn(fsClient, "readPaymentReport");
 
     mockProviderRpcConstants.mockResolvedValue({
       /* Realistic numbers */
