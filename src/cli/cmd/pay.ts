@@ -120,6 +120,7 @@ export const pay = async (commandOptions) => {
     cycleData,
     distributableRewards: cycleData.cycleRewards,
     tezos: provider,
+    globalCliOptions,
   });
 
   const { batches, creditablePayments, excludedPayments, distributedPayments } =

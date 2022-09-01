@@ -35,6 +35,7 @@ export interface StepArguments {
   distributableRewards: BigNumber;
   tezos: TezosToolkit;
   flags: Flags;
+  cliOptions: { workDir: string };
 }
 
 export enum EPaymentType {

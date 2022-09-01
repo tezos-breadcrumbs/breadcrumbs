@@ -31,6 +31,7 @@ export const resolveExcludeDistributed = async (
       join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
     );
   } catch (err) {
+    console.log(err);
     if (get(err, "code") !== "ENOENT") {
       throw new Error(
         "Unexpected internal error. Failed to check past payments."
@@ -44,6 +45,8 @@ export const resolveExcludeDistributed = async (
         cycle,
         join(globalCliOptions.workDir, REPORTS_FAILED_PAYMENTS_DIRECTORY)
       );
+    console.log(2);
+
     const opHashes = uniq(failedPayments.map((x) => x.hash));
     for (const opHash of opHashes) {
       if (validateOperation(opHash) !== ValidationResult.VALID) continue; // process only valid op hashes

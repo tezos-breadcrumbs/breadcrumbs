@@ -2,6 +2,7 @@
 import { TezosToolkit } from "@taquito/taquito";
 
 import client from "src/api-client";
+import { globalCliOptions } from "src/cli/global";
 
 import {
   resolveBakerRewards,
@@ -14,6 +15,7 @@ import {
   resolveSubstractTransactionFees,
   resolveFeeIncomeDistribution,
   resolveBondRewardDistribution,
+  resolveExcludeDistributed,
 } from "src/engine/steps";
 
 import engine from "src/engine";
@@ -32,6 +34,7 @@ describe("resolveSufficientBalance", () => {
   let mockProvider;
   let mockProviderRpcConstants;
   let mockReadPaymentReport;
+  let mockGlobalCliOptions;
 
   const inputSteps = [
     resolveBakerRewards,
@@ -57,6 +60,10 @@ describe("resolveSufficientBalance", () => {
       hard_storage_limit_per_operation: 60000,
     });
 
+    mockGlobalCliOptions.mockResolvedValue({
+      workDir: "",
+    });
+
     mockProvider.mockResolvedValue(
       Array.from(
         {
@@ -75,7 +82,7 @@ describe("resolveSufficientBalance", () => {
     jest.resetAllMocks();
   });
 
-  it("returns correct arguments if there are no previous cycle records", async () => {
+  it.only("returns correct arguments if there are no previous cycle records", async () => {
     const config = generateConfig({});
 
     const cycleReport = initializeCycleReport(470);
@@ -92,6 +99,10 @@ describe("resolveSufficientBalance", () => {
     };
 
     const input = await engine.run(args, inputSteps);
+
+    mockReadPaymentReport.mockResolvedValue([]);
+
+    const output = await resolveExcludeDistributed(input);
   });
 
   it("returns distributed payments correctly if applicable", async () => {
