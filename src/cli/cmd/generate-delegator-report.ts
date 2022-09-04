@@ -20,7 +20,7 @@ export const generateDelegatorReport = async (commandOptions) => {
   await fs.readdir(REPORTS_SUCCESS_PAYMENTS_DIRECTORY, async (err, files) => {
     const { startCycle, endCycle, delegator } = commandOptions;
 
-    let payments: (BasePayment | DelegatorPayment)[] = [];
+    const payments: (BasePayment | DelegatorPayment)[] = [];
 
     const cycleSet = files
       .map((n) => Number(n.replace(".csv", "")))
@@ -37,7 +37,7 @@ export const generateDelegatorReport = async (commandOptions) => {
         .filter((p) => p.type === EPaymentType.Delegator)
         .filter((p) => (p as DelegatorPayment).delegator === delegator);
 
-      payments = [..._payments, ...payments];
+      payments.push(..._payments);
     }
 
     await writeDelegatorReport(

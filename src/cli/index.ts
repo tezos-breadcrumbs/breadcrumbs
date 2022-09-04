@@ -1,6 +1,6 @@
 import { program } from "commander";
 import { pay, version } from "./cmd";
-import { generateDelegatorReport } from "./cmd/generate-delegator.report";
+import { generateDelegatorReport } from "./cmd/generate-delegator-report";
 import { globalCliOptions } from "./global";
 import { validateCycleOpt, validAddress } from "./validate";
 
