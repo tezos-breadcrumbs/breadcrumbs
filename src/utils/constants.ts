@@ -22,6 +22,5 @@ export const REPORTS_FAILED_PAYMENTS_DIRECTORY = join(
 
 export const CUSTOM_DELEGATOR_REPORT_DIRECTORY = join(
   REPORTS_DIRECTORY,
-  "custom",
   "delegator"
 );
