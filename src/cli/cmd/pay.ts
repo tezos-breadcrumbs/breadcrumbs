@@ -232,6 +232,10 @@ export const pay = async (commandOptions) => {
         payment.hash = opBatch.opHash;
       }
       await opBatch.confirmation(2);
+      const status = await opBatch.status();
+      if (status !== "applied") {
+        throw new Error(`Operation not applied! (status: ${status})`);
+      }
       console.log(
         `Transaction confirmed on ${getExplorerUrl(
           opBatch.opHash,

@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { values, sum } from "lodash";
+import { ENotificationPluginKind } from "src/plugin/notification/interfaces";
 import { EPayoutWalletMode } from "../interfaces";
 import { isAddress, isPKH } from "./helpers";
 
@@ -43,11 +44,13 @@ const validDistributionShares = Joi.custom((i) => {
 const validRpcUrl = Joi.string().uri({ scheme: ["https"] });
 
 const validPlugin = Joi.object({
-  type: Joi.string().required().valid("telegram", "discord"),
+  type: Joi.string()
+    .required()
+    .valid(...Object.values(ENotificationPluginKind)),
   messageTemplate: Joi.string(),
   /* DISCORD */
   webhook: Joi.any().when("type", {
-    is: "discord",
+    is: ENotificationPluginKind.Discord,
     then: Joi.string()
       .uri({
         scheme: ["https", "http"],
@@ -57,14 +60,24 @@ const validPlugin = Joi.object({
 
   /* TELEGRAM */
   chat_id: Joi.any().when("type", {
-    is: "telegram",
+    is: ENotificationPluginKind.Telegram,
     then: Joi.number().required(),
   }),
   api_token: Joi.any().when("type", {
-    is: "telegram",
+    is: ENotificationPluginKind.Telegram,
     then: Joi.string().required(),
   }),
-});
+
+  /* TWITTER */
+  api_key: Joi.any().when("type", {
+    is: ENotificationPluginKind.Twitter,
+    then: Joi.string().required(),
+  }),
+  api_key_secret: Joi.any().when("type", {
+    is: ENotificationPluginKind.Twitter,
+    then: Joi.string().required(),
+  }),
+}).unknown(true);
 
 export const schema = Joi.object({
   baking_address: validPKH.required(),

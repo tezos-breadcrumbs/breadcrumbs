@@ -17,6 +17,7 @@ export enum ENotificationLevel {
 export enum ENotificationPluginKind {
   Discord = "discord",
   Telegram = "telegram",
+  Twitter = "twitter",
   Native = "native",
 }
 
