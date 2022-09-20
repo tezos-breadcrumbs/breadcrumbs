@@ -12,7 +12,7 @@
   "scripts": {
     "audit-ci": "audit-ci --high",
     "pay": "ts-node index.ts pay",
-    "configure": "ts-node src/config/configure.ts",
+    "configure": "ts-node index.ts configure",
     "test": "jest --runInBand",
     "lint": "eslint .",
     "prepare": "husky install",
