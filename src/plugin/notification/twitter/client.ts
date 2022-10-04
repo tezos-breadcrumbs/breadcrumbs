@@ -18,14 +18,15 @@ export class TwitterClient implements NotificationPlugin {
     this.client = new TwitterApi({
       appKey: config.api_key,
       appSecret: config.api_key_secret,
+      accessToken: config.access_token,
+      accessSecret: config.access_token_secret,
     } as TwitterApiTokens);
     this.messageTemplate = config.messageTemplate ?? DEFAULT_MESSAGE_TEMPLATE;
   }
 
   public async notify(data: NotificationInputData) {
     try {
-      //const client = await this.client.appLogin();
-      await this.client.v1.tweet(constructMessage(this.messageTemplate, data));
+      await this.client.v2.tweet(constructMessage(this.messageTemplate, data));
     } catch (err) {
       console.log(err);
     }

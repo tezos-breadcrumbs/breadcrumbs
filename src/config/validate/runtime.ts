@@ -77,6 +77,14 @@ const validPlugin = Joi.object({
     is: ENotificationPluginKind.Twitter,
     then: Joi.string().required(),
   }),
+  access_token: Joi.any().when("type", {
+    is: ENotificationPluginKind.Twitter,
+    then: Joi.string().required(),
+  }),
+  access_token_secret: Joi.any().when("type", {
+    is: ENotificationPluginKind.Twitter,
+    then: Joi.string().required(),
+  }),
 }).unknown(true);
 
 export const schema = Joi.object({
