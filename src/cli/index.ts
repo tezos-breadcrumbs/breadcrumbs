@@ -1,5 +1,5 @@
 import { program } from "commander";
-import { pay, version } from "./cmd";
+import { configure, pay, version } from "./cmd";
 import { globalCliOptions } from "./global";
 import { validateCycleOpt } from "./validate";
 
@@ -23,7 +23,9 @@ export const run = async () => {
       "Automatically sends rewards without need for confirmation."
     )
     .action(pay);
+
   program.command("version").action(version);
+  program.command("configure").action(configure);
 
   // we need to set global options before action is executed
   program.hook("preAction", () => {
