@@ -58,9 +58,9 @@ export const writeDelegatorReport = async (
     ...formatPayment(payment),
     timestamp: payment["timestamp"],
   }));
-  await ensureDirectoryExists(path);
+  await ensureDirectoryExists(`${path}/${delegator}`);
   await writeCSV(
-    `${path}/${delegator}:${startCycle}_to_${endCycle}.csv`,
+    `${path}/${delegator}/${startCycle}_to_${endCycle}.csv`,
     DELEGATOR_REPORT_HEADERS,
     records
   );
