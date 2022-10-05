@@ -38,7 +38,7 @@ describe("resolveSplitIntoBatches", () => {
     jest.resetAllMocks();
   });
 
-  it("produces separate batches for delegator, fee income and bond reward payments at a minimum", async () => {
+  it("produces four batches at a minimum (tz delegator, KT delegator, fee income, bond rewards)", async () => {
     const recipientAddress = "tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof";
     const config = generateConfig({
       income_recipients: {
@@ -71,12 +71,11 @@ describe("resolveSplitIntoBatches", () => {
       )
     );
 
-    mockProviderEstimateBatch.mockResolvedValue(
-      partialInput.cycleReport.delegatorPayments.map(() => ({
-        /* Arbitrary numbers to make sure that all transactions fit into a single batch */
-        suggestedFeeMutez: 1,
-        storageLimit: 1,
+    mockProviderEstimateBatch.mockImplementation((payments) =>
+      payments.map((_item) => ({
         gasLimit: 1,
+        storageLimit: 1,
+        suggestedFeeMutez: 1,
       }))
     );
 
@@ -104,14 +103,24 @@ describe("resolveSplitIntoBatches", () => {
       cycleReport: { batches },
     } = output;
 
-    expect(batches).toHaveLength(3);
-    expect(batches[0]).toStrictEqual(input.cycleReport.delegatorPayments);
+    expect(batches).toHaveLength(4);
+    expect(batches[0]).toStrictEqual(
+      input.cycleReport.delegatorPayments.filter((p) =>
+        p.recipient.startsWith("tz")
+      )
+    );
 
-    expect(batches[1]).toHaveLength(1);
-    expect(batches[1][0].recipient).toEqual(recipientAddress);
+    expect(batches[1]).toStrictEqual(
+      input.cycleReport.delegatorPayments.filter((p) =>
+        p.recipient.startsWith("KT")
+      )
+    );
 
     expect(batches[2]).toHaveLength(1);
     expect(batches[2][0].recipient).toEqual(recipientAddress);
+
+    expect(batches[3]).toHaveLength(1);
+    expect(batches[3][0].recipient).toEqual(recipientAddress);
   });
 
   it("adds delegator payments to a given batch up to the hard gas limit", async () => {
@@ -147,8 +156,8 @@ describe("resolveSplitIntoBatches", () => {
       )
     );
 
-    mockProviderEstimateBatch.mockResolvedValue(
-      partialInput.cycleReport.delegatorPayments.map(() => ({
+    mockProviderEstimateBatch.mockImplementation((payments) =>
+      payments.map((_item) => ({
         suggestedFeeMutez: 1,
         storageLimit: 2,
         gasLimit: 2,
@@ -186,7 +195,7 @@ describe("resolveSplitIntoBatches", () => {
     expect(batches[batches.length - 2][0].recipient).toEqual(recipientAddress);
 
     for (let i = 0; i < batches.length - 2; i++) {
-      expect(batches[i][0]).toStrictEqual(delegatorPayments[i]);
+      expect(batches[i].length === 1);
     }
   });
   it("adds delegator payments to a given batch up to the hard storage limit", async () => {
@@ -222,8 +231,8 @@ describe("resolveSplitIntoBatches", () => {
       )
     );
 
-    mockProviderEstimateBatch.mockResolvedValue(
-      partialInput.cycleReport.delegatorPayments.map(() => ({
+    mockProviderEstimateBatch.mockImplementation((payments) =>
+      payments.map((_item) => ({
         suggestedFeeMutez: 1,
         storageLimit: 2,
         gasLimit: 2,
@@ -260,7 +269,7 @@ describe("resolveSplitIntoBatches", () => {
     expect(batches[batches.length - 2][0].recipient).toEqual(recipientAddress);
 
     for (let i = 0; i < batches.length - 2; i++) {
-      expect(batches[i][0]).toStrictEqual(delegatorPayments[i]);
+      expect(batches[i]).toHaveLength(1);
     }
   });
 });
