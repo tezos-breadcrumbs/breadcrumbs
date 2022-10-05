@@ -1,7 +1,8 @@
 import { program } from "commander";
 import { configure, pay, version } from "./cmd";
+import { generateDelegatorReport } from "./cmd/generate-delegator-report";
 import { globalCliOptions } from "./global";
-import { validateCycleOpt } from "./validate";
+import { validateCycleOpt, validAddress } from "./validate";
 
 export const run = async () => {
   // global options
@@ -26,6 +27,14 @@ export const run = async () => {
 
   program.command("version").action(version);
   program.command("configure").action(configure);
+
+  program
+    .command("generateDelegatorReport")
+    .requiredOption("-s, --startCycle <cycle>", "", validateCycleOpt)
+    .requiredOption("-e, --endCycle <cycle>", "", validateCycleOpt)
+    .requiredOption("-e, --delegator <delegator>", "", validAddress)
+
+    .action(generateDelegatorReport);
 
   // we need to set global options before action is executed
   program.hook("preAction", () => {
