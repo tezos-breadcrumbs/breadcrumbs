@@ -41,7 +41,7 @@
   "notifications": [
     {
       "type": "discord",
-      "messageTemplate": "Payouts for cycle <CYCLE>"
+      "messageTemplate": "Payouts for cycle <CYCLE>",
       "webhook": "<webhook url>"
     },
     {
@@ -49,6 +49,14 @@
       "api_token": "API_TOKEN",
       "chat_id": -123456789,
       "messageTemplate": "A total of <T_REWARDS> tez was distributed for cycle <CYCLE>."
+    },
+    {
+      "type": "twitter",
+      "messageTemplate": "Distributed a total of <T_REWARDS> tez for cycle <CYCLE>",
+      "api_key": "<api_key>",
+      "api_key_secret": "<api_key_secret>",
+      "access_token": "<access_token>",
+      "access_token_secret": "<access_token_secret>"
     }
   ]
 }
