@@ -63,7 +63,7 @@ export const runConfigurator = async () => {
       name: "remote_signer_public_key",
       when: (answers) =>
         answers.payout_wallet_mode === EPayoutWalletMode.RemoteSigner,
-      message: `Please enter your remote signer public key. It will be persisted locally in "${REMOTE_SIGNER_CONFIG_FILE}" file`,
+      message: `Please enter your remote signer public key hash. It will be persisted locally in "${REMOTE_SIGNER_CONFIG_FILE}" file`,
       validate: validAddress,
     },
     {
