@@ -7,6 +7,7 @@ import { globalCliOptions } from "src/cli/global";
 import {
   REPORTS_SUCCESS_PAYMENTS_DIRECTORY,
   CUSTOM_DELEGATOR_REPORT_DIRECTORY,
+  REPORTS_FAILED_PAYMENTS_DIRECTORY,
 } from "src/utils/constants";
 
 import {
@@ -25,19 +26,53 @@ export const generateDelegatorReport = async (commandOptions) => {
     const cycleSet = files
       .map((n) => Number(n.replace(".csv", "")))
       .filter((n) => n >= startCycle)
-      .filter((n) => n <= endCycle);
+      .filter((n) => n <= endCycle)
+      .sort();
 
-    for (const cycle of cycleSet) {
-      const report = await readPaymentReport(
-        cycle,
-        join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
-      );
+    const firstFoundCycle = cycleSet[0];
+    const lastFoundCycle = cycleSet[cycleSet.length - 1];
 
-      const _payments = report
-        .filter((p) => p.type === EPaymentType.Delegator)
-        .filter((p) => (p as DelegatorPayment).delegator === delegator);
+    console.info(` The first found cycle is cycle ${firstFoundCycle}`);
+    console.info(` The last found cycle is cycle ${lastFoundCycle}`);
+    console.info(" Processing ...\n");
 
-      payments.push(..._payments);
+    for (let cycle = firstFoundCycle; cycle <= lastFoundCycle; cycle++) {
+      try {
+        const report = await readPaymentReport(
+          cycle,
+          join(globalCliOptions.workDir, REPORTS_SUCCESS_PAYMENTS_DIRECTORY)
+        );
+
+        const _payments = report
+          .filter((p) => p.type === EPaymentType.Delegator)
+          .filter((p) => (p as DelegatorPayment).delegator === delegator);
+
+        payments.push(..._payments);
+      } catch (error) {
+        /* Log a warning if the report is not found */
+        if ((error as Error).message.startsWith("ENOENT")) {
+          console.error(
+            "\x1b[33m",
+            `WARNING: No report found for cycle ${cycle}`,
+            "\x1b[0m"
+          );
+        }
+      }
+
+      try {
+        const failedPaymentReport = await readPaymentReport(
+          cycle,
+          join(globalCliOptions.workDir, REPORTS_FAILED_PAYMENTS_DIRECTORY)
+        );
+        if (failedPaymentReport)
+          console.log(
+            "\x1b[33m",
+            `WARNING: Failed payments found for cycle ${cycle}`,
+            "\x1b[0m"
+          );
+      } catch (_error) {
+        continue;
+      }
     }
 
     await writeDelegatorReport(
@@ -47,6 +82,8 @@ export const generateDelegatorReport = async (commandOptions) => {
       sortBy(payments, ["timestamp"]),
       CUSTOM_DELEGATOR_REPORT_DIRECTORY
     );
+
+    console.info(`\n The report has been generated.`);
 
     if (err) {
       console.error("Could not find the reports directory.");
