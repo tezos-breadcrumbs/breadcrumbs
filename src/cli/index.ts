@@ -1,5 +1,5 @@
 import { program } from "commander";
-import { pay, version } from "./cmd";
+import { configure, pay, version } from "./cmd";
 import { generateDelegatorReport } from "./cmd/generate-delegator-report";
 import { globalCliOptions } from "./global";
 import { validateCycleOpt, validAddress } from "./validate";
@@ -26,6 +26,7 @@ export const run = async () => {
     .action(pay);
 
   program.command("version").action(version);
+  program.command("configure").action(configure);
 
   program
     .command("generateDelegatorReport")

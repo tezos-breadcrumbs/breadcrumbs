@@ -1,4 +1,4 @@
-import { every, find, get, groupBy, some, uniq } from "lodash";
+import { find, get, groupBy, some, uniq } from "lodash";
 import { globalCliOptions } from "src/cli/global";
 import { join } from "path";
 
@@ -47,22 +47,13 @@ export const resolveExcludeDistributed = async (
     const opHashes = uniq(failedPayments.map((x) => x.hash));
     for (const opHash of opHashes) {
       if (validateOperation(opHash) !== ValidationResult.VALID) continue; // process only valid op hashes
-      const transactions = await client.getTransactionsByHash(opHash);
-      if (every(transactions, (tx) => tx.status === "applied")) {
+      if (await client.areOperationTransactionsApplied(opHash)) {
         appliedPayments.push(
           ...failedPayments
             .filter((tx) => tx.hash === opHash)
             .map((tx) => ({ ...tx, note: `` }))
         );
         flags.successfulTransactionInFailed = true;
-      }
-      if (
-        some(transactions, (tx) => tx.status === "applied") &&
-        some(transactions, (tx) => tx.status !== "applied")
-      ) {
-        throw new Error(
-          "Unexpected internal error. Failed to check past payments."
-        );
       }
     }
   } catch (err) {

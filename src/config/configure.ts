@@ -17,7 +17,7 @@ const {
   validRemoteSignerUrl,
 } = require("./validate/creation");
 
-(async () => {
+export const runConfigurator = async () => {
   const questions = [
     {
       type: "input",
@@ -127,4 +127,4 @@ const {
       );
     }
   });
-})();
+};

@@ -10,19 +10,7 @@ Reward payments from bakers to delegators are a cornerstone of Tezos' delegation
 
 - increasing the choice of payout tools available and minimize dependency on single software stacks.
 - establishing payout tool accessible to (and open to contribution from) the ecosystem of JS/TS developers.
-- delivering life improvements to bakers continuously
-
-### Quick Start
-
-To install breadcrumbs just:
-
-1. Change working directory to directory where you want to store breadcrumbs Installation
-   - e.g. on linux: `mkdir /breadcrumbs && cd /breadcrumbs`
-2. [download latest binary release](https://github.com/kalouo/breadcrumbs/releases).
-3. (linux only) enable executable flag
-   - `chmod +x bc-* && mv bc-* bc`
-4. Prepare your [config.hjson](https://github.com/kalouo/breadcrumbs/blob/master/config-template.hjson)
-5. Run payout `./bc pay --cycle=<cycle>` or for latest completed cycle just `./bc pay`
+- delivering life improvements to bakers
 
 ### Features
 
@@ -31,51 +19,17 @@ To install breadcrumbs just:
 - [x] Set separate payment addresses for given delegators.
 - [x] Set minimum payment amounts.
 - [x] Set minimum delegator balances.
-- [x] Exclude given delegators from payment in case of overdelegation.
-- [x] Protect the baker from overdelegation by ring-fencing 10% of the rewards.
+- [x] Exclude given delegators from payment in case of over-delegation\*
+- [x] Protect the baker from over-delegation by ring-fencing 10% of the rewards.
 - [x] Allow customized distribution of rewards associated with the baker's bond.
 - [x] Allow customized distribution of fee income.
+- [x] Send Telegram notifications.
+- [x] Send Discord notifications.
+- [x] Generate payment files (.csv) for each cycle.
 
-Roadmap:
+### Setup and Usage
 
-- [ ] Telegram notifications.
-- [ ] Twitter notifications.
-- [ ] Run the payouts script on a Docker container in the background automagically.
-- [ ] Persist reward data on a local PostgresDB for reporting usage.
-- [ ] Pay rewards in FA2 tokens via built-in swaps.
-
-... and more!
-
-## Development
-
-### Requirements
-
-- Node 16
-
-### Installation
-
-Install dependencies by running the following command in the root directory:
-
-```bash
-$ npm i
-# or
-$ yarn install
-```
-
-### Configuration
-
-1. Create a `.env` file as per `.env.template`
-2. Create a configuration file with the `npm run configure` command line prompt.
-
-### Usage
-
-To run rewards for a given cycle:
-
-```bash
-$ npm run pay -- --cycle=<cycle>
-# or
-$ yarn pay -- --cycle=<cycle>
-```
+Please consult the [wiki](https://github.com/kalouo/breadcrumbs/wiki) for instructions related to setup and usage.
 
 ### Credits
 

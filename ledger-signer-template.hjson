@@ -1,0 +1,6 @@
+{
+  /* Replace `x` with the address index */
+  "derivation_path": "`44'/1729'/0'/x'`,",
+  /* ED25519 = 0, SECP256K1 = 1, P256 = 2 */
+  "derivation_type": 0
+}
