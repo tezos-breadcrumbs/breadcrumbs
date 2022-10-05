@@ -8,6 +8,7 @@ import { name, version } from "../../../package.json";
 
 import { TelegramPluginConfiguration } from "./telegram/interfaces";
 import { DiscordPluginConfiguration } from "./discord/interfaces";
+import { TwitterPluginConfiguration } from "./twitter/interfaces";
 const HOST_INFO = {
   id: name,
   version,
@@ -25,6 +26,10 @@ export const loadNotificationPlugin = async (
       return await (
         await import("./telegram")
       ).getPlugin(config as TelegramPluginConfiguration);
+    case ENotificationPluginKind.Twitter:
+      return await (
+        await import("./twitter")
+      ).getPlugin(config as TwitterPluginConfiguration);
     default:
       try {
         return await (await import(config.type)).getPlugin(config);
