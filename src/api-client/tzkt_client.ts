@@ -74,11 +74,14 @@ export class TzKT implements Client {
     opHash: string
   ): Promise<boolean> => {
     try {
-      const { data } = await this.instance.get(
-        `/operations/transactions/${opHash}/status`
+      const response = await this.instance.get(
+        `/operations/transactions/${opHash}/status`,
+        { transformResponse: (res) => res }
       );
 
-      return data === true;
+      if (response.status === 204) return false;
+      const result = JSON.parse(response.data);
+      return result === true;
     } catch (err) {
       throw Error("TZKT ERROR: Cannot fetch operation status.");
     }

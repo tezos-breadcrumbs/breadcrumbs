@@ -8,7 +8,7 @@ import { constructMessage } from "../helpers";
 import { TwitterPluginConfiguration } from "./interfaces";
 
 const DEFAULT_MESSAGE_TEMPLATE =
-  "A total of <T_REWARDS> tez was distributed for cycle <CYCLE>.";
+  "A total of <T_REWARDS> tez was distributed for cycle <CYCLE> to <N_DELEGATORS> delegators using #Breadcrumbs on the #tezos blockchain.";
 
 export class TwitterClient implements NotificationPlugin {
   private client: TwitterApi;
