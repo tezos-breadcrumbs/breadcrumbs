@@ -49,28 +49,34 @@ const validPlugin = Joi.object({
     .valid(...Object.values(ENotificationPluginKind)),
   messageTemplate: Joi.string(),
   /* DISCORD */
-  webhook: Joi.string().optional(),
-  // .when("type", {
-  //   is: ENotificationPluginKind.Discord,
-  //   then: Joi.("id", {
-  //     is:
-  //   }).string()
-  //     .uri({
-  //       scheme: ["https", "http"],
-  //     })
-  //     .required(),
-  // }),
-  id: Joi.string().optional(),
-  // .when("type", {
-  //   is: ENotificationPluginKind.Discord,
-  //   then: Joi.string().required()
-  // }),
-  token: Joi.string().optional(),
-  // .when("type", {
-  //   is: ENotificationPluginKind.Discord,
-  //   then: Joi.string().required()
-  // }),
-
+  webhook: Joi.string().when("type", {
+    is: ENotificationPluginKind.Discord,
+    then: Joi.when("id", {
+      is: Joi.exist(),
+      then: Joi.disallow(),
+      otherwise: Joi.string()
+        .uri({
+          scheme: ["https", "http"],
+        })
+        .required(),
+    }),
+  }),
+  id: Joi.string().when("type", {
+    is: ENotificationPluginKind.Discord,
+    then: Joi.when("webhook", {
+      is: Joi.exist(),
+      then: Joi.disallow(),
+      otherwise: Joi.string().required(),
+    }),
+  }),
+  token: Joi.string().when("type", {
+    is: ENotificationPluginKind.Discord,
+    then: Joi.when("webhook", {
+      is: Joi.exist(),
+      then: Joi.disallow(),
+      otherwise: Joi.string().required(),
+    }),
+  }),
   /* TELEGRAM */
   chat_id: Joi.any().when("type", {
     is: ENotificationPluginKind.Telegram,

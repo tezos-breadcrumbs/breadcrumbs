@@ -1,10 +1,15 @@
 import { PluginHostDetails } from "../interfaces";
 import { DiscordClient } from "./client";
-import { DiscordPluginConfiguration } from "./interfaces";
+import {
+  DiscordPluginConfigurationWebhookAuth,
+  DiscordPluginConfigurationTokenAuth,
+} from "./interfaces";
 
 let cachedClient: DiscordClient | undefined = undefined;
 export const getPlugin = async (
-  config: DiscordPluginConfiguration,
+  config:
+    | DiscordPluginConfigurationWebhookAuth
+    | DiscordPluginConfigurationTokenAuth,
   host: PluginHostDetails
 ) => {
   if (cachedClient === undefined) {
