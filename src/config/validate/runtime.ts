@@ -49,11 +49,11 @@ const validPlugin = Joi.object({
     .valid(...Object.values(ENotificationPluginKind)),
   messageTemplate: Joi.string(),
   /* DISCORD */
-  webhook: Joi.string().when("type", {
+  webhook: Joi.any().when("type", {
     is: ENotificationPluginKind.Discord,
     then: Joi.when("id", {
       is: Joi.exist(),
-      then: Joi.disallow(),
+      then: Joi.forbidden(),
       otherwise: Joi.string()
         .uri({
           scheme: ["https", "http"],
@@ -61,19 +61,19 @@ const validPlugin = Joi.object({
         .required(),
     }),
   }),
-  id: Joi.string().when("type", {
+  id: Joi.any().when("type", {
     is: ENotificationPluginKind.Discord,
     then: Joi.when("webhook", {
       is: Joi.exist(),
-      then: Joi.disallow(),
+      then: Joi.forbidden(),
       otherwise: Joi.string().required(),
     }),
   }),
-  token: Joi.string().when("type", {
+  token: Joi.any().when("type", {
     is: ENotificationPluginKind.Discord,
     then: Joi.when("webhook", {
       is: Joi.exist(),
-      then: Joi.disallow(),
+      then: Joi.forbidden(),
       otherwise: Joi.string().required(),
     }),
   }),
