@@ -8,7 +8,10 @@ import {
   NotificationPlugin,
   PluginHostDetails,
 } from "../interfaces";
-import { DiscordPluginConfiguration } from "./interfaces";
+import {
+  DiscordPluginConfigurationTokenAuth,
+  DiscordPluginConfigurationWebhookAuth,
+} from "./interfaces";
 
 import { constructMessage } from "../helpers";
 
@@ -19,14 +22,34 @@ export class DiscordClient implements NotificationPlugin {
   private client: WebhookClient;
   private messageTemplate: string;
 
-  constructor(config: DiscordPluginConfiguration, host: PluginHostDetails) {
+  constructor(
+    config:
+      | DiscordPluginConfigurationTokenAuth
+      | DiscordPluginConfigurationWebhookAuth,
+    host: PluginHostDetails
+  ) {
     this.hostInfo = `${host.id} v${host.version}`;
-    if (!config.webhook) {
+    if ("webhook" in config) {
+      // webhook mode
+      if (!config.webhook || typeof config.webhook !== "string") {
+        throw new Error(
+          `Invalid discord notifier configuration. "webhook" requried`
+        );
+      }
+      this.client = new WebhookClient({ url: config.webhook });
+      this.messageTemplate = config.messageTemplate ?? DEFAULT_MESSAGE_TEMPLATE;
+      return;
+    }
+    // id + token mode
+    if (!config.id || typeof config.id !== "string") {
+      throw new Error(`Invalid discord notifier configuration. "id" requried`);
+    }
+    if (!config.token || typeof config.token !== "string") {
       throw new Error(
-        `Invalid discord notifier configuration. "webhook" requried`
+        `Invalid discord notifier configuration. "token" requried`
       );
     }
-    this.client = new WebhookClient({ url: config.webhook });
+    this.client = new WebhookClient(config);
     this.messageTemplate = config.messageTemplate ?? DEFAULT_MESSAGE_TEMPLATE;
   }
 
