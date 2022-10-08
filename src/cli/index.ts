@@ -1,8 +1,12 @@
 import { program } from "commander";
-import { configure, pay, version } from "./cmd";
+import { configure, pay, version, notificationTest } from "./cmd";
 import { generateDelegatorReport } from "./cmd/generate-delegator-report";
 import { globalCliOptions } from "./global";
-import { validateCycleOpt, validAddress } from "./validate";
+import {
+  validateCycleOpt,
+  validAddress,
+  validateNotificationType,
+} from "./validate";
 
 export const run = async () => {
   // global options
@@ -27,6 +31,14 @@ export const run = async () => {
 
   program.command("version").action(version);
   program.command("configure").action(configure);
+  program
+    .command("notification-test")
+    .option(
+      "-p, --plugin-type <type>",
+      "Type of plugins to test",
+      validateNotificationType
+    )
+    .action(notificationTest);
 
   program
     .command("generateDelegatorReport")
