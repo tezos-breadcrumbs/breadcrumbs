@@ -33,7 +33,7 @@ export class DiscordClient implements NotificationPlugin {
       // webhook mode
       if (!config.webhook || typeof config.webhook !== "string") {
         throw new Error(
-          `Invalid discord notifier configuration. "webhook" requried`
+          `Invalid discord notifier configuration. "webhook" required`
         );
       }
       this.client = new WebhookClient({ url: config.webhook });
@@ -42,11 +42,11 @@ export class DiscordClient implements NotificationPlugin {
     }
     // id + token mode
     if (!config.id || typeof config.id !== "string") {
-      throw new Error(`Invalid discord notifier configuration. "id" requried`);
+      throw new Error(`Invalid discord notifier configuration. "id" required`);
     }
     if (!config.token || typeof config.token !== "string") {
       throw new Error(
-        `Invalid discord notifier configuration. "token" requried`
+        `Invalid discord notifier configuration. "token" required`
       );
     }
     this.client = new WebhookClient(config);

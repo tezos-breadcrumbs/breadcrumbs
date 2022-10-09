@@ -23,12 +23,12 @@ export const notificationTest = async (commandOptions) => {
         messageTemplate: `Breadcrumbs: Notification Test`,
       };
       const notificator = await loadNotificationPlugin(testConfig);
-      // await notificator.notify({
-      //   cycle: "test",
-      //   cycleStakingBalance: "test",
-      //   totalDistributed: "test",
-      //   numberOfDelegators: "test",
-      // });
+      await notificator.notify({
+        cycle: "test",
+        cycleStakingBalance: "test",
+        totalDistributed: "test",
+        numberOfDelegators: "test",
+      });
       console.log(`${capitalize(plugin.type)} notifications sent`);
     } catch (e) {
       console.log(`Notification error.`);
