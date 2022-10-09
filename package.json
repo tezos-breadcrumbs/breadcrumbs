@@ -1,6 +1,6 @@
 {
   "name": "breadcrumbs",
-  "version": "0.0.8-alpha",
+  "version": "0.0.9-alpha",
   "description": "",
   "main": "index.js",
   "targets": {
@@ -20,7 +20,8 @@
     "build": "rimraf bin/* && parcel build",
     "pkg-internal": "pkg",
     "pkg": "ts-node build/build.ts",
-    "update-deps": "ncu --interactive"
+    "update-deps": "ncu --interactive",
+    "notification-test": "ts-node index.ts notification-test"
   },
   "author": "",
   "license": "GPL-3.0",

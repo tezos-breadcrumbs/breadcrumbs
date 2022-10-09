@@ -7,7 +7,10 @@ import {
 import { name, version } from "../../../package.json";
 
 import { TelegramPluginConfiguration } from "./telegram/interfaces";
-import { DiscordPluginConfiguration } from "./discord/interfaces";
+import {
+  DiscordPluginConfigurationTokenAuth,
+  DiscordPluginConfigurationWebhookAuth,
+} from "./discord/interfaces";
 import { TwitterPluginConfiguration } from "./twitter/interfaces";
 const HOST_INFO = {
   id: name,
@@ -21,7 +24,12 @@ export const loadNotificationPlugin = async (
     case ENotificationPluginKind.Discord:
       return await (
         await import("./discord")
-      ).getPlugin(config as DiscordPluginConfiguration, HOST_INFO);
+      ).getPlugin(
+        config as
+          | DiscordPluginConfigurationTokenAuth
+          | DiscordPluginConfigurationWebhookAuth,
+        HOST_INFO
+      );
     case ENotificationPluginKind.Telegram:
       return await (
         await import("./telegram")

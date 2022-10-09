@@ -51,13 +51,32 @@ const validPlugin = Joi.object({
   /* DISCORD */
   webhook: Joi.any().when("type", {
     is: ENotificationPluginKind.Discord,
-    then: Joi.string()
-      .uri({
-        scheme: ["https", "http"],
-      })
-      .required(),
+    then: Joi.when("id", {
+      is: Joi.exist(),
+      then: Joi.forbidden(),
+      otherwise: Joi.string()
+        .uri({
+          scheme: ["https", "http"],
+        })
+        .required(),
+    }),
   }),
-
+  id: Joi.any().when("type", {
+    is: ENotificationPluginKind.Discord,
+    then: Joi.when("webhook", {
+      is: Joi.exist(),
+      then: Joi.forbidden(),
+      otherwise: Joi.string().required(),
+    }),
+  }),
+  token: Joi.any().when("type", {
+    is: ENotificationPluginKind.Discord,
+    then: Joi.when("webhook", {
+      is: Joi.exist(),
+      then: Joi.forbidden(),
+      otherwise: Joi.string().required(),
+    }),
+  }),
   /* TELEGRAM */
   chat_id: Joi.any().when("type", {
     is: ENotificationPluginKind.Telegram,

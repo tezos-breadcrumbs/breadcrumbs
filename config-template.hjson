@@ -43,6 +43,9 @@
       "type": "discord",
       "messageTemplate": "Payouts for cycle <CYCLE>",
       "webhook": "<webhook url>"
+      // or
+      "token": "<token>",
+      "id": "<id>"
     },
     {
       "type": "telegram",
