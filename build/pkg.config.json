@@ -7,6 +7,7 @@
     "../node_modules/usb/package.json",
     "../node_modules/node-hid/build/Release/HID_hidraw.node",
     "../node_modules/node-hid/build/Release/HID.node",
+    "../node_modules/axios/dist/**/*",
     "../build/Release/HID_hidraw.node",
     "../build/Release/HID.node",
     "../package.json"
