@@ -13,7 +13,7 @@
     "audit-ci": "audit-ci --high",
     "pay": "ts-node index.ts pay",
     "generate-delegator-report": "ts-node index.ts generateDelegatorReport",
-    "configure": "ts-node src/config/configure.ts",
+    "configure": "ts-node index.ts configure",
     "test": "jest --runInBand",
     "lint": "eslint .",
     "prepare": "husky install",
