@@ -17,11 +17,14 @@ export const resolveDonations = (args: StepArguments): StepArguments => {
     return args;
   } else {
     const payments: BasePayment[] = [];
+    let updateFeeIncome = feeIncome;
+    let updatedBondRewards = lockedBondRewards;
+
     for (const recipient in config.donations) {
       const share = divide(config.donations[recipient], 100);
-      const payable = integerize(
-        add(multiply(share, feeIncome), multiply(share, lockedBondRewards))
-      );
+      const feeIncomeDonation = integerize(multiply(share, feeIncome));
+      const bondRewardDonation = integerize(multiply(share, lockedBondRewards));
+      const payable = add(feeIncomeDonation, bondRewardDonation);
 
       const payment = {
         type: EPaymentType.Donation,
@@ -31,13 +34,20 @@ export const resolveDonations = (args: StepArguments): StepArguments => {
         hash: "",
       };
       payments.push(payment);
+
+      updatedBondRewards = updatedBondRewards.minus(bondRewardDonation);
+      updateFeeIncome = updateFeeIncome.minus(feeIncomeDonation);
     }
     /* Sanity check */
     const donationPayments = filter(payments, paymentAmountAboveZeroFactory);
-    console.log(donationPayments);
     return {
       ...args,
-      cycleReport: { ...args.cycleReport, donationPayments },
+      cycleReport: {
+        ...args.cycleReport,
+        donationPayments,
+        lockedBondRewards: updatedBondRewards,
+        feeIncome: updateFeeIncome,
+      },
     };
   }
 };

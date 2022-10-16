@@ -1,6 +1,5 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import { TezosToolkit } from "@taquito/taquito";
-import { map } from "lodash";
 
 import client from "src/api-client";
 
@@ -13,16 +12,15 @@ import {
   resolveExcludedPaymentsByMinimumAmount,
   resolveExcludedPaymentsByMinimumDelegatorBalance,
   resolveSubstractTransactionFees,
-  resolveSufficientBalance,
 } from "src/engine/steps";
 
 import engine from "src/engine";
 import * as helpers from "src/engine/helpers";
-import { sum } from "src/utils/math";
 
 import * as Polly from "test/helpers/polly";
 import { generateConfig } from "test/helpers";
 import { resolveDonations } from "src/engine/steps/resolveDonations";
+import BigNumber from "bignumber.js";
 
 const { initializeCycleReport } = helpers;
 
@@ -32,7 +30,6 @@ describe("resolveSufficientBalance", () => {
 
   let mockProvider;
   let mockProviderRpcConstants;
-  let mockGetSignerBalance;
 
   const inputSteps = [
     resolveBakerRewards,
@@ -48,7 +45,6 @@ describe("resolveSufficientBalance", () => {
   beforeEach(() => {
     mockProvider = jest.spyOn(provider.estimate, "batch");
     mockProviderRpcConstants = jest.spyOn(provider.rpc, "getConstants");
-    mockGetSignerBalance = jest.spyOn(helpers, "getSignerBalance");
 
     mockProviderRpcConstants.mockResolvedValue({
       /* Realistic numbers */
@@ -74,7 +70,7 @@ describe("resolveSufficientBalance", () => {
     jest.resetAllMocks();
   });
 
-  it("correctly adds payment for every donation address and amount provided", async () => {
+  it("does not update the arguments object if no donation addresses are provided", async () => {
     const config = generateConfig();
 
     const cycleReport = initializeCycleReport(470);
@@ -97,9 +93,14 @@ describe("resolveSufficientBalance", () => {
     expect(input).toStrictEqual(output);
   });
 
-  it("does not update object if no donation addresses are provided", async () => {
+  it("correctly adds payments for given donation addresses and percentages", async () => {
+    const donationRecipients = {
+      tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: 2,
+      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: 3,
+    };
+
     const config = generateConfig({
-      donations: { tz1Ke2h7sDdakHJQh8WX4Z372du1KChsksyU: 2 },
+      donations: donationRecipients,
     });
 
     const cycleReport = initializeCycleReport(470);
@@ -117,8 +118,84 @@ describe("resolveSufficientBalance", () => {
 
     const input = await engine.run(args, inputSteps);
 
-    const output = await resolveDonations(input);
+    const {
+      cycleReport: { donationPayments },
+    } = resolveDonations(input);
+    for (const payment of donationPayments) {
+      const share = donationRecipients[payment.recipient] / 100;
 
-    console.log(output.cycleReport.donationPayments);
+      const feeIncomeAmount = new BigNumber(share).times(
+        input.cycleReport.feeIncome
+      );
+
+      const bondRewardAmount = new BigNumber(share).times(
+        input.cycleReport.lockedBondRewards
+      );
+      const totalAmount = bondRewardAmount
+        .plus(feeIncomeAmount)
+        .dp(0, BigNumber.ROUND_DOWN);
+
+      expect(payment.amount).toStrictEqual(totalAmount);
+    }
+  });
+
+  it("correctly deducts donations from distributable bond rewards and fee income", async () => {
+    const donationRecipients = {
+      tz1cZfFQpcYhwDp7y1njZXDsZqCrn2NqmVof: 2,
+      tz1iCYywbfJEjb1h5Ew6hR8tr7CnbLVRWogm: 3,
+    };
+
+    const config = generateConfig({
+      donations: donationRecipients,
+    });
+
+    const cycleReport = initializeCycleReport(470);
+    const cycleData = await client.getCycleData(config.baking_address, 470);
+
+    const { cycleRewards: distributableRewards } = cycleData;
+
+    const args = {
+      config,
+      cycleData,
+      cycleReport,
+      distributableRewards,
+      tezos: provider,
+    };
+
+    const input = await engine.run(args, inputSteps);
+    const output = resolveDonations(input);
+
+    const {
+      cycleReport: { donationPayments },
+    } = resolveDonations(input);
+
+    let totalFeeIncomeDonation = new BigNumber(0);
+    let totalBondRewardDonation = new BigNumber(0);
+
+    for (const payment of donationPayments) {
+      const share = donationRecipients[payment.recipient] / 100;
+
+      const feeIncomeAmount = new BigNumber(share).times(
+        input.cycleReport.feeIncome
+      );
+
+      const bondRewardAmount = new BigNumber(share).times(
+        input.cycleReport.lockedBondRewards
+      );
+
+      totalBondRewardDonation = totalBondRewardDonation
+        .plus(bondRewardAmount)
+        .dp(0, BigNumber.ROUND_DOWN);
+      totalFeeIncomeDonation = totalFeeIncomeDonation
+        .plus(feeIncomeAmount)
+        .dp(0, BigNumber.ROUND_DOWN);
+    }
+
+    expect(output.cycleReport.feeIncome).toEqual(
+      input.cycleReport.feeIncome.minus(totalFeeIncomeDonation)
+    );
+    expect(output.cycleReport.lockedBondRewards).toEqual(
+      input.cycleReport.lockedBondRewards.minus(totalBondRewardDonation)
+    );
   });
 });
