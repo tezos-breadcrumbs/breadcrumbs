@@ -35,6 +35,10 @@ interface IncomeRecipientsConfiguration {
   };
 }
 
+interface DonationsConfiguration {
+  [key: string]: number;
+}
+
 export enum EPayoutWalletMode {
   LocalPrivateKey = "local-private-key",
   Ledger = "ledger",
@@ -52,8 +56,8 @@ export interface BreadcrumbsConfiguration {
   income_recipients?: IncomeRecipientsConfiguration;
   overdelegation?: OverdelegationConfiguration;
   payment_requirements?: PaymentRequirements;
-
+  notifications?: Array<NotificationPluginConfiguration>;
+  donations?: DonationsConfiguration;
   /* Experimental */
   accounting_mode?: boolean;
-  notifications?: Array<NotificationPluginConfiguration>;
 }

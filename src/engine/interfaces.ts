@@ -21,6 +21,7 @@ export interface CycleReport {
   creditablePayments: DelegatorPayment[];
   feeIncomePayments: BasePayment[];
   bondRewardPayments: BasePayment[];
+  donationPayments: BasePayment[];
   distributedPayments: DelegatorPayment[] | BasePayment[];
   feeIncome: BigNumber;
   feesPaid: BigNumber;
@@ -41,6 +42,7 @@ export enum EPaymentType {
   Delegator = "Delegator Payment",
   FeeIncome = "Fee Income Payment",
   BondReward = "Bond Reward Payment",
+  Donation = "Donation",
 }
 
 export enum ENoteType {
