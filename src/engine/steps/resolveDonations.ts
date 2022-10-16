@@ -7,16 +7,12 @@ import {
 import { add, divide, multiply, integerize } from "src/utils/math";
 import { paymentAmountAboveZeroFactory } from "../validate";
 
-export const resolveFeeIncomeDistribution = (
-  args: StepArguments
-): StepArguments => {
+export const resolveDonations = (args: StepArguments): StepArguments => {
   const {
     config,
     cycleReport: { feeIncome, lockedBondRewards },
   } = args;
-
   const skip = isEmpty(config.donations);
-
   if (skip) {
     return args;
   } else {
@@ -38,7 +34,7 @@ export const resolveFeeIncomeDistribution = (
     }
     /* Sanity check */
     const donationPayments = filter(payments, paymentAmountAboveZeroFactory);
-
+    console.log(donationPayments);
     return {
       ...args,
       cycleReport: { ...args.cycleReport, donationPayments },
