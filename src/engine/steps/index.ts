@@ -1,13 +1,14 @@
 export { resolveBakerRewards } from "./resolveBakerRewards";
 export { resolveBondRewardDistribution } from "./resolveBondRewardDistribution";
 export { resolveDelegatorRewards } from "./resolveDelegatorRewards";
+export { resolveDonations } from "./resolveDonations";
+export { resolveEstimateTransactionFees } from "./resolveEstimateTransactionFees";
 export { resolveExcludedDelegators } from "./resolveExcludedDelegators";
+export { resolveExcludeDistributed } from "./resolveExcludeDistributed";
+export { resolveExcludedPaymentsByContext } from "./resolveExcludedPaymentsByContext";
 export { resolveExcludedPaymentsByMinimumAmount } from "./resolveExcludedPaymentsByMinimumAmount";
 export { resolveExcludedPaymentsByMinimumDelegatorBalance } from "./resolveExcludedPaymentsByMinimumDelegatorBalance";
 export { resolveFeeIncomeDistribution } from "./resolveFeeIncomeDistribution";
 export { resolveSplitIntoBatches } from "./resolveSplitIntoBatches";
-export { resolveEstimateTransactionFees } from "./resolveEstimateTransactionFees";
 export { resolveSubstractTransactionFees } from "./resolveSubstractTransactionFees";
-export { resolveExcludedPaymentsByContext } from "./resolveExcludedPaymentsByContext";
-export { resolveExcludeDistributed } from "./resolveExcludeDistributed";
 export { resolveSufficientBalance } from "./resolveSufficientBalance";
