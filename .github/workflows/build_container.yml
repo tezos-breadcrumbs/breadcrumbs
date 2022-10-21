@@ -1,0 +1,44 @@
+name: publish
+
+on:
+  push:
+    # Trigger CI on all branch pushes but...
+    branches:
+      - "**"
+    # don't double trigger on new tag push when creating release. Should only
+    # trigger once for the release.
+    tags-ignore:
+      - "*.*.*"
+  pull_request:
+  release:
+    types: [created]
+
+jobs:
+  publish-to-ghcr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: "true"
+
+      - name: Login to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/breadcrumbs
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=match,pattern=v(.*),group=1
+
+      - name: Push container to GHCR
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: Dockerfile
