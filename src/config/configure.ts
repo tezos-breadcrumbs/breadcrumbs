@@ -17,7 +17,9 @@ const {
   validRemoteSignerUrl,
 } = require("./validate/creation");
 
-export const runConfigurator = async () => {
+export const runConfigurator = async (donationsConfig?: {
+  [key: string]: number;
+}) => {
   const questions = [
     {
       type: "input",
@@ -87,9 +89,11 @@ export const runConfigurator = async () => {
       network_configuration: {
         rpc_url: answers.rpc_url,
       },
+      donations: donationsConfig,
     };
 
     const json = stringify(config, { space: "  " });
+
     fs.writeFile("./config.hjson", json, (err) => {
       if (!err) {
         console.log(
