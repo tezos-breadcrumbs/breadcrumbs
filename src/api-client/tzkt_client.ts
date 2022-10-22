@@ -25,19 +25,38 @@ export class TzKT implements Client {
     });
   }
 
+  // TODO: fix balance type
+  private async getCycleDelegators(
+    baker: string,
+    cycle: number,
+    limit: number,
+    offset: number
+  ): Promise<Array<{ address: string; balance: any }>> {
+    const { data } = await this.instance.get(
+      `rewards/split/${baker}/${cycle}?limit=${limit}&offset=${offset}`
+    );
+
+    const { delegators } = update(data, "delegators", (list) =>
+      map(list, (item) => pick(item, ["address", "balance"]))
+    );
+
+    return delegators;
+  }
+
   public async getCycleData(baker: string, cycle: number): Promise<CycleData> {
     try {
       console.info("Fetching cycle data from TzKT ...");
-      const { data } = await this.instance.get(
-        `rewards/split/${baker}/${cycle}`
-      );
       const {
         data: { frozenDepositLimit },
       } = await this.instance.get(`accounts/${baker}`);
 
+      const { data } = await this.instance.get(
+        `rewards/split/${baker}/${cycle}?limit=0`
+      );
+
       const {
         stakingBalance,
-        delegators,
+        // delegators, // we collect this in loop bellow
         delegatedBalance,
         blockRewards,
         endorsementRewards,
@@ -45,6 +64,20 @@ export class TzKT implements Client {
       } = update(data, "delegators", (list) =>
         map(list, (item) => pick(item, ["address", "balance"]))
       );
+      const limit = 1000;
+      let fetched: number | undefined = undefined;
+      const delegators: Array<{ address: string; balance: any }> = [];
+
+      while (fetched === undefined || fetched === limit) {
+        const fetchedDelegators = await this.getCycleDelegators(
+          baker,
+          cycle,
+          limit,
+          delegators.length
+        );
+        fetched = fetchedDelegators.length;
+        delegators.push(...fetchedDelegators);
+      }
 
       console.info("Received cycle data from TzKT.");
       return {
