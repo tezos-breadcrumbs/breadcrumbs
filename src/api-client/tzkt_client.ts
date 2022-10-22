@@ -60,6 +60,7 @@ export class TzKT implements Client {
         delegatedBalance,
         blockRewards,
         endorsementRewards,
+        numDelegators,
         blockFees,
       } = update(data, "delegators", (list) =>
         map(list, (item) => pick(item, ["address", "balance"]))
@@ -79,6 +80,9 @@ export class TzKT implements Client {
         delegators.push(...fetchedDelegators);
       }
 
+      if (numDelegators != delegators.length)
+        throw new Error("failed to fetch delegators - invalid count");
+
       console.info("Received cycle data from TzKT.");
       return {
         cycleDelegatedBalance: delegatedBalance,
@@ -87,8 +91,8 @@ export class TzKT implements Client {
         cycleRewards: sum(blockRewards, endorsementRewards, blockFees),
         frozenDepositLimit,
       };
-    } catch {
-      throw Error("TZKT ERROR: Cannot fetch cycle data");
+    } catch (err: any) {
+      throw Error(`TZKT ERROR: Cannot fetch cycle data - ${err?.message}!`);
     }
   }
 
