@@ -14,6 +14,7 @@ import {
   resolveExcludedPaymentsByContext,
   resolveExcludeDistributed,
   resolveSufficientBalance,
+  resolveDonations,
 } from "./steps";
 
 const steps: StepFunction[] = [
@@ -25,6 +26,7 @@ const steps: StepFunction[] = [
   resolveExcludedPaymentsByMinimumAmount,
   resolveExcludedPaymentsByMinimumDelegatorBalance,
   resolveSubstractTransactionFees,
+  resolveDonations,
   resolveFeeIncomeDistribution,
   resolveBondRewardDistribution,
   resolveExcludeDistributed,
