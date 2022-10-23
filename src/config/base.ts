@@ -1,5 +1,5 @@
 import { BreadcrumbsConfiguration } from "./interfaces";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 import { parse } from "hjson";
 import { CONFIG_FILE, DONATIONS_FILE } from "src/utils/constants";
@@ -14,14 +14,20 @@ export class ConfigurationBase {
 
   get Configuration() {
     if (this.configuration !== undefined) return this.configuration;
-    const donationConfiguration =
-      parse(readFileSync(join(this.workDir, DONATIONS_FILE)).toString()) ?? {};
 
-    this.configuration = {
-      ...parse(readFileSync(join(this.workDir, CONFIG_FILE)).toString()),
-      donations: donationConfiguration,
-    } as BreadcrumbsConfiguration;
+    this.configuration = parse(
+      readFileSync(join(this.workDir, CONFIG_FILE)).toString()
+    ) as BreadcrumbsConfiguration;
 
-    return this.configuration;
+    if (existsSync(join(this.workDir, DONATIONS_FILE))) {
+      this.configuration = {
+        ...this.configuration,
+        donations: parse(
+          readFileSync(join(this.workDir, DONATIONS_FILE)).toString()
+        ),
+      };
+    }
+
+    return this.configuration as BreadcrumbsConfiguration;
   }
 }
