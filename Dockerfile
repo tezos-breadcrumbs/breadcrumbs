@@ -1,6 +1,6 @@
 FROM docker.io/node:16-alpine
 
-RUN apk add python3 make gcc musl-dev pkgconfig libusb-dev g++ linux-headers eudev-dev
+# RUN apk add python3 make gcc musl-dev pkgconfig libusb-dev g++ linux-headers eudev-dev
 
 WORKDIR /app
 
