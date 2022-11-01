@@ -78,7 +78,7 @@ describe("configuration validation (runtime)", () => {
     }
   });
   test("does not accept an invalid RPC URL", () => {
-    const invalidValues = ["http://ghostnet.ecadinfra.com", true, 1, "foo.bar"];
+    const invalidValues = ["tcp://ghostnet.ecadinfra.com", true, 1, "foo.bar"];
 
     for (const v of invalidValues) {
       const input = { ...baseConfig, network_configuration: { rpc_url: v } };

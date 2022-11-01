@@ -41,7 +41,7 @@ const validDistributionShares = Joi.custom((i) => {
   }
 });
 
-const validRpcUrl = Joi.string().uri({ scheme: ["https"] });
+const validRpcUrl = Joi.string().uri({ scheme: ["https", "http"] });
 
 const validPlugin = Joi.object({
   type: Joi.string()
