@@ -1,6 +1,11 @@
 import { program } from "commander";
-import { configure, pay, version, notificationTest } from "./cmd";
-import { generateDelegatorReport } from "./cmd/generate-delegator-report";
+import {
+  configure,
+  pay,
+  version,
+  notificationTest,
+  generateDelegatorReport,
+} from "./cmd";
 import { globalCliOptions } from "./global";
 import {
   validateCycleOpt,
@@ -45,7 +50,6 @@ export const run = async () => {
     .requiredOption("-s, --startCycle <cycle>", "", validateCycleOpt)
     .requiredOption("-e, --endCycle <cycle>", "", validateCycleOpt)
     .requiredOption("-e, --delegator <delegator>", "", validAddress)
-
     .action(generateDelegatorReport);
 
   // we need to set global options before action is executed

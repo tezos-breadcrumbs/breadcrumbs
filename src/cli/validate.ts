@@ -1,5 +1,5 @@
 import { parseInt } from "lodash";
-import { isPKH } from "src/config/validate/helpers";
+import { isAddress } from "src/config/validate/helpers";
 import { ENotificationPluginKind } from "src/plugin/notification/interfaces";
 
 export const validateCycleOpt = (value) => {
@@ -11,7 +11,7 @@ export const validateCycleOpt = (value) => {
 };
 
 export const validAddress = (value) => {
-  if (isPKH(value)) return value;
+  if (isAddress(value)) return value;
   else throw Error("Invalid address given.");
 };
 
