@@ -4,10 +4,10 @@ RUN apk add python3 make gcc musl-dev pkgconfig libusb-dev g++ linux-headers eud
 
 WORKDIR /app
 
-COPY package.json .
+COPY package*.json ./
 
 RUN npm install
 
 COPY . .
 
-CMD ["npm", "run", "pay"]
+ENTRYPOINT [ "npm", "run", "pay", "--", "--confirm" ]
