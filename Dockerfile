@@ -10,4 +10,4 @@ RUN npm install
 
 COPY . .
 
-ENTRYPOINT [ "npm", "run", "pay", "--", "--confirm" ]
+CMD [ "npm", "run", "pay" ]
