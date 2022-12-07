@@ -53,7 +53,10 @@ export const resolveEstimateTransactionFees = async (
     });
   } catch (err) {
     const id: string = get(err, "id", "").toString();
-    if (id.endsWith("balance_too_low")) {
+    if (
+      id.endsWith("balance_too_low") ||
+      id.endsWith("subtraction_underflow")
+    ) {
       walletPayments.forEach((payment) => {
         Object.assign(payment, {
           transactionFee: new BigNumber(0),
@@ -108,7 +111,10 @@ export const resolveEstimateTransactionFees = async (
         });
         _excludedPayments.push(payment);
         continue;
-      } else if (id.endsWith("balance_too_low")) {
+      } else if (
+        id.endsWith("balance_too_low") ||
+        id.endsWith("subtraction_underflow")
+      ) {
         Object.assign(payment, {
           transactionFee: new BigNumber(0),
         });
