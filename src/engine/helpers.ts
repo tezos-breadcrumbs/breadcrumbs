@@ -40,6 +40,7 @@ export const initializeCycleReport = (cycle): CycleReport => {
     delegatorPayments: [],
     feeIncomePayments: [],
     bondRewardPayments: [],
+    donationPayments: [],
     excludedPayments: [],
     creditablePayments: [],
     distributedPayments: [],

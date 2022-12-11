@@ -126,8 +126,9 @@ export const pay = async (commandOptions) => {
     result.cycleReport;
 
   /* The last two batches are related to fee income and bond rewards */
-  const delegatorPayments = flatten(batches.slice(0, -2));
-  const bakerPayments = flatten(batches.slice(-2));
+  const delegatorPayments = flatten(batches.slice(0, -3));
+  const bakerPayments = flatten(batches.slice(-3, -1));
+  const donationPayments = flatten(batches.slice(-1));
 
   if (!isEmpty(distributedPayments)) {
     console.log("\nPAYMENTS PREVIOUSLY DISTRIBUTED:");
@@ -151,6 +152,11 @@ export const pay = async (commandOptions) => {
   if (!isEmpty(bakerPayments)) {
     console.log("\nPENDING BAKER PAYMENTS:");
     printBakerPaymentsTable(bakerPayments);
+  }
+
+  if (!isEmpty(donationPayments)) {
+    console.log("\nPENDING DONATION PAYMENTS:");
+    printBakerPaymentsTable(donationPayments);
   }
 
   console.log("\n");

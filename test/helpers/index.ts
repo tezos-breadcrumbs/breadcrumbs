@@ -37,6 +37,7 @@ export const generateConfig = (
       baker_pays_transaction_fee:
         args.payment_requirements?.baker_pays_transaction_fee ?? false,
     },
+    donations: args.donations ?? {},
     notifications: [],
   };
 };

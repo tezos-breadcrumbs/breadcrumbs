@@ -81,10 +81,12 @@ export const resolveSplitIntoBatches = async (
   collectBatches(batches, filteredDelegatorContractPayments, limits);
 
   /* Process fee income and bond reward payments into separate batches */
-  const { feeIncomePayments, bondRewardPayments } = cycleReport;
+  const { feeIncomePayments, bondRewardPayments, donationPayments } =
+    cycleReport;
 
   batches.push(feeIncomePayments);
   batches.push(bondRewardPayments);
+  batches.push(donationPayments);
 
   return {
     ...args,

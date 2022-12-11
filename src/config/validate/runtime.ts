@@ -132,6 +132,7 @@ export const schema = Joi.object({
     minimum_amount: Joi.number().positive(),
   },
   notifications: Joi.array().items(validPlugin),
+  donations: Joi.object().pattern(validAddress, validPercentage),
 });
 
 export const validRemoteSignerUrl = Joi.string().uri({

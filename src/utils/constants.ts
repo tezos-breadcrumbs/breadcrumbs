@@ -4,6 +4,7 @@ export const MUTEZ_FACTOR = 1000000;
 
 // configuration files
 export const CONFIG_FILE = `config.hjson`;
+export const DONATIONS_FILE = `donations.hjson`;
 export const WALLET_PRIVATE_KEY_FILE = `payout_wallet_private.key`;
 export const REMOTE_SIGNER_CONFIG_FILE = `remote-signer.hjson`;
 export const LEDGER_SIGNER_CONFIG_FILE = `ledger-signer.hjson`;

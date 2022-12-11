@@ -90,6 +90,7 @@ export const runConfigurator = async () => {
     };
 
     const json = stringify(config, { space: "  " });
+
     fs.writeFile("./config.hjson", json, (err) => {
       if (!err) {
         console.log(
